@@ -1,0 +1,15 @@
+{
+    "style": {
+                "font": "48px Exo2 SemiBold",
+                "fill": "#ffffff",
+                "fontSize": 48,
+                "boundsAlignH": "center",
+                "boundsAlignV": "middle"
+            },
+    "items": [
+        {
+            "label": "Play",
+            "state": "Game"
+        }
+    ]
+}
