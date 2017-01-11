@@ -60,34 +60,32 @@ App.PlayMissionState = (function () {
         //  The smaller the value, the smooth the camera (and the longer it takes to catch up)
         game.camera.follow(this.player, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
 
-        // Audio 
+        // Audio
         this.thrust_sound = this.game.add.audio('thrust');
+        // I an't figure out how to get onDown and onUp working
+        // so just using this flag for now. -- HookBot
+        this.thrusting = false;
     };
 
     fn.prototype.update = function () {
 
-        
         if (this.cursors.up.isDown) {
             this.player.body.thrust(300);
+            if (!this.thrusting) {
+                // XXX: Is there any way to force a loop?
+                this.thrust_sound.play();
+                this.thrusting = true;
+            }
+        }
+        else if (this.cursors.up.isUp) {
+            if (this.thrusting) {
+                this.thrust_sound.stop();
+                this.thrusting = false;
+            }
         }
         else if (this.cursors.down.isDown) {
             this.player.body.reverse(300);
         }
-        
-        // Audio Check
-        if (this.cursors.up.JustPressed) {
-            this.thrust_sound.play();
-        }
-/*        else if (this.cursors.up.onUp) {
-            this.thrust_sound.pause();
-        }
-        else if (this.cursors.down.OnDown) {
-            this.thrust_sound.play();
-        }
-        else if (this.cursors.down.onUp) {
-            this.thrust_sound.pause();
-        }
-*/
 
         if (this.cursors.left.isDown) {
             this.player.body.rotateLeft(100);
