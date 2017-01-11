@@ -22,6 +22,7 @@ App.PlayMissionState = (function () {
     fn.prototype.preload = function () {
         this.load.image('space', 'assets/images/spaceBGDarkPurple.png');
         this.load.image('player', 'assets/images/playerShipO.png');
+        this.load.image('green laser', 'assets/images/playerLaserGreen.png');
     };
 
     fn.prototype.create = function () {
@@ -55,9 +56,6 @@ App.PlayMissionState = (function () {
         else if (this.cursors.down.isDown) {
             this.player.body.reverse(300);
         }
-        else {
-            this.player.body.setZeroRotation();
-        }
 
         if (this.cursors.left.isDown) {
             this.player.body.rotateLeft(100);
@@ -65,10 +63,8 @@ App.PlayMissionState = (function () {
         else if (this.cursors.right.isDown) {
             this.player.body.rotateRight(100);
         }
-
-        if (this.cursors.right.isUp && this.cursors.left.isUp) {
-            this.player.body.rotateRight(0);
-            this.player.body.rotateLeft(0);
+        else {
+            this.player.body.setZeroRotation();
         }
     }
 
