@@ -51,7 +51,7 @@ App.LoadingState = (function () {
 
     fn.prototype.update = function () {
         if (this.are_fonts_loaded) {
-            this.state.start('MainMenu');
+            this.state.start('PlayMission');
         }
     };
 
