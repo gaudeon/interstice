@@ -34,7 +34,7 @@ App.PlayMissionState = (function () {
 
         // audio assets
         this.game.load.audio('thrust', 'assets/sounds/thrust.wav');
-        this.game.load.audio('laser', 'assets/sounds/laser1.wav');
+        this.game.load.audio('laser', 'assets/sounds/laser.wav');
 
         // hud assets
         this.hud.loadAssets();
