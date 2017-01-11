@@ -65,6 +65,7 @@ App.PlayMissionState = (function () {
         this.game.physics.p2.enable(this.player_ship, false);
         this.player_ship.body.setRectangle(40, 40);
         this.player_ship.fixedRotation = true;
+        this.player_ship.firing = false;
 
         // setup an enemy
         this.enemy1 = this.add.sprite(this.game.world.width / 3, this.game.world.height / 3, 'enemy1');
@@ -86,7 +87,8 @@ App.PlayMissionState = (function () {
         // hud
         this.hud.displayHUD();
 
-        this.cursors = game.input.keyboard.createCursorKeys();
+        this.keyboard = game.input.keyboard.createCursorKeys();
+        this.keyboard.space = game.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
 
         //  Notice that the sprite doesn't have any momentum at all,
         //  it's all just set by the camera follow type.
@@ -96,32 +98,38 @@ App.PlayMissionState = (function () {
 
         // Audio
         var thrustSound = this.game.add.audio('thrust');
-        this.cursors.up.onDown.add(function() {
+        this.keyboard.up.onDown.add(function() {
             thrustSound.play();
         });
-        this.cursors.up.onUp.add(function() {
+        this.keyboard.up.onUp.add(function() {
             thrustSound.stop();
         });
-        this.cursors.down.onDown.add(function() {
+        this.keyboard.down.onDown.add(function() {
             thrustSound.play();
         });
-        this.cursors.down.onUp.add(function() {
+        this.keyboard.down.onUp.add(function() {
             thrustSound.stop();
         });
     };
 
     fn.prototype.update = function () {
-        if (this.cursors.up.isDown) {
+        if (this.keyboard.space.onDown) {
+            // this.firing = true;
+            // this.bullet.create('Green Laser');
+            // this.firing = true;
+        }
+
+        if (this.keyboard.up.isDown) {
             this.player_ship.body.thrust(this.player.getHullThrust());
         }
-        else if (this.cursors.down.isDown) {
+        else if (this.keyboard.down.isDown) {
             this.player_ship.body.reverse(this.player.getHullThrust());
         }
 
-        if (this.cursors.left.isDown) {
+        if (this.keyboard.left.isDown) {
             this.player_ship.body.rotateLeft(this.player.getHullRotation());
         }
-        else if (this.cursors.right.isDown) {
+        else if (this.keyboard.right.isDown) {
             this.player_ship.body.rotateRight(this.player.getHullRotation());
         }
         else {
