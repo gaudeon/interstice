@@ -48,10 +48,11 @@ App.HUD = (function () {
         var y_pos = 5;
         var MAX_HEALTH = this.player.getHullHealth();
         var MAX_ENERGY = this.player.getHullEnergy();
+        var CUR_HEALTH = this.player.getHullHealthCur();
 
         // draws the health bar
         this.drawBar(x_pos, y_pos, MAX_HEALTH, 'healthbarBg', 1);
-        this.drawBar(x_pos, y_pos, MAX_HEALTH, 'healthbarGreen', 0.5);
+        this.drawBar(x_pos, y_pos, CUR_HEALTH, 'healthbarGreen', 0.5);
 
         // draws the shield bar
         this.drawBar(x_pos, y_pos + 30, MAX_ENERGY, 'healthbarBg', 1);

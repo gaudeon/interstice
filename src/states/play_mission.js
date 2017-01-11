@@ -83,6 +83,7 @@ App.PlayMissionState = (function () {
         this.enemy1.body.setCollisionGroup(enemyCollisionGroup);
         this.enemy1.body.collides(playerCollisionGroup);
         this.player_ship.body.collides(enemyCollisionGroup, this.hitEnemy, this);
+        this.player_ship.body.onBeginContact.add(this.contactHandler, this);
 
         // hud
         this.hud.displayHUD();
@@ -111,6 +112,32 @@ App.PlayMissionState = (function () {
             thrustSound.stop();
         });
     };
+
+    fn.prototype.contactHandler = function (body, shape1, shape2, equation) {
+        var x = 0;
+        var y = 0;
+        //console.log(typeof body);
+        if (body && body !== 'null' && body !== 'undefined') {
+            x = body.velocity.x;
+            y = body.velocity.y;
+        }
+
+        var v1 = new Phaser.Point(this.player_ship.body.velocity.x, this.player_ship.body.velocity.y);
+        var v2 = new Phaser.Point(x, y);
+
+        var xdiff = Math.abs(v1.x - v2.x);
+        var ydiff = Math.abs(v1.y - v2.y);
+        console.log(xdiff);
+        console.log(ydiff);
+        var curhealth = this.player.getHullHealthCur();
+        if (xdiff > 500 || ydiff > 500) { //Massive damage!
+            this.player.setHullHealthCur(curhealth - 20);
+            this.hud.displayHUD();
+        } else if (xdiff > 200 || ydiff > 200) { //Slight damage
+            this.player.setHullHealthCur(curhealth - 10);
+            this.hud.displayHUD();
+        }
+    }
 
     fn.prototype.update = function () {
         if (this.keyboard.space.onDown) {
