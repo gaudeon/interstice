@@ -4,12 +4,12 @@ App.PlayMissionState = App.PlayMissionState || {};
 
 var bulletData = [{
     name: 'redLaser',
-    audio: 'assets/sounds/lazer1.wav',
-    image: 'assets/images/LaserRed.png',
+    audio: 'laser',
+    image: 'redLaser',
 }, {
     name: 'greenLaser',
-    audio: 'assets/sounds/lazer1.wav',
-    image: 'assets/images/LaserGreen.png',
+    audio: 'laser',
+    image: 'greenLaser',
 },
 ];
 
