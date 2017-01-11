@@ -47,6 +47,13 @@ App.PlayMissionState = (function () {
 
         // use p2 for ships
         this.game.physics.startSystem(Phaser.Physics.P2JS);
+        this.game.physics.p2.setImpactEvents(true);
+        game.physics.p2.restitution = 0.8;
+
+        var playerCollisionGroup = this.game.physics.p2.createCollisionGroup();
+        var enemyCollisionGroup = this.game.physics.p2.createCollisionGroup();
+
+        this.game.physics.p2.updateBoundsCollisionGroup();
 
         // setup player ship spite
         this.player.setShipSprite(this.add.sprite(this.game.world.width / 2, this.game.world.height / 2, 'player'));
@@ -54,7 +61,9 @@ App.PlayMissionState = (function () {
         this.player_ship.anchor.setTo(this.player.getHullAsset().anchor);
         this.player_ship.scale.setTo(this.player.getHullAsset().scale);
 
-        this.game.physics.p2.enable(this.player_ship);
+        this.game.physics.p2.enable(this.player_ship, false);
+        this.player_ship.body.setRectangle(40, 40);
+        this.player_ship.fixedRotation = true;
 
         // setup an enemy
         this.enemy1 = this.add.sprite(this.game.world.width / 3, this.game.world.height / 3, 'enemy1');
@@ -64,7 +73,14 @@ App.PlayMissionState = (function () {
         this.enemy1.followx = this.game.world.randomX;
         this.enemy1.followy = this.game.world.randomY;
 
-        this.game.physics.p2.enable(this.enemy1);
+        this.game.physics.p2.enable(this.enemy1, false);
+        this.enemy1.body.setRectangle(40, 40);
+
+
+        this.player_ship.body.setCollisionGroup(playerCollisionGroup);
+        this.enemy1.body.setCollisionGroup(enemyCollisionGroup);
+        this.enemy1.body.collides(playerCollisionGroup);
+        this.player_ship.body.collides(enemyCollisionGroup, this.hitEnemy, this);
 
         // hud
         this.hud.displayHUD();
@@ -134,6 +150,10 @@ App.PlayMissionState = (function () {
             }
             this.accelerateToObject(this.enemy1,undefined,45);  //start accelerateToObject on every bullet
         }
+    }
+
+    fn.prototype.hitEnemy = function(player, enemy) {
+        console.log('collision detected');
     }
 
     fn.prototype.accelerateToObject = function(obj1, obj2, speed) {
