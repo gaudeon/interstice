@@ -48,13 +48,15 @@ App.PlayMissionState = (function () {
     };
 
     fn.prototype.update = function () {
-        this.player.body.setZeroVelocity();
 
         if (this.cursors.up.isDown) {
-            this.player.body.moveForward(300);
+            this.player.body.thrust(300);
         }
         else if (this.cursors.down.isDown) {
-            this.player.body.moveBackward(300);
+            this.player.body.reverse(300);
+        }
+        else {
+            this.player.body.setZeroRotation();
         }
 
         if (this.cursors.left.isDown) {
