@@ -25,6 +25,8 @@ App.PlayMissionState = (function () {
         this.load.image('enemy1', 'assets/images/enemyShipG.png');
         this.load.image('greenLaser', 'assets/images/LaserGreen.png');
         this.load.image('redLaser', 'assets/images/LaserRed.png');
+
+        this.load.audio('thrust', 'assets/sound/thrust.wav');
     };
 
     fn.prototype.create = function () {
@@ -54,15 +56,24 @@ App.PlayMissionState = (function () {
         //  0.1 is the amount of linear interpolation to use.
         //  The smaller the value, the smooth the camera (and the longer it takes to catch up)
         game.camera.follow(this.player, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
+
+
+        //  Audio stuff
+        thrust_sound = game.add.audio('thrust');
     };
 
     fn.prototype.update = function () {
 
         if (this.cursors.up.isDown) {
             this.player.body.thrust(300);
+            thrust_sound.play();
         }
         else if (this.cursors.down.isDown) {
             this.player.body.reverse(300);
+            thrust_sound.play();
+        }
+        else {
+            thrust_sound.stop();
         }
 
         if (this.cursors.left.isDown) {
