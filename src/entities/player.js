@@ -14,6 +14,7 @@ App.Player = (function () {
 
         // default to balanced hull class. TODO: Change me to support player chosen hull classes
         this.attributes.hull_class_id = "balanced";
+        this.attributes.health = this.getHullHealth();
 
         // player ship. TODO: eventually this will likely be an entity
         this.ship = {};
@@ -28,6 +29,10 @@ App.Player = (function () {
     fn.prototype.getHullThrust   = function () { return this.getHullConfig().thrust; };
     fn.prototype.getHullRotation = function () { return this.getHullConfig().rotation; };
     fn.prototype.getHullAsset    = function () { return this.getHullConfig().asset; };
+
+    // current values
+    fn.prototype.setHullHealthCur = function (health) { this.attributes.health = health; };
+    fn.prototype.getHullHealthCur = function () { return this.attributes.health; };
 
     // ship
     fn.prototype.getShip       = function () { return this.ship; };

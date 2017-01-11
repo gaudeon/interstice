@@ -73,9 +73,11 @@ App.PlayMissionState = (function () {
         this.game.physics.p2.enable(this.player_ship, false);
         this.player_ship.body.setRectangle(40, 40);
         this.player_ship.fixedRotation = true;
+        this.player_ship.firing = false;
 
         this.player_ship.body.setCollisionGroup(playerCollisionGroup);
         this.player_ship.body.collides(enemyCollisionGroup, this.hitEnemy, this);
+        this.player_ship.body.onBeginContact.add(this.contactHandler, this);
 
         // setup an enemy
         this.minion1 = this.add.existing(new App.Bots.Minion(this.game, this.game.world.width / 3, this.game.world.height / 3, enemyCollisionGroup, [playerCollisionGroup]));
@@ -83,7 +85,8 @@ App.PlayMissionState = (function () {
         // hud
         this.hud.displayHUD();
 
-        this.cursors = game.input.keyboard.createCursorKeys();
+        this.keyboard = game.input.keyboard.createCursorKeys();
+        this.keyboard.space = game.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
 
         //  Notice that the sprite doesn't have any momentum at all,
         //  it's all just set by the camera follow type.
@@ -92,38 +95,65 @@ App.PlayMissionState = (function () {
         game.camera.follow(this.player_ship, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
 
         // Audio
-        this.thrust_sound = this.game.add.audio('thrust');
-        // I an't figure out how to get onDown and onUp working
-        // so just using this flag for now. -- HookBot
-        this.thrusting = false;
+        var thrustSound = this.game.add.audio('thrust');
+        this.keyboard.up.onDown.add(function() {
+            thrustSound.play();
+        });
+        this.keyboard.up.onUp.add(function() {
+            thrustSound.stop();
+        });
+        this.keyboard.down.onDown.add(function() {
+            thrustSound.play();
+        });
+        this.keyboard.down.onUp.add(function() {
+            thrustSound.stop();
+        });
     };
 
-    fn.prototype.update = function () {
-        if (this.cursors.up.isDown) {
-            this.player_ship.body.thrust(this.player.getHullThrust());
-            if (!this.thrusting) {
-                // XXX: Is there any way to force a loop?
-                this.thrust_sound.play();
-                this.thrusting = true;
-            }
-        }
-        else if (this.cursors.down.isDown) {
-            this.player_ship.body.reverse(this.player.getHullThrust());
-            if (!this.thrusting) {
-                // XXX: Is there any way to force a loop?
-                this.thrust_sound.play();
-                this.thrusting = true;
-            }
-        }
-        else if (this.thrusting) {
-            this.thrust_sound.stop();
-            this.thrusting = false;
+    fn.prototype.contactHandler = function (body, shape1, shape2, equation) {
+        var x = 0;
+        var y = 0;
+        //console.log(typeof body);
+        if (body && body !== 'null' && body !== 'undefined') {
+            x = body.velocity.x;
+            y = body.velocity.y;
         }
 
-        if (this.cursors.left.isDown) {
+        var v1 = new Phaser.Point(this.player_ship.body.velocity.x, this.player_ship.body.velocity.y);
+        var v2 = new Phaser.Point(x, y);
+
+        var xdiff = Math.abs(v1.x - v2.x);
+        var ydiff = Math.abs(v1.y - v2.y);
+        console.log(xdiff);
+        console.log(ydiff);
+        var curhealth = this.player.getHullHealthCur();
+        if (xdiff > 500 || ydiff > 500) { //Massive damage!
+            this.player.setHullHealthCur(curhealth - 20);
+            this.hud.displayHUD();
+        } else if (xdiff > 200 || ydiff > 200) { //Slight damage
+            this.player.setHullHealthCur(curhealth - 10);
+            this.hud.displayHUD();
+        }
+    }
+
+    fn.prototype.update = function () {
+        if (this.keyboard.space.onDown) {
+            // this.firing = true;
+            // this.bullet.create('Green Laser');
+            // this.firing = true;
+        }
+
+        if (this.keyboard.up.isDown) {
+            this.player_ship.body.thrust(this.player.getHullThrust());
+        }
+        else if (this.keyboard.down.isDown) {
+            this.player_ship.body.reverse(this.player.getHullThrust());
+        }
+
+        if (this.keyboard.left.isDown) {
             this.player_ship.body.rotateLeft(this.player.getHullRotation());
         }
-        else if (this.cursors.right.isDown) {
+        else if (this.keyboard.right.isDown) {
             this.player_ship.body.rotateRight(this.player.getHullRotation());
         }
         else {
