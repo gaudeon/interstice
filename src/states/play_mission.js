@@ -22,8 +22,9 @@ App.PlayMissionState = (function () {
     fn.prototype.preload = function () {
         this.load.image('space', 'assets/images/spaceBGDarkPurple.png');
         this.load.image('player', 'assets/images/playerShipO.png');
-        this.load.image('green laser', 'assets/images/playerLaserGreen.png');
-        this.load.image('enemy1', 'assets/images/enemyShipGreen1.png');
+        this.load.image('enemy1', 'assets/images/enemyShipG.png');
+        this.load.image('greenLaser', 'assets/images/LaserGreen.png');
+        this.load.image('redLaser', 'assets/images/LaserRed.png');
     };
 
     fn.prototype.create = function () {
