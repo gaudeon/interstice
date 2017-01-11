@@ -8,6 +8,23 @@ App.HUD = (function () {
         this.game = game;
     };
 
+    fn.prototype.drawHealthBar = function (x, y, maxHealth, healthbarType) {
+        this.left = this.game.add.sprite(x, y, healthbarType + 'Left');
+        this.left.fixedToCamera = true;
+        this.group.add(this.left);
+
+        var midXPos = x + this.left.width;
+        this.mid = this.game.add.sprite(midXPos, y, healthbarType + 'Mid');
+        this.mid.fixedToCamera = true;
+        this.mid.width = maxHealth;
+        this.group.add(this.mid);
+
+        var rightXPos = x + this.mid.width + this.left.width;
+        this.right = this.game.add.sprite(rightXPos, y, healthbarType + 'Right');
+        this.right.fixedToCamera = true;
+        this.group.add(this.right);
+    };
+
     fn.prototype.loadAssets = function () {
         this.game.load.image('healthbarBgLeft', 'assets/images/hud_elements/barHorizontal_shadow_left.png');
         this.game.load.image('healthbarBgMid', 'assets/images/hud_elements/barHorizontal_shadow_mid.png');
@@ -20,21 +37,12 @@ App.HUD = (function () {
     fn.prototype.displayHUD = function () {
         this.group = this.game.add.group();
 
-        var healthbarXPos = 5;
-        var healthbarYPos = 5;
+        var x_pos = 5;
+        var y_pos = 5;
+        var MAX_HEALTH = 400;
 
-        this.healthbarBgLeft = this.game.add.sprite(healthbarXPos, healthbarYPos, 'healthbarBgLeft');
-        this.healthbarBgLeft.fixedToCamera = true;
-        this.group.add(this.healthbarBgLeft);
-
-        this.healthbarBgMid = this.game.add.sprite(healthbarXPos + this.healthbarBgLeft.width, healthbarYPos, 'healthbarBgMid');
-        this.healthbarBgMid.fixedToCamera = true;
-        this.healthbarBgMid.width = 400;
-        this.group.add(this.healthbarBgMid);
-
-        this.healthbarBgRight = this.game.add.sprite(healthbarXPos + this.healthbarBgMid.width + this.healthbarBgLeft.width, healthbarYPos, 'healthbarBgRight');
-        this.healthbarBgRight.fixedToCamera = true;
-        this.group.add(this.healthbarBgRight);
+        this.drawHealthBar(x_pos, y_pos, MAX_HEALTH, 'healthbarBg');
+        this.drawHealthBar(x_pos, y_pos, MAX_HEALTH, 'healthbarGreen');
     };
 
     return fn;
