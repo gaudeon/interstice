@@ -109,10 +109,10 @@ App.PlayMissionState = (function () {
             this.player.body.setZeroRotation();
         }
 
-        if (Math.abs(this.player.body.x - this.enemy1.body.x) < 50 && Math.abs(this.player.body.y - this.enemy1.body.y) < 50) {
+        if (Math.abs(this.player.body.x - this.enemy1.body.x) < 200 && Math.abs(this.player.body.y - this.enemy1.body.y) < 200) {
             this.enemy1.follow = 1;
         }
-        else if (Math.abs(this.player.body.x - this.enemy1.body.x) > 100 && Math.abs(this.player.body.y - this.enemy1.body.y) > 100) {
+        else if (Math.abs(this.player.body.x - this.enemy1.body.x) > 450 && Math.abs(this.player.body.y - this.enemy1.body.y) > 450) {
             this.enemy1.follow = 0;
             this.enemy1.followx = this.game.world.randomX;
             this.enemy1.followy = this.game.world.randomX;
