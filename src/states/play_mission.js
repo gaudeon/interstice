@@ -65,6 +65,7 @@ App.PlayMissionState = (function () {
         this.game.physics.p2.enable(this.player_ship, false);
         this.player_ship.body.setRectangle(40, 40);
         this.player_ship.fixedRotation = true;
+        this.player_ship.firing = false;
 
         // setup an enemy
         this.enemy1 = this.add.sprite(this.game.world.width / 3, this.game.world.height / 3, 'enemy1');
@@ -86,7 +87,8 @@ App.PlayMissionState = (function () {
         // hud
         this.hud.displayHUD();
 
-        this.cursors = game.input.keyboard.createCursorKeys();
+        this.keyboard = game.input.keyboard.createCursorKeys();
+        this.keyboard.space = game.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
 
         //  Notice that the sprite doesn't have any momentum at all,
         //  it's all just set by the camera follow type.
@@ -95,38 +97,39 @@ App.PlayMissionState = (function () {
         game.camera.follow(this.player_ship, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
 
         // Audio
-        this.thrust_sound = this.game.add.audio('thrust');
-        // I an't figure out how to get onDown and onUp working
-        // so just using this flag for now. -- HookBot
-        this.thrusting = false;
+        var thrustSound = this.game.add.audio('thrust');
+        this.keyboard.up.onDown.add(function() {
+            thrustSound.play();
+        });
+        this.keyboard.up.onUp.add(function() {
+            thrustSound.stop();
+        });
+        this.keyboard.down.onDown.add(function() {
+            thrustSound.play();
+        });
+        this.keyboard.down.onUp.add(function() {
+            thrustSound.stop();
+        });
     };
 
     fn.prototype.update = function () {
-        if (this.cursors.up.isDown) {
-            this.player_ship.body.thrust(this.player.getHullThrust());
-            if (!this.thrusting) {
-                // XXX: Is there any way to force a loop?
-                this.thrust_sound.play();
-                this.thrusting = true;
-            }
-        }
-        else if (this.cursors.down.isDown) {
-            this.player_ship.body.reverse(this.player.getHullThrust());
-            if (!this.thrusting) {
-                // XXX: Is there any way to force a loop?
-                this.thrust_sound.play();
-                this.thrusting = true;
-            }
-        }
-        else if (this.thrusting) {
-            this.thrust_sound.stop();
-            this.thrusting = false;
+        if (this.keyboard.space.onDown) {
+            // this.firing = true;
+            // this.bullet.create('Green Laser');
+            // this.firing = true;
         }
 
-        if (this.cursors.left.isDown) {
+        if (this.keyboard.up.isDown) {
+            this.player_ship.body.thrust(this.player.getHullThrust());
+        }
+        else if (this.keyboard.down.isDown) {
+            this.player_ship.body.reverse(this.player.getHullThrust());
+        }
+
+        if (this.keyboard.left.isDown) {
             this.player_ship.body.rotateLeft(this.player.getHullRotation());
         }
-        else if (this.cursors.right.isDown) {
+        else if (this.keyboard.right.isDown) {
             this.player_ship.body.rotateRight(this.player.getHullRotation());
         }
         else {
