@@ -25,16 +25,17 @@ App.PlayMissionState = (function () {
     };
 
     fn.prototype.preload = function () {
+        // Run Bullet preloads once
+        var bullet = new App.Bullet(this.game);
+        bullet.loadAssets();
+
         // image assets
         this.load.image('space', 'assets/images/spaceBGDarkPurple.png');
         this.load.image('player', this.player.getHullAsset().file);
         this.load.image('enemy1', 'assets/images/enemyShipG.png');
-        this.load.image('greenLaser', 'assets/images/LaserGreen.png');
-        this.load.image('redLaser', 'assets/images/LaserRed.png');
 
         // audio assets
         this.game.load.audio('thrust', 'assets/sounds/thrust.wav');
-        this.game.load.audio('laser', 'assets/sounds/laser.wav');
 
         // hud assets
         this.hud.loadAssets();
