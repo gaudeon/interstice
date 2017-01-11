@@ -83,8 +83,20 @@ App.PlayMissionState = (function () {
                 this.thrusting = false;
             }
         }
-        else if (this.cursors.down.isDown) {
+
+        if (this.cursors.down.isDown) {
             this.player.body.reverse(300);
+            if (!this.thrusting) {
+                // XXX: Is there any way to force a loop?
+                this.thrust_sound.play();
+                this.thrusting = true;
+            }
+        }
+        else if (this.cursors.down.isUp) {
+            if (this.thrusting) {
+                this.thrust_sound.stop();
+                this.thrusting = false;
+            }
         }
 
         if (this.cursors.left.isDown) {
