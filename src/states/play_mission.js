@@ -12,6 +12,11 @@ App.PlayMissionState = (function () {
     fn.prototype.constructor = fn;
 
     fn.prototype.init = function () {
+        this.sector = {
+            name: "Test Sector",
+            width: this.game.world.width * 2,
+            height: this.game.world.height * 2
+        };
     };
 
     fn.prototype.preload = function () {
@@ -20,12 +25,49 @@ App.PlayMissionState = (function () {
     };
 
     fn.prototype.create = function () {
-        this.background = this.add.tileSprite(0, 0, this.game.world.width * 2, this.game.world.height * 2, 'space');
+        // background
+        this.background = this.add.tileSprite(0, 0, this.sector.width, this.sector.height, 'space');
+        this.game.world.setBounds(0, 0, this.sector.width, this.sector.height);
+
+        // use p2 for ships
+        this.game.physics.startSystem(Phaser.Physics.P2JS);
 
         this.player = this.add.sprite(this.game.world.width / 2, this.game.world.height / 2, 'player');
         this.player.anchor.setTo(0.5);
         this.player.scale.setTo(0.5);
+
+        this.game.physics.p2.enable(this.player);
+
+        this.cursors = game.input.keyboard.createCursorKeys();
+
+        //  Notice that the sprite doesn't have any momentum at all,
+        //  it's all just set by the camera follow type.
+        //  0.1 is the amount of linear interpolation to use.
+        //  The smaller the value, the smooth the camera (and the longer it takes to catch up)
+        game.camera.follow(this.player, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
     };
+
+    fn.prototype.update = function () {
+        this.player.body.setZeroVelocity();
+
+        if (this.cursors.up.isDown)
+        {
+            this.player.body.moveUp(300)
+        }
+        else if (this.cursors.down.isDown)
+        {
+            this.player.body.moveDown(300);
+        }
+
+        if (this.cursors.left.isDown)
+        {
+            this.player.body.velocity.x = -300;
+        }
+        else if (this.cursors.right.isDown)
+        {
+            this.player.body.moveRight(300);
+        }
+    }
 
     return fn;
 })();
