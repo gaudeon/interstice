@@ -95,32 +95,27 @@ App.PlayMissionState = (function () {
         game.camera.follow(this.player_ship, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
 
         // Audio
-        this.thrust_sound = this.game.add.audio('thrust');
-        // I an't figure out how to get onDown and onUp working
-        // so just using this flag for now. -- HookBot
-        this.thrusting = false;
+        var thrustSound = this.game.add.audio('thrust');
+        this.cursors.up.onDown.add(function() {
+            thrustSound.play();
+        });
+        this.cursors.up.onUp.add(function() {
+            thrustSound.stop();
+        });
+        this.cursors.down.onDown.add(function() {
+            thrustSound.play();
+        });
+        this.cursors.down.onUp.add(function() {
+            thrustSound.stop();
+        });
     };
 
     fn.prototype.update = function () {
         if (this.cursors.up.isDown) {
             this.player_ship.body.thrust(this.player.getHullThrust());
-            if (!this.thrusting) {
-                // XXX: Is there any way to force a loop?
-                this.thrust_sound.play();
-                this.thrusting = true;
-            }
         }
         else if (this.cursors.down.isDown) {
             this.player_ship.body.reverse(this.player.getHullThrust());
-            if (!this.thrusting) {
-                // XXX: Is there any way to force a loop?
-                this.thrust_sound.play();
-                this.thrusting = true;
-            }
-        }
-        else if (this.thrusting) {
-            this.thrust_sound.stop();
-            this.thrusting = false;
         }
 
         if (this.cursors.left.isDown) {
