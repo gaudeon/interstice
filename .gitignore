@@ -38,3 +38,6 @@ jspm_packages
 
 # Ignore vim swap files
 *.swp
+
+# MacNTrash files
+.DS_Store
