@@ -57,7 +57,10 @@ App.PlayMissionState = (function () {
 
         this.enemy1 = this.add.sprite(this.game.world.width / 3, this.game.world.height / 3, 'enemy1');
         this.enemy1.anchor.setTo(0.5);
-        this.enemy1.scale.setTo(0.5);
+        this.enemy1.scale.setTo(-0.5);
+        this.enemy1.follow = 0;
+        this.enemy1.followx = this.game.world.randomX;
+        this.enemy1.followy = this.game.world.randomY;
 
         this.game.physics.p2.enable(this.enemy1);
 
@@ -132,8 +135,6 @@ App.PlayMissionState = (function () {
             if (Math.abs(this.enemy1.followx - this.enemy1.x) < 75 && Math.abs(this.enemy1.followy - this.enemy1.y) < 75) {
                 this.enemy1.followx = (((Math.random() * (.8 - .2) + .2) * this.game.world.width) + this.enemy1.x) % this.game.world.width;
                 this.enemy1.followy = (((Math.random() * (.8 - .2) + .2) * this.game.world.height) + this.enemy1.y) % this.game.world.height;
-                console.log(this.enemy1.followx);
-                console.log(this.enemy1.followy);
             }
             this.accelerateToObject(this.enemy1,undefined,45);  //start accelerateToObject on every bullet
         }
