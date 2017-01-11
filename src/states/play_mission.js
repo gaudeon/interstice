@@ -23,6 +23,7 @@ App.PlayMissionState = (function () {
         this.load.image('space', 'assets/images/spaceBGDarkPurple.png');
         this.load.image('player', 'assets/images/playerShipO.png');
         this.load.image('green laser', 'assets/images/playerLaserGreen.png');
+        this.load.image('enemy1', 'assets/images/enemyShipGreen1.png');
     };
 
     fn.prototype.create = function () {
@@ -38,6 +39,12 @@ App.PlayMissionState = (function () {
         this.player.scale.setTo(0.5);
 
         this.game.physics.p2.enable(this.player);
+
+        this.enemy1 = this.add.sprite(this.game.world.width / 3, this.game.world.height / 3, 'enemy1');
+        this.enemy1.anchor.setTo(0.5);
+        this.enemy1.scale.setTo(0.5);
+
+        this.game.physics.p2.enable(this.enemy1);
 
         this.cursors = game.input.keyboard.createCursorKeys();
 
