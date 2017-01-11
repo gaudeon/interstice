@@ -22,7 +22,7 @@ App.MainMenuState = (function () {
             text.inputEnabled = true;
 
             text.events.onInputUp.add(function (ev) {
-                this.state.start('PlayMission');                
+                this.state.start('PlayMission');
             }, this);
         }).bind(this));
     };
