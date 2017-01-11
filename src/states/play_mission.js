@@ -12,7 +12,7 @@ App.PlayMissionState = (function () {
     fn.prototype.constructor = fn;
 
     fn.prototype.init = function () {
-        this.hud = new App.HUD(this.game, this.state);
+        this.hud = new App.HUD(this.game, this);
 
         this.sector = {
             name: "Test Sector",
