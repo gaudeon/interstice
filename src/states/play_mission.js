@@ -109,21 +109,44 @@ App.PlayMissionState = (function () {
             this.player.body.setZeroRotation();
         }
 
-        if (Math.abs(this.player.body.x - this.enemy1.body.x) < 200 && Math.abs(this.player.body.y - this.enemy1.body.y) < 200) {
+        if (Math.abs(this.player.body.x - this.enemy1.body.x) < 50 && Math.abs(this.player.body.y - this.enemy1.body.y) < 50) {
             this.enemy1.follow = 1;
         }
+        else if (Math.abs(this.player.body.x - this.enemy1.body.x) > 100 && Math.abs(this.player.body.y - this.enemy1.body.y) > 100) {
+            this.enemy1.follow = 0;
+            this.enemy1.followx = this.game.world.randomX;
+            this.enemy1.followy = this.game.world.randomX;
+        }
+
         if (this.enemy1.follow == 1) {
-            accelerateToObject(this.enemy1,this.player,30);  //start accelerateToObject on every bullet
+            this.accelerateToObject(this.enemy1,this.player,60);  //start accelerateToObject on every bullet
+        } else if (this.enemy1.follow == 0) {
+            if (Math.abs(this.enemy1.followx - this.enemy1.x) < 75 && Math.abs(this.enemy1.followy - this.enemy1.y) < 75) {
+                this.enemy1.followx = (((Math.random() * (.8 - .2) + .2) * this.game.world.width) + this.enemy1.x) % this.game.world.width;
+                this.enemy1.followy = (((Math.random() * (.8 - .2) + .2) * this.game.world.height) + this.enemy1.y) % this.game.world.height;
+                console.log(this.enemy1.followx);
+                console.log(this.enemy1.followy);
+            }
+            this.accelerateToObject(this.enemy1,undefined,45);  //start accelerateToObject on every bullet
         }
     }
 
-
-    return fn;
-})();
-    function accelerateToObject(obj1, obj2, speed) {
-        if (typeof speed === 'undefined') { speed = 120; }
-        var angle = Math.atan2(obj2.y - obj1.y, obj2.x - obj1.x);
+    fn.prototype.accelerateToObject = function(obj1, obj2, speed) {
+        var x;
+        var y;
+        if (typeof obj2 === 'undefined') {
+            x = obj1.followx;
+            y = obj1.followy;
+        } else {
+            x = obj2.x;
+            y = obj2.y;
+        }
+        if (typeof speed === 'undefined') { speed = 60; }
+        var angle = Math.atan2(y - obj1.y, x - obj1.x);
         obj1.body.rotation = angle + game.math.degToRad(90);  // correct angle of angry bullets (depends on the sprite used)
         obj1.body.force.x = Math.cos(angle) * speed;    // accelerateToObject
         obj1.body.force.y = Math.sin(angle) * speed;
     }
+
+    return fn;
+})();
