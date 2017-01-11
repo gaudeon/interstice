@@ -1,0 +1,14 @@
+{
+    "balanced": {
+        "name": "Balanced",
+        "energy": 100,
+        "health": 100,
+        "thrust": 300,
+        "rotation": 100,
+        "asset": {
+            "file": "assets/images/playerShipO.png",
+            "scale": 0.5,
+            "anchor": 0.5
+        }
+    }
+}

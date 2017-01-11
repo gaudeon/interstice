@@ -9,7 +9,7 @@
         <script src="vendor/webfontloader.js" type="text/javascript"></script>
 
         <!-- Src Files -->
-        <script src="src/mechanics/player.js" type="text/javascript"></script>
+        <script src="src/entities/player.js" type="text/javascript"></script>
         <script src="src/states/loading.js" type="text/javascript"></script>
         <script src="src/states/main_menu.js" type="text/javascript"></script>
         <script src="src/states/game.js" type="text/javascript"></script>
@@ -22,7 +22,12 @@
             Phaser.Device.whenReady(function () {
                 // plugins
                 this.game.__plugins = this.game.__plugins || {};
+
                 // add plugins here
+                // ...
+
+                // setup global namespace under game for our global data
+                game.global = {};
 
                 // states
                 game.state.add('Loading', App.LoadingState);

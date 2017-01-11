@@ -32,6 +32,7 @@ App.LoadingState = (function () {
     fn.prototype.preload = function () {
         // load json configuration files
         this.load.json('mainMenuConfig', '/assets/json/main_menu.json');
+        this.load.json('playerHullsConfig', '/assets/json/player_hulls.json');
 
         // load web fonts
         WebFont.load({
@@ -43,6 +44,12 @@ App.LoadingState = (function () {
                 urls: ['assets/css/fonts.css']
             }
         });
+    };
+
+    fn.prototype.create = function () {
+        this.game.global.player = new App.Player(
+            this.game.cache.getJSON('playerHullsConfig')
+        );
     };
 
     fn.prototype.webfontloaded = function () {
