@@ -18,11 +18,11 @@ App.MainMenuState = (function () {
             var text = this.add.text(0, 0, item.label, this.config.style);
 
             text.setTextBounds(0,0,this.world.width,this.world.height);
-           
-            text.inputEnabled = true; 
+
+            text.inputEnabled = true;
 
             text.events.onInputUp.add(function (ev) {
-                this.state.start('Game');                
+                this.state.start('PlayMission');                
             }, this);
         }).bind(this));
     };
