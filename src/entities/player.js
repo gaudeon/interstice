@@ -25,8 +25,8 @@ App.Player = (function () {
     fn.prototype.getHullName     = function () { return this.getHullConfig().name; };
     fn.prototype.getHullEnergy   = function () { return this.getHullConfig().energy; };
     fn.prototype.getHullHealth   = function () { return this.getHullConfig().health; };
-    fn.prototype.getHullThrust   = function () { return this.getHullConfig().health; };
-    fn.prototype.getHullRotation = function () { return this.getHullConfig().health; };
+    fn.prototype.getHullThrust   = function () { return this.getHullConfig().thrust; };
+    fn.prototype.getHullRotation = function () { return this.getHullConfig().rotation; };
     fn.prototype.getHullAsset    = function () { return this.getHullConfig().asset; };
 
     // ship
