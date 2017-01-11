@@ -40,6 +40,9 @@ App.PlayMissionState = (function () {
     };
 
     fn.prototype.create = function () {
+        // hud
+        this.hud.draw();
+
         // background
         this.background = this.add.tileSprite(0, 0, this.sector.width, this.sector.height, 'space');
         this.game.world.setBounds(0, 0, this.sector.width, this.sector.height);
