@@ -6,6 +6,7 @@ App.HUD = (function () {
 
     var fn = function (game) {
         this.game = game;
+        this.player = this.game.global.player;
     };
 
     fn.prototype.drawBar = function (x, y, maxHealth, healthbarType, opacity) {
@@ -45,15 +46,16 @@ App.HUD = (function () {
 
         var x_pos = 5;
         var y_pos = 5;
-        var MAX_HEALTH = 400;
+        var MAX_HEALTH = this.player.getHullHealth();
+        var MAX_ENERGY = this.player.getHullEnergy();
 
         // draws the health bar
         this.drawBar(x_pos, y_pos, MAX_HEALTH, 'healthbarBg', 1);
         this.drawBar(x_pos, y_pos, MAX_HEALTH, 'healthbarGreen', 0.5);
 
         // draws the shield bar
-        this.drawBar(x_pos, y_pos + 30, MAX_HEALTH, 'healthbarBg', 1);
-        this.drawBar(x_pos, y_pos + 30, MAX_HEALTH, 'healthbarYellow', 0.5);
+        this.drawBar(x_pos, y_pos + 30, MAX_ENERGY, 'healthbarBg', 1);
+        this.drawBar(x_pos, y_pos + 30, MAX_ENERGY, 'healthbarYellow', 0.5);
     };
 
     return fn;
