@@ -26,7 +26,10 @@ App.PlayMissionState = (function () {
         this.load.image('enemy1', 'assets/images/enemyShipG.png');
         this.load.image('greenLaser', 'assets/images/LaserGreen.png');
         this.load.image('redLaser', 'assets/images/LaserRed.png');
+
         this.hud.loadAssets();
+
+        this.game.load.audio('thrust', 'assets/sounds/thrust.wav');
     };
 
     fn.prototype.create = function () {
@@ -45,7 +48,7 @@ App.PlayMissionState = (function () {
 
         this.enemy1 = this.add.sprite(this.game.world.width / 3, this.game.world.height / 3, 'enemy1');
         this.enemy1.anchor.setTo(0.5);
-        this.enemy1.scale.setTo(0.5);
+        this.enemy1.scale.setTo(-0.5);
 
         this.game.physics.p2.enable(this.enemy1);
 
@@ -60,11 +63,17 @@ App.PlayMissionState = (function () {
 
     fn.prototype.update = function () {
 
+        var thrust_sound = this.game.add.audio('thrust');
         if (this.cursors.up.isDown) {
             this.player.body.thrust(300);
+            thrust_sound.play();
         }
         else if (this.cursors.down.isDown) {
             this.player.body.reverse(300);
+            thrust_sound.play();
+        }
+        else {
+            thrust_sound.stop();
         }
 
         if (this.cursors.left.isDown) {
