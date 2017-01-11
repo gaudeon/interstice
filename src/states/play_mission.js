@@ -21,13 +21,13 @@ App.PlayMissionState = (function () {
         };
 
         // create a shorter accessor to the player object
-        this.player_ship = this.game.global.player;
+        this.player = this.game.global.player;
     };
 
     fn.prototype.preload = function () {
         // image assets
         this.load.image('space', 'assets/images/spaceBGDarkPurple.png');
-        this.load.image('player', this.player_ship.getHullAsset().file);
+        this.load.image('player', this.player.getHullAsset().file);
         this.load.image('enemy1', 'assets/images/enemyShipG.png');
         this.load.image('greenLaser', 'assets/images/LaserGreen.png');
         this.load.image('redLaser', 'assets/images/LaserRed.png');
@@ -48,8 +48,8 @@ App.PlayMissionState = (function () {
         this.game.physics.startSystem(Phaser.Physics.P2JS);
 
         // setup player ship spite
-        this.player_ship.setShipSprite(this.add.sprite(this.game.world.width / 2, this.game.world.height / 2, 'player'));
-        this.player_ship = this.player_ship.getShipSprite(); // easier accessor to player ship sprite
+        this.player.setShipSprite(this.add.sprite(this.game.world.width / 2, this.game.world.height / 2, 'player'));
+        this.player_ship = this.player.getShipSprite(); // easier accessor to player ship sprite
         this.player_ship.anchor.setTo(0.5);
         this.player_ship.scale.setTo(0.5);
 
@@ -81,7 +81,7 @@ App.PlayMissionState = (function () {
 
     fn.prototype.update = function () {
         if (this.cursors.up.isDown) {
-            this.player_ship.body.thrust(300);
+            this.player_ship.body.thrust(this.player.getHullThrust());
             if (!this.thrusting) {
                 // XXX: Is there any way to force a loop?
                 this.thrust_sound.play();
@@ -96,7 +96,7 @@ App.PlayMissionState = (function () {
         }
 
         if (this.cursors.down.isDown) {
-            this.player_ship.body.reverse(300);
+            this.player_ship.body.reverse(this.player.getHullThrust());
             if (!this.thrusting) {
                 // XXX: Is there any way to force a loop?
                 this.thrust_sound.play();
@@ -111,10 +111,10 @@ App.PlayMissionState = (function () {
         }
 
         if (this.cursors.left.isDown) {
-            this.player_ship.body.rotateLeft(100);
+            this.player_ship.body.rotateLeft(this.player.getHullRotation());
         }
         else if (this.cursors.right.isDown) {
-            this.player_ship.body.rotateRight(100);
+            this.player_ship.body.rotateRight(this.player.getHullRotation());
         }
         else {
             this.player_ship.body.setZeroRotation();
