@@ -14,6 +14,8 @@ App.PlayMissionState = (function () {
     fn.prototype.init = function () {
         this.hud = new App.HUD(this.game);
 
+        this.bots_config = this.game.cache.getJSON('botsConfig');
+
         this.sector = {
             name: "Test Sector",
             width: this.game.world.width * 2,
@@ -32,7 +34,13 @@ App.PlayMissionState = (function () {
         // image assets
         this.load.image('space', 'assets/images/spaceBGDarkPurple.png');
         this.load.image('player', this.player.getHullAsset().file);
-        this.load.image('enemy1', 'assets/images/enemyShipG.png');
+
+        // bot assets TODO: only load bot assets we use on a stage
+        var image_key_prefix = game.cache.getJSON('assetsConfig').bot_image_key_prefix;
+        console.log(image_key_prefix);
+        _.each(_.keys(this.bots_config), (function (bot_class_id) {
+            this.load.image(image_key_prefix + bot_class_id, this.bots_config[bot_class_id].asset.file);
+        }).bind(this));
 
         // audio assets
         this.game.load.audio('thrust', 'assets/sounds/thrust.wav');
@@ -66,22 +74,11 @@ App.PlayMissionState = (function () {
         this.player_ship.body.setRectangle(40, 40);
         this.player_ship.fixedRotation = true;
 
-        // setup an enemy
-        this.enemy1 = this.add.sprite(this.game.world.width / 3, this.game.world.height / 3, 'enemy1');
-        this.enemy1.anchor.setTo(0.5);
-        this.enemy1.scale.setTo(-0.5);
-        this.enemy1.follow = 0;
-        this.enemy1.followx = this.game.world.randomX;
-        this.enemy1.followy = this.game.world.randomY;
-
-        this.game.physics.p2.enable(this.enemy1, false);
-        this.enemy1.body.setRectangle(40, 40);
-
-
         this.player_ship.body.setCollisionGroup(playerCollisionGroup);
-        this.enemy1.body.setCollisionGroup(enemyCollisionGroup);
-        this.enemy1.body.collides(playerCollisionGroup);
         this.player_ship.body.collides(enemyCollisionGroup, this.hitEnemy, this);
+
+        // setup an enemy
+        this.minion1 = this.add.existing(new App.Bots.Minion(this.game, this.game.world.width / 3, this.game.world.height / 3, enemyCollisionGroup, [playerCollisionGroup]));
 
         // hud
         this.hud.displayHUD();
@@ -133,24 +130,7 @@ App.PlayMissionState = (function () {
             this.player_ship.body.setZeroRotation();
         }
 
-        if (Math.abs(this.player_ship.body.x - this.enemy1.body.x) < 200 && Math.abs(this.player_ship.body.y - this.enemy1.body.y) < 200) {
-            this.enemy1.follow = 1;
-        }
-        else if (Math.abs(this.player_ship.body.x - this.enemy1.body.x) > 450 && Math.abs(this.player_ship.body.y - this.enemy1.body.y) > 450) {
-            this.enemy1.follow = 0;
-            this.enemy1.followx = this.game.world.randomX;
-            this.enemy1.followy = this.game.world.randomX;
-        }
-
-        if (this.enemy1.follow == 1) {
-            this.accelerateToObject(this.enemy1,this.player_ship,60);  //start accelerateToObject on every bullet
-        } else if (this.enemy1.follow == 0) {
-            if (Math.abs(this.enemy1.followx - this.enemy1.x) < 75 && Math.abs(this.enemy1.followy - this.enemy1.y) < 75) {
-                this.enemy1.followx = (((Math.random() * (.8 - .2) + .2) * this.game.world.width) + this.enemy1.x) % this.game.world.width;
-                this.enemy1.followy = (((Math.random() * (.8 - .2) + .2) * this.game.world.height) + this.enemy1.y) % this.game.world.height;
-            }
-            this.accelerateToObject(this.enemy1,undefined,45);  //start accelerateToObject on every bullet
-        }
+        this.minion1.move();
     }
 
     fn.prototype.hitEnemy = function(player, enemy) {

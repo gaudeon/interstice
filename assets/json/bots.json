@@ -1,0 +1,13 @@
+{
+    "minion": {
+        "name": "Minion",
+        "energy": 100,
+        "health": 100,
+        "speed": 60,
+        "asset": {
+            "file": "assets/images/enemyShipG.png",
+            "scale": -0.5,
+            "anchor": 0.5
+        }
+    }
+}
