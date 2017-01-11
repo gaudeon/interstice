@@ -43,7 +43,7 @@ App.PlayMissionState = (function () {
 
         this.enemy1 = this.add.sprite(this.game.world.width / 3, this.game.world.height / 3, 'enemy1');
         this.enemy1.anchor.setTo(0.5);
-        this.enemy1.scale.setTo(0.5);
+        this.enemy1.scale.setTo(-0.5);
 
         this.game.physics.p2.enable(this.enemy1);
 
