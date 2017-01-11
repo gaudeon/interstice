@@ -50,8 +50,8 @@ App.PlayMissionState = (function () {
         // setup player ship spite
         this.player.setShipSprite(this.add.sprite(this.game.world.width / 2, this.game.world.height / 2, 'player'));
         this.player_ship = this.player.getShipSprite(); // easier accessor to player ship sprite
-        this.player_ship.anchor.setTo(0.5);
-        this.player_ship.scale.setTo(0.5);
+        this.player_ship.anchor.setTo(this.player.getHullAsset().anchor);
+        this.player_ship.scale.setTo(this.player.getHullAsset().scale);
 
         this.game.physics.p2.enable(this.player_ship);
 
