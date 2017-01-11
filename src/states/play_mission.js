@@ -12,6 +12,7 @@ App.PlayMissionState = (function () {
     fn.prototype.constructor = fn;
 
     fn.prototype.init = function () {
+        this.hud = new App.HUD(this.game, this.state);
         this.sector = {
             name: "Test Sector",
             width: this.game.world.width * 2,
@@ -25,6 +26,7 @@ App.PlayMissionState = (function () {
         this.load.image('enemy1', 'assets/images/enemyShipG.png');
         this.load.image('greenLaser', 'assets/images/LaserGreen.png');
         this.load.image('redLaser', 'assets/images/LaserRed.png');
+        this.hud.loadAssets();
     };
 
     fn.prototype.create = function () {
@@ -90,7 +92,6 @@ App.PlayMissionState = (function () {
         if (typeof speed === 'undefined') { speed = 120; }
         var angle = Math.atan2(obj2.y - obj1.y, obj2.x - obj1.x);
         obj1.body.rotation = angle + game.math.degToRad(90);  // correct angle of angry bullets (depends on the sprite used)
-        obj1.body.force.x = Math.cos(angle) * speed;    // accelerateToObject 
+        obj1.body.force.x = Math.cos(angle) * speed;    // accelerateToObject
         obj1.body.force.y = Math.sin(angle) * speed;
     }
-
