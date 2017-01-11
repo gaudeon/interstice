@@ -91,14 +91,7 @@ App.PlayMissionState = (function () {
                 this.thrusting = true;
             }
         }
-        else if (this.cursors.up.isUp) {
-            if (this.thrusting) {
-                this.thrust_sound.stop();
-                this.thrusting = false;
-            }
-        }
-
-        if (this.cursors.down.isDown) {
+        else if (this.cursors.down.isDown) {
             this.player_ship.body.reverse(this.player.getHullThrust());
             if (!this.thrusting) {
                 // XXX: Is there any way to force a loop?
@@ -106,11 +99,9 @@ App.PlayMissionState = (function () {
                 this.thrusting = true;
             }
         }
-        else if (this.cursors.down.isUp) {
-            if (this.thrusting) {
-                this.thrust_sound.stop();
-                this.thrusting = false;
-            }
+        else if (this.thrusting) {
+            this.thrust_sound.stop();
+            this.thrusting = false;
         }
 
         if (this.cursors.left.isDown) {
