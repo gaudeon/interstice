@@ -59,22 +59,35 @@ App.PlayMissionState = (function () {
         //  0.1 is the amount of linear interpolation to use.
         //  The smaller the value, the smooth the camera (and the longer it takes to catch up)
         game.camera.follow(this.player, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
+
+        // Audio 
+        this.thrust_sound = this.game.add.audio('thrust');
     };
 
     fn.prototype.update = function () {
 
-        var thrust_sound = this.game.add.audio('thrust');
+        
         if (this.cursors.up.isDown) {
             this.player.body.thrust(300);
-            thrust_sound.play();
         }
         else if (this.cursors.down.isDown) {
             this.player.body.reverse(300);
-            thrust_sound.play();
         }
-        else {
-            thrust_sound.stop();
+        
+        // Audio Check
+        if (this.cursors.up.JustPressed) {
+            this.thrust_sound.play();
         }
+/*        else if (this.cursors.up.onUp) {
+            this.thrust_sound.pause();
+        }
+        else if (this.cursors.down.OnDown) {
+            this.thrust_sound.play();
+        }
+        else if (this.cursors.down.onUp) {
+            this.thrust_sound.pause();
+        }
+*/
 
         if (this.cursors.left.isDown) {
             this.player.body.rotateLeft(100);
