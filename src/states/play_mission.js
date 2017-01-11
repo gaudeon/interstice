@@ -12,7 +12,7 @@ App.PlayMissionState = (function () {
     fn.prototype.constructor = fn;
 
     fn.prototype.init = function () {
-        this.hud = new App.HUD(this.game, this);
+        this.hud = new App.HUD(this.game);
 
         this.sector = {
             name: "Test Sector",
@@ -40,9 +40,6 @@ App.PlayMissionState = (function () {
     };
 
     fn.prototype.create = function () {
-        // hud
-        this.hud.draw();
-
         // background
         this.background = this.add.tileSprite(0, 0, this.sector.width, this.sector.height, 'space');
         this.game.world.setBounds(0, 0, this.sector.width, this.sector.height);
@@ -58,6 +55,7 @@ App.PlayMissionState = (function () {
 
         this.game.physics.p2.enable(this.player_ship);
 
+        // setup an enemy
         this.enemy1 = this.add.sprite(this.game.world.width / 3, this.game.world.height / 3, 'enemy1');
         this.enemy1.anchor.setTo(0.5);
         this.enemy1.scale.setTo(-0.5);
@@ -66,6 +64,9 @@ App.PlayMissionState = (function () {
         this.enemy1.followy = this.game.world.randomY;
 
         this.game.physics.p2.enable(this.enemy1);
+
+        // hud
+        this.hud.displayHUD();
 
         this.cursors = game.input.keyboard.createCursorKeys();
 
