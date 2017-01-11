@@ -74,7 +74,23 @@ App.PlayMissionState = (function () {
         else {
             this.player.body.setZeroRotation();
         }
+
+        if (Math.abs(this.player.body.x - this.enemy1.body.x) < 200 && Math.abs(this.player.body.y - this.enemy1.body.y) < 200) {
+            this.enemy1.follow = 1;
+        }
+        if (this.enemy1.follow == 1) {
+            accelerateToObject(this.enemy1,this.player,30);  //start accelerateToObject on every bullet
+        }
     }
+
 
     return fn;
 })();
+    function accelerateToObject(obj1, obj2, speed) {
+        if (typeof speed === 'undefined') { speed = 120; }
+        var angle = Math.atan2(obj2.y - obj1.y, obj2.x - obj1.x);
+        obj1.body.rotation = angle + game.math.degToRad(90);  // correct angle of angry bullets (depends on the sprite used)
+        obj1.body.force.x = Math.cos(angle) * speed;    // accelerateToObject 
+        obj1.body.force.y = Math.sin(angle) * speed;
+    }
+
