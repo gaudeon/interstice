@@ -5,18 +5,24 @@ App.Bots = App.Bots || {};
 App.Bots.Minion = (function () {
     "use strict";
 
-    var fn = function (game, x, y, collision_group, collides) {
+    var fn = function (game, x, y) {
         var class_id = 'minion';
 
-        App.Bot.call(this, game, x, y, class_id, collision_group, collides);
-
-        console.log(this);
+        App.Bot.call(this, game, x, y, class_id);
 
         this.player          = this.game.global.player;
-        this.player_ship     = this.player.getShipSprite();
+        this.player_ship     = this.player.getShip();
         this.followingPlayer = false;
         this.followX         = this.game.world.randomX;
         this.followY         = this.game.world.randomY;
+
+        // make sure players collide with this bots collision group
+        this.player_ship.body.collides(this.getCollisionGroup(), (function () {
+            this.player_ship.events.onCollide.dispatch(this);
+        }).bind(this));
+
+        // make sure this bot collides with player collision group
+        this.body.collides(this.player_ship.getCollisionGroup());
     };
 
     fn.prototype = Object.create(App.Bot.prototype);

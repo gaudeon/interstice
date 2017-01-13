@@ -4,10 +4,12 @@ var App = App || {};
 App.Player = (function () {
     "use strict";
 
-    var fn = function (player_hulls) {
+    var fn = function (game) {
+        this.game = game;
+
         // config data
         this.config = {};
-        this.config.player_hulls = player_hulls;
+        this.config.player_hulls = this.game.cache.getJSON('playerHullsConfig');
 
         // player attributes
         this.attributes = {};
@@ -15,9 +17,6 @@ App.Player = (function () {
         // default to balanced hull class. TODO: Change me to support player chosen hull classes
         this.attributes.hull_class_id = "balanced";
         this.attributes.health = this.getHullHealth();
-
-        // player ship. TODO: eventually this will likely be an entity
-        this.ship = {};
     };
 
     // hull
@@ -35,9 +34,19 @@ App.Player = (function () {
     fn.prototype.getHullHealthCur = function () { return this.attributes.health; };
 
     // ship
-    fn.prototype.getShip       = function () { return this.ship; };
-    fn.prototype.setShipSprite = function (sprite) { this.ship.sprite = sprite; };
-    fn.prototype.getShipSprite = function () { return this.ship.sprite; };
+    fn.prototype.getShip       = function () {
+        if ('undefined' !== typeof this.ship) return this.ship;
+
+        this.ship = new App.PlayerShip(this.game, this);
+
+        //  Notice that the sprite doesn't have any momentum at all,
+        //  it's all just set by the camera follow type.
+        //  0.1 is the amount of linear interpolation to use.
+        //  The smaller the value, the smooth the camera (and the longer it takes to catch up)
+        this.game.camera.follow(this.ship, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
+
+        return this.ship;
+    };
 
     return fn;
 })();

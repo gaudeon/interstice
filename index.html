@@ -10,6 +10,7 @@
 
         <!-- Src Files -->
         <script src="src/entities/player.js" type="text/javascript"></script>
+        <script src="src/entities/player_ship.js" type="text/javascript"></script>
         <script src="src/entities/bot.js" type="text/javascript"></script>
         <script src="src/entities/bots/minion.js" type="text/javascript"></script>
         <script src="src/prefabs/hud.js" type="text/javascript"></script>
@@ -32,6 +33,7 @@
 
                 // setup global namespace under game for our global data
                 game.global = {};
+                game.global.collision_groups = {}; // sprite classes will generate collision groups on here as need and register themselves to them
 
                 // states
                 game.state.add('Loading', App.LoadingState);

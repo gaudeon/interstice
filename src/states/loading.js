@@ -49,9 +49,13 @@ App.LoadingState = (function () {
     };
 
     fn.prototype.create = function () {
-        this.game.global.player = new App.Player(
-            this.game.cache.getJSON('playerHullsConfig')
-        );
+        // use p2 for ships
+        this.game.physics.startSystem(Phaser.Physics.P2JS);
+        this.game.physics.p2.setImpactEvents(true);
+        this.game.physics.p2.restitution = 0.8;
+
+        // setup player object
+        this.game.global.player = new App.Player(this.game);
     };
 
     fn.prototype.webfontloaded = function () {

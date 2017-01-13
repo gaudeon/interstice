@@ -32,12 +32,11 @@ App.PlayMissionState = (function () {
         bullet.loadAssets();
 
         // image assets
-        this.load.image('space', 'assets/images/spaceBGDarkPurple.png');
-        this.load.image('player', this.player.getHullAsset().file);
+        this.load.image('space_bg_image', 'assets/images/spaceBGDarkPurple.png');
+        this.load.image('player_ship_image', this.player.getHullAsset().file);
 
         // bot assets TODO: only load bot assets we use on a stage
-        var image_key_prefix = game.cache.getJSON('assetsConfig').bot_image_key_prefix;
-        console.log(image_key_prefix);
+        var image_key_prefix = this.game.cache.getJSON('assetsConfig').bot_image_key_prefix;
         _.each(_.keys(this.bots_config), (function (bot_class_id) {
             this.load.image(image_key_prefix + bot_class_id, this.bots_config[bot_class_id].asset.file);
         }).bind(this));
@@ -51,48 +50,28 @@ App.PlayMissionState = (function () {
 
     fn.prototype.create = function () {
         // background
-        this.background = this.add.tileSprite(0, 0, this.sector.width, this.sector.height, 'space');
+        this.background = this.add.tileSprite(0, 0, this.sector.width, this.sector.height, 'space_bg_image');
         this.game.world.setBounds(0, 0, this.sector.width, this.sector.height);
 
-        // use p2 for ships
-        this.game.physics.startSystem(Phaser.Physics.P2JS);
-        this.game.physics.p2.setImpactEvents(true);
-        game.physics.p2.restitution = 0.8;
-
-        var playerCollisionGroup = this.game.physics.p2.createCollisionGroup();
-        var enemyCollisionGroup = this.game.physics.p2.createCollisionGroup();
-
-        this.game.physics.p2.updateBoundsCollisionGroup();
-
         // setup player ship spite
-        this.player.setShipSprite(this.add.sprite(this.game.world.width / 2, this.game.world.height / 2, 'player'));
-        this.player_ship = this.player.getShipSprite(); // easier accessor to player ship sprite
-        this.player_ship.anchor.setTo(this.player.getHullAsset().anchor);
-        this.player_ship.scale.setTo(this.player.getHullAsset().scale);
+        this.player_ship = this.player.getShip(); // easier accessor to player ship sprite
+        this.add.existing(this.player_ship);
 
-        this.game.physics.p2.enable(this.player_ship, false);
-        this.player_ship.body.setRectangle(40, 40);
-        this.player_ship.fixedRotation = true;
-        this.player_ship.firing = false;
-
-        this.player_ship.body.setCollisionGroup(playerCollisionGroup);
-        this.player_ship.body.collides(enemyCollisionGroup, this.hitEnemy, this);
         this.player_ship.body.onBeginContact.add(this.contactHandler, this);
 
-        // setup an enemy
-        this.minion1 = this.add.existing(new App.Bots.Minion(this.game, this.game.world.width / 3, this.game.world.height / 3, enemyCollisionGroup, [playerCollisionGroup]));
+        this.player_ship.events.onCollide.add(function () { console.log(arguments); });
+
+        // setup a random group of enemys
+        this.minions = [];
+        for (var m = 0; m < this.game.rnd.integerInRange(1,5); m++) {
+            this.minions.push(this.add.existing(new App.Bots.Minion(this.game, this.game.rnd.integerInRange(50, this.game.world.width - 50), this.game.rnd.integerInRange(50, this.game.world.height - 50))));
+        }
 
         // hud
         this.hud.displayHUD();
 
-        this.keyboard = game.input.keyboard.createCursorKeys();
-        this.keyboard.space = game.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
-
-        //  Notice that the sprite doesn't have any momentum at all,
-        //  it's all just set by the camera follow type.
-        //  0.1 is the amount of linear interpolation to use.
-        //  The smaller the value, the smooth the camera (and the longer it takes to catch up)
-        game.camera.follow(this.player_ship, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
+        this.keyboard = this.game.input.keyboard.createCursorKeys();
+        this.keyboard.space = this.game.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
 
         // Audio
         var thrustSound = this.game.add.audio('thrust');
@@ -113,7 +92,7 @@ App.PlayMissionState = (function () {
     fn.prototype.contactHandler = function (body, shape1, shape2, equation) {
         var x = 0;
         var y = 0;
-        //console.log(typeof body);
+
         if (body && body !== 'null' && body !== 'undefined') {
             x = body.velocity.x;
             y = body.velocity.y;
@@ -124,8 +103,7 @@ App.PlayMissionState = (function () {
 
         var xdiff = Math.abs(v1.x - v2.x);
         var ydiff = Math.abs(v1.y - v2.y);
-        console.log(xdiff);
-        console.log(ydiff);
+
         var curhealth = this.player.getHullHealthCur();
         if (xdiff > 500 || ydiff > 500) { //Massive damage!
             this.player.setHullHealthCur(curhealth - 20);
@@ -160,28 +138,9 @@ App.PlayMissionState = (function () {
             this.player_ship.body.setZeroRotation();
         }
 
-        this.minion1.move();
-    }
-
-    fn.prototype.hitEnemy = function(player, enemy) {
-        console.log('collision detected');
-    }
-
-    fn.prototype.accelerateToObject = function(obj1, obj2, speed) {
-        var x;
-        var y;
-        if (typeof obj2 === 'undefined') {
-            x = obj1.followx;
-            y = obj1.followy;
-        } else {
-            x = obj2.x;
-            y = obj2.y;
+        for (var m = 0; m < this.minions.length; m++) {
+            this.minions[m].move();
         }
-        if (typeof speed === 'undefined') { speed = 60; }
-        var angle = Math.atan2(y - obj1.y, x - obj1.x);
-        obj1.body.rotation = angle + game.math.degToRad(90);  // correct angle of angry bullets (depends on the sprite used)
-        obj1.body.force.x = Math.cos(angle) * speed;    // accelerateToObject
-        obj1.body.force.y = Math.sin(angle) * speed;
     }
 
     return fn;
