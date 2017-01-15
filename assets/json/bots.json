@@ -1,9 +1,10 @@
 {
     "minion": {
-        "name": "Minion",
-        "energy": 100,
-        "health": 100,
-        "speed": 60,
+        "name"   : "Minion",
+        "energy" : 100,
+        "health" : 100,
+        "speed"  : 60,
+        "bullet" : "red",
         "sprite": {
             "scale": -0.5,
             "anchor": 0.5

@@ -1,36 +1,36 @@
 // namespace
 var App = App || {};
 
-var bulletData = [{
-    name: 'redLaser',
-    audio: 'laser',
-    image: 'redLaser',
-}, {
-    name: 'greenLaser',
-    audio: 'laser',
-    image: 'greenLaser',
-},
-];
-
 App.Bullet = (function () {
     "use strict";
 
     var fn = function (game, owner) {
+        // cache game and player objects
+        this.game   = game;
+        this.owner  = owner;
+
+        // config data
+        this.config = {};
+        this.config.assets   = this.game.cache.getJSON('assetsConfig');
+
+        // call sprite constructor
+        var bullet_asset = this.config.assets.bullets[this.owner.getBulletType()];
+        Phaser.Sprite.call(this, game, 0, 0, bullet_asset.key);
+
         this.game  = game;
-        this.bulletData = bulletData;
+
+        // Set its pivot point to the center of the bullet
+        this.anchor.setTo(0.5, 0.5);
+
+        // Enable physics on the bullet
+        game.physics.p2.enable(this, false);
+
+        // Set its initial state to "dead".
+        this.kill();
     };
 
-    fn.prototype.loadAssets = function () {
-        // image assets
-        this.game.load.image('greenLaser', 'assets/images/LaserGreen.png');
-        this.game.load.image('redLaser', 'assets/images/LaserRed.png');
-
-        // audio assets
-        this.game.load.audio('laser', 'assets/sounds/laser.wav');
-        //console.log("Bullet.loadAssets done!");
-    };
+    fn.prototype = Object.create(Phaser.Sprite.prototype);
+    fn.prototype.constructor = fn;
 
     return fn;
 })();
-
-//console.log("bullet compiles");

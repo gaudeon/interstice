@@ -39,6 +39,8 @@ App.Player = (function () {
     fn.prototype.getHullRotation     = function () { return this.getHullConfig().rotation; };
     fn.prototype.getHullSpriteConfig = function () { return this.getHullConfig().sprite; };
 
+    fn.prototype.getBulletType = function () { return this.config.player.bullet; };
+
     // current values
     fn.prototype.setHullHealthCur = function (health) { this.attributes.health = health; };
     fn.prototype.getHullHealthCur = function () { return this.attributes.health; };
@@ -74,6 +76,24 @@ App.Player = (function () {
     };
 
     // ship
+    fn.prototype.setupShip = function () {
+        // add ship to the game
+        this.game.add.existing(this.getShip());
+
+        // Define constants
+        this.SHOT_DELAY = 100; // milliseconds (10 bullets/second)
+        this.BULLET_SPEED = 500; // pixels/second
+        this.NUMBER_OF_BULLETS = 20;
+
+        // Create an object pool of bullets
+        this.bulletPool = this.game.add.group();
+        for(var i = 0; i < this.NUMBER_OF_BULLETS; i++) {
+            // Create each bullet and add it to the group.
+            var bullet = new App.Bullet(game, this);
+            this.bulletPool.add(bullet);
+        }
+    };
+
     fn.prototype.getShip = function () {
         if ('undefined' !== typeof this.ship) return this.ship;
 

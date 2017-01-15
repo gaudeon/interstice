@@ -1,29 +1,39 @@
 {
     "bots": {
         "minion": {
-            "key": "bot_minion_sprite",
-            "file": "assets/images/enemyShipG.png"
+            "file" : "assets/images/enemyShipG.png",
+            "key" : "bot_minion_sprite"
         }
     },
     "player": {
         "hulls": {
             "balanced": {
-                "key": "player_ship_sprite",
-                "file": "assets/images/playerShipO.png"
+                "file" : "assets/images/playerShipO.png",
+                "key"  : "player_ship_sprite"
             }
         },
         "sounds": {
             "thrust": {
-                "key": "player_ship_thrust",
-                "file": "assets/sounds/thrust.wav"
+                "file" : "assets/sounds/thrust.wav",
+                "key"  : "player_ship_thrust"
             }
+        }
+    },
+    "bullets": {
+        "green": {
+            "file" : "assets/images/LaserGreen.png",
+            "key"  : "bullet_green"
+        },
+        "red": {
+            "file" : "assets/images/LaserRed.png",
+            "key"  : "bullet_red"
         }
     },
     "missions": {
         "default": {
             "background": {
-                "key": "space_bg_dark_purple",
-                "file": "assets/images/spaceBGDarkPurple.png"
+                "file" : "assets/images/spaceBGDarkPurple.png",
+                "key"  : "space_bg_dark_purple"
             }
         }
     }

@@ -35,9 +35,11 @@ App.PlayMissionState = (function () {
         // player assets
         this.player.loadAssets();
 
-        // Run Bullet preloads once
-        var bullet = new App.Bullet(this.game);
-        bullet.loadAssets();
+        // bullet assets
+        _.each(_.keys(this.config.assets.bullets), (function (bullet_type) {
+            var bullet_asset = this.config.assets.bullets[bullet_type];
+            this.load.image(bullet_asset.key, bullet_asset.file);
+        }).bind(this));
 
         // mission assets
         var background_asset = this.mission_assets.background;
@@ -61,9 +63,10 @@ App.PlayMissionState = (function () {
         // setup player audio
         this.player.setupAudio();
 
-        // setup player ship spite
-        this.player_ship = this.player.getShip(); // easier accessor to player ship sprite
-        this.add.existing(this.player_ship);
+        // setup player ship
+        this.player.setupShip();
+
+        this.player_ship = this.player.getShip();
 
         this.player_ship.body.onBeginContact.add(this.contactHandler, this);
 

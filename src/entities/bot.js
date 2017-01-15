@@ -55,15 +55,14 @@ App.Bot = (function () {
         return this.attributes.bot_class_id;
     };
 
-    fn.prototype.getBotConfig = function () { return this.config[this.getBotClassId()]; };
-
-    fn.prototype.getSpeed = function () { return this.getBotConfig().speed; };
-
-    fn.prototype.getCollisionGroup = function() { return this.collision_group; };
+    fn.prototype.getBotConfig      = function () { return this.config[this.getBotClassId()]; };
+    fn.prototype.getSpeed          = function () { return this.getBotConfig().speed; };
+    fn.prototype.getBulletType     = function () { return this.getBotConfig().bullet; };
+    fn.prototype.getCollisionGroup = function () { return this.collision_group; };
 
     fn.prototype.move = function () { /* overwrite me to do stuff */ };
 
-    fn.prototype.accelerateToPoint = function(x, y, speed) {
+    fn.prototype.accelerateToPoint = function (x, y, speed) {
         var speed = speed || this.getBotConfig().speed || 0;
 
         var angle = Math.atan2(y - this.y, x - this.x);
@@ -72,7 +71,7 @@ App.Bot = (function () {
         this.body.force.y = Math.sin(angle) * speed;
     };
 
-    fn.prototype.accelerateToObject = function(dest, speed) {
+    fn.prototype.accelerateToObject = function (dest, speed) {
         if ('object' !== typeof dest) return;
 
         this.accelerateToPoint(dest.x, dest.y, speed);
