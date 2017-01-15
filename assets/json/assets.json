@@ -1,3 +1,16 @@
 {
-    "bot_image_key_prefix": "bot_"
+    "bots": {
+        "minion": {
+            "key": "bot_minion_sprite",
+            "file": "assets/images/enemyShipG.png"
+        }
+    },
+    "player": {
+        "hulls": {
+            "balanced": {
+                "key": "player_ship_sprite",
+                "file": "assets/images/playerShipO.png"
+            }
+        }
+    }
 }

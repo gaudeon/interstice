@@ -15,7 +15,7 @@ var bulletData = [{
 App.Bullet = (function () {
     "use strict";
 
-    var fn = function (game) {
+    var fn = function (game, owner) {
         this.game  = game;
         this.bulletData = bulletData;
     };

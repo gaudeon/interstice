@@ -5,9 +5,9 @@ App.Bot = (function () {
     "use strict";
 
     var fn = function (game, x, y, class_id) {
-        var image_key_prefix = game.cache.getJSON('assetsConfig').bot_image_key_prefix;
+        var asset_config = game.cache.getJSON('assetsConfig').bots[class_id];
 
-        Phaser.Sprite.call(this, game, x, y, image_key_prefix + class_id);
+        Phaser.Sprite.call(this, game, x, y, asset_config.key);
 
         this.game = game;
 
@@ -15,8 +15,8 @@ App.Bot = (function () {
         this.config = game.cache.getJSON('botsConfig');
 
         // sprite attributes
-        this.anchor.setTo(this.config[class_id].asset.anchor);
-        this.scale.setTo(this.config[class_id].asset.scale);
+        this.anchor.setTo(this.config[class_id].sprite.anchor);
+        this.scale.setTo(this.config[class_id].sprite.scale);
 
         // bot attributes
         this.attributes = {};

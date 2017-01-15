@@ -1,1 +1,0 @@
-place for image assets

@@ -14,7 +14,10 @@ App.PlayMissionState = (function () {
     fn.prototype.init = function () {
         this.hud = new App.HUD(this.game);
 
-        this.bots_config = this.game.cache.getJSON('botsConfig');
+        // config
+        this.config = {};
+        this.config.assets = game.cache.getJSON('assetsConfig');
+        this.config.bots   = this.game.cache.getJSON('botsConfig');
 
         this.sector = {
             name: "Test Sector",
@@ -27,22 +30,20 @@ App.PlayMissionState = (function () {
     };
 
     fn.prototype.preload = function () {
+        this.player.loadAssets();
+
         // Run Bullet preloads once
         var bullet = new App.Bullet(this.game);
         bullet.loadAssets();
 
         // image assets
         this.load.image('space_bg_image', 'assets/images/spaceBGDarkPurple.png');
-        this.load.image('player_ship_image', this.player.getHullAsset().file);
 
         // bot assets TODO: only load bot assets we use on a stage
-        var image_key_prefix = this.game.cache.getJSON('assetsConfig').bot_image_key_prefix;
-        _.each(_.keys(this.bots_config), (function (bot_class_id) {
-            this.load.image(image_key_prefix + bot_class_id, this.bots_config[bot_class_id].asset.file);
+        _.each(_.keys(this.config.bots), (function (bot_class_id) {
+            var bot_asset_config = this.config.assets.bots[bot_class_id];
+            this.load.image(bot_asset_config.key, bot_asset_config.file);
         }).bind(this));
-
-        // audio assets
-        this.game.load.audio('thrust', 'assets/sounds/thrust.wav');
 
         // hud assets
         this.hud.loadAssets();
@@ -52,6 +53,9 @@ App.PlayMissionState = (function () {
         // background
         this.background = this.add.tileSprite(0, 0, this.sector.width, this.sector.height, 'space_bg_image');
         this.game.world.setBounds(0, 0, this.sector.width, this.sector.height);
+
+        // setup player audio
+        this.player.setupAudio();
 
         // setup player ship spite
         this.player_ship = this.player.getShip(); // easier accessor to player ship sprite
@@ -69,24 +73,6 @@ App.PlayMissionState = (function () {
 
         // hud
         this.hud.displayHUD();
-
-        this.keyboard = this.game.input.keyboard.createCursorKeys();
-        this.keyboard.space = this.game.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
-
-        // Audio
-        var thrustSound = this.game.add.audio('thrust');
-        this.keyboard.up.onDown.add(function() {
-            thrustSound.play();
-        });
-        this.keyboard.up.onUp.add(function() {
-            thrustSound.stop();
-        });
-        this.keyboard.down.onDown.add(function() {
-            thrustSound.play();
-        });
-        this.keyboard.down.onUp.add(function() {
-            thrustSound.stop();
-        });
     };
 
     fn.prototype.contactHandler = function (body, shape1, shape2, equation) {
@@ -115,14 +101,8 @@ App.PlayMissionState = (function () {
     }
 
     fn.prototype.update = function () {
-        if (this.keyboard.space.onDown) {
-            // this.firing = true;
-            // this.bullet.create('Green Laser');
-            // this.firing = true;
-        }
-
         this.player.move();
-        
+
         for (var m = 0; m < this.minions.length; m++) {
             this.minions[m].move();
         }
