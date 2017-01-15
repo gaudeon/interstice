@@ -11,6 +11,20 @@
                 "key": "player_ship_sprite",
                 "file": "assets/images/playerShipO.png"
             }
+        },
+        "sounds": {
+            "thrust": {
+                "key": "player_ship_thrust",
+                "file": "assets/sounds/thrust.wav"
+            }
+        }
+    },
+    "missions": {
+        "default": {
+            "background": {
+                "key": "space_bg_dark_purple",
+                "file": "assets/images/spaceBGDarkPurple.png"
+            }
         }
     }
 }

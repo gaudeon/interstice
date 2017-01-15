@@ -19,6 +19,8 @@ App.PlayMissionState = (function () {
         this.config.assets = game.cache.getJSON('assetsConfig');
         this.config.bots   = this.game.cache.getJSON('botsConfig');
 
+        this.mission_assets = this.config.assets.missions.default;
+
         this.sector = {
             name: "Test Sector",
             width: this.game.world.width * 2,
@@ -30,14 +32,16 @@ App.PlayMissionState = (function () {
     };
 
     fn.prototype.preload = function () {
+        // player assets
         this.player.loadAssets();
 
         // Run Bullet preloads once
         var bullet = new App.Bullet(this.game);
         bullet.loadAssets();
 
-        // image assets
-        this.load.image('space_bg_image', 'assets/images/spaceBGDarkPurple.png');
+        // mission assets
+        var background_asset = this.mission_assets.background;
+        this.load.image(background_asset.key, background_asset.file);
 
         // bot assets TODO: only load bot assets we use on a stage
         _.each(_.keys(this.config.bots), (function (bot_class_id) {
@@ -51,7 +55,7 @@ App.PlayMissionState = (function () {
 
     fn.prototype.create = function () {
         // background
-        this.background = this.add.tileSprite(0, 0, this.sector.width, this.sector.height, 'space_bg_image');
+        this.background = this.add.tileSprite(0, 0, this.sector.width, this.sector.height, this.mission_assets.background.key);
         this.game.world.setBounds(0, 0, this.sector.width, this.sector.height);
 
         // setup player audio

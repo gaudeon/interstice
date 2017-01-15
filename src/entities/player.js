@@ -48,14 +48,15 @@ App.Player = (function () {
         var player_hull_asset = this.config.assets.player.hulls[this.attributes.hull_class_id];
         this.game.load.image(player_hull_asset.key, player_hull_asset.file);
 
-        this.game.load.audio('thrust', 'assets/sounds/thrust.wav');
+        var player_thrust_sound = this.config.assets.player.sounds.thrust;
+        this.game.load.audio(player_thrust_sound.key, player_thrust_sound.file);
     };
 
     // setup player sound effects and music
     fn.prototype.setupAudio = function () {
         // audio
         this.audio = {};
-        this.audio.thrustSound = this.game.add.audio('thrust');
+        this.audio.thrustSound = this.game.add.audio(this.config.assets.player.sounds.thrust.key);
 
         // audio events
         this.keyboard.thrustForward.onDown.add((function() {
