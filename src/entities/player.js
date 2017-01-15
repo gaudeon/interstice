@@ -17,6 +17,9 @@ App.Player = (function () {
         // default to balanced hull class. TODO: Change me to support player chosen hull classes
         this.attributes.hull_class_id = "balanced";
         this.attributes.health = this.getHullHealth();
+
+        // keyboard events
+        this.keyboard = this.game.input.keyboard.createCursorKeys();
     };
 
     // hull
@@ -47,6 +50,25 @@ App.Player = (function () {
 
         return this.ship;
     };
+
+    fn.prototype.move = function () {
+        if (this.keyboard.up.isDown) {
+            this.ship.body.thrust(this.getHullThrust());
+        }
+        else if (this.keyboard.down.isDown) {
+            this.ship.body.reverse(this.getHullThrust());
+        }
+
+        if (this.keyboard.left.isDown) {
+            this.ship.body.rotateLeft(this.getHullRotation());
+        }
+        else if (this.keyboard.right.isDown) {
+            this.ship.body.rotateRight(this.getHullRotation());
+        }
+        else {
+            this.ship.body.setZeroRotation();
+        }
+    }
 
     return fn;
 })();

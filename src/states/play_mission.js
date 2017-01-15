@@ -121,23 +121,8 @@ App.PlayMissionState = (function () {
             // this.firing = true;
         }
 
-        if (this.keyboard.up.isDown) {
-            this.player_ship.body.thrust(this.player.getHullThrust());
-        }
-        else if (this.keyboard.down.isDown) {
-            this.player_ship.body.reverse(this.player.getHullThrust());
-        }
-
-        if (this.keyboard.left.isDown) {
-            this.player_ship.body.rotateLeft(this.player.getHullRotation());
-        }
-        else if (this.keyboard.right.isDown) {
-            this.player_ship.body.rotateRight(this.player.getHullRotation());
-        }
-        else {
-            this.player_ship.body.setZeroRotation();
-        }
-
+        this.player.move();
+        
         for (var m = 0; m < this.minions.length; m++) {
             this.minions[m].move();
         }
