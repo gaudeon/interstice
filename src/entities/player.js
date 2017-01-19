@@ -21,12 +21,11 @@ App.Player = (function () {
         this.attributes.health = this.getHullHealth();
 
         // keyboard events
-        this.keyboard               = this.game.input.keyboard.createCursorKeys();
-        this.keyboard.thrustForward = this.game.input.keyboard.addKey(Phaser.KeyCode[this.config.controls.thrustForward]);
-        this.keyboard.thrustReverse = this.game.input.keyboard.addKey(Phaser.KeyCode[this.config.controls.thrustReverse]);
-        this.keyboard.rotateLeft    = this.game.input.keyboard.addKey(Phaser.KeyCode[this.config.controls.rotateLeft]);
-        this.keyboard.rotateRight   = this.game.input.keyboard.addKey(Phaser.KeyCode[this.config.controls.rotateRight]);
-        this.keyboard.fireBullets   = this.game.input.keyboard.addKey(Phaser.KeyCode[this.config.controls.fireBullets]);
+        this.keyboard = this.game.input.keyboard.createCursorKeys();
+        _.each(['thrustForward','thrustReverse','rotateLeft','rotateRight','fireBullets'], (function (control) {
+            var keycode = Phaser.KeyCode[this.config.controls[control]];
+            this.keyboard[control] = this.game.input.keyboard.addKey(keycode);
+        }).bind(this));
     };
 
     // hull
@@ -131,8 +130,9 @@ App.Player = (function () {
         }
 
         if (this.keyboard.fireBullets.isDown) {
-            this.audio.bulletSound.play();
-            this.shootBullet();
+            if (this.shootBullet()) {
+                this.audio.bulletSound.play();
+            }
         }
     }
 
@@ -142,14 +142,14 @@ App.Player = (function () {
         // the amount of time since the last shot is more than
         // the required delay.
         if (this.lastBulletShotAt === undefined) this.lastBulletShotAt = 0;
-        if (this.game.time.now - this.lastBulletShotAt < this.SHOT_DELAY) return;
+        if (this.game.time.now - this.lastBulletShotAt < this.SHOT_DELAY) return false;
         this.lastBulletShotAt = this.game.time.now;
 
         // Get a dead bullet from the pool
         var bullet = this.bulletPool.getFirstDead();
 
         // If there aren't any bullets available then don't shoot
-        if (bullet === null || bullet === undefined) return;
+        if (bullet === null || bullet === undefined) return false;
 
         // Revive the bullet
         // This makes the bullet "alive"
@@ -171,6 +171,8 @@ App.Player = (function () {
         // Shoot it in the right direction
         bullet.body.velocity.x = Math.cos(forward_rotation) * this.BULLET_SPEED;
         bullet.body.velocity.y = Math.sin(forward_rotation) * this.BULLET_SPEED;
+
+        return true;
     };
 
     return fn;

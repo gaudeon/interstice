@@ -3,5 +3,5 @@
     "thrustReverse" : "S",
     "rotateLeft"    : "A",
     "rotateRight"   : "D",
-    "fireBullets"   : "CONTROL"
+    "fireBullets"   : "J"
 }
