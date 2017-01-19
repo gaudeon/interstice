@@ -70,7 +70,11 @@ App.PlayMissionState = (function () {
 
         this.player_ship.body.onBeginContact.add(this.contactHandler, this);
 
-        this.player_ship.events.onCollide.add(function () { console.log(arguments); });
+        this.player_ship.events.onCollide.add(function () {
+            // something hit the ship
+            // console.log(arguments);
+        });
+
 
         // setup a random group of enemys
         this.minions = [];
@@ -108,10 +112,10 @@ App.PlayMissionState = (function () {
     }
 
     fn.prototype.update = function () {
-        this.player.move();
+        this.player.tick();
 
         for (var m = 0; m < this.minions.length; m++) {
-            this.minions[m].move();
+            this.minions[m].tick();
         }
     }
 

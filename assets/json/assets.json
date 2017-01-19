@@ -16,6 +16,10 @@
             "thrust": {
                 "file" : "assets/sounds/thrust.wav",
                 "key"  : "player_ship_thrust"
+            },
+            "bullet": {
+                "file" : "assets/sounds/bullet.wav",
+                "key"  : "player_bullet_sound"
             }
         }
     },

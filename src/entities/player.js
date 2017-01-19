@@ -52,6 +52,9 @@ App.Player = (function () {
 
         var player_thrust_sound = this.config.assets.player.sounds.thrust;
         this.game.load.audio(player_thrust_sound.key, player_thrust_sound.file);
+
+        var player_bullet_sound = this.config.assets.player.sounds.bullet;
+        this.game.load.audio(player_bullet_sound.key, player_bullet_sound.file);
     };
 
     // setup player sound effects and music
@@ -59,6 +62,7 @@ App.Player = (function () {
         // audio
         this.audio = {};
         this.audio.thrustSound = this.game.add.audio(this.config.assets.player.sounds.thrust.key);
+        this.audio.bulletSound = this.game.add.audio(this.config.assets.player.sounds.bullet.key);
 
         // audio events
         this.keyboard.thrustForward.onDown.add((function() {
@@ -108,7 +112,7 @@ App.Player = (function () {
         return this.ship;
     };
 
-    fn.prototype.move = function () {
+    fn.prototype.tick = function () {
         if (this.keyboard.thrustForward.isDown) {
             this.ship.body.thrust(this.getHullThrust());
         }
@@ -125,7 +129,49 @@ App.Player = (function () {
         else {
             this.ship.body.setZeroRotation();
         }
+
+        if (this.keyboard.fireBullets.isDown) {
+            this.audio.bulletSound.play();
+            this.shootBullet();
+        }
     }
+
+    fn.prototype.shootBullet = function() {
+        // Enforce a short delay between shots by recording
+        // the time that each bullet is shot and testing if
+        // the amount of time since the last shot is more than
+        // the required delay.
+        if (this.lastBulletShotAt === undefined) this.lastBulletShotAt = 0;
+        if (this.game.time.now - this.lastBulletShotAt < this.SHOT_DELAY) return;
+        this.lastBulletShotAt = this.game.time.now;
+
+        // Get a dead bullet from the pool
+        var bullet = this.bulletPool.getFirstDead();
+
+        // If there aren't any bullets available then don't shoot
+        if (bullet === null || bullet === undefined) return;
+
+        // Revive the bullet
+        // This makes the bullet "alive"
+        bullet.revive();
+
+        // Bullets should kill themselves when they leave the world.
+        // Phaser takes care of this for me by setting this flag
+        // but you can do it yourself by killing the bullet if
+        // its x,y coordinates are outside of the world.
+        bullet.checkWorldBounds = true;
+        bullet.outOfBoundsKill = true;
+
+        // Set the bullet position to the gun position.
+        bullet.reset(this.ship.x, this.ship.y);
+        bullet.rotation = this.ship.rotation;
+
+        var forward_rotation = this.ship.rotation - this.game.math.PI2 / 4;
+
+        // Shoot it in the right direction
+        bullet.body.velocity.x = Math.cos(forward_rotation) * this.BULLET_SPEED;
+        bullet.body.velocity.y = Math.sin(forward_rotation) * this.BULLET_SPEED;
+    };
 
     return fn;
 })();

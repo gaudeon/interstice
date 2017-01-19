@@ -28,7 +28,7 @@ App.Bots.Minion = (function () {
     fn.prototype = Object.create(App.Bot.prototype);
     fn.prototype.constructor = fn;
 
-    fn.prototype.move = function () {
+    fn.prototype.tick = function () {
         if (Math.abs(this.player_ship.body.x - this.body.x) < 200 && Math.abs(this.player_ship.body.y - this.body.y) < 200) {
             this.followingPlayer = true;
         }

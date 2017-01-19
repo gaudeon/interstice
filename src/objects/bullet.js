@@ -25,6 +25,8 @@ App.Bullet = (function () {
         // Enable physics on the bullet
         game.physics.p2.enable(this, false);
 
+        this.body.fixedRotation = true;
+
         // Set its initial state to "dead".
         this.kill();
     };

@@ -60,7 +60,7 @@ App.Bot = (function () {
     fn.prototype.getBulletType     = function () { return this.getBotConfig().bullet; };
     fn.prototype.getCollisionGroup = function () { return this.collision_group; };
 
-    fn.prototype.move = function () { /* overwrite me to do stuff */ };
+    fn.prototype.tick = function () { /* overwrite me to do stuff */ };
 
     fn.prototype.accelerateToPoint = function (x, y, speed) {
         var speed = speed || this.getBotConfig().speed || 0;
