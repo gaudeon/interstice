@@ -26,6 +26,7 @@ App.Bullet = (function () {
         game.physics.p2.enable(this, false);
 
         this.body.fixedRotation = true;
+        this.body.motionState = Phaser.Physics.P2.Body.KINEMATIC;
 
         // Set its initial state to "dead".
         this.kill();
