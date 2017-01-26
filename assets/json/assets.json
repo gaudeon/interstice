@@ -33,6 +33,16 @@
             "key"  : "bullet_red"
         }
     },
+    "missiles": {
+        "green": {
+            "file" : "assets/images/MissileGreen.png",
+            "key"  : "missile_green"
+        },
+        "red": {
+            "file" : "assets/images/MissileRed.png",
+            "key"  : "missile_red"
+        }
+    },
     "missions": {
         "default": {
             "background": {
