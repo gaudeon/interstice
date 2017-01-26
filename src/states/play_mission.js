@@ -60,9 +60,6 @@ App.PlayMissionState = (function () {
         this.background = this.add.tileSprite(0, 0, this.sector.width, this.sector.height, this.mission_assets.background.key);
         this.game.world.setBounds(0, 0, this.sector.width, this.sector.height);
 
-        // setup player audio
-        this.player.setupAudio();
-
         // setup player ship
         this.player.setupShip();
 

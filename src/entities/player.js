@@ -5,6 +5,8 @@ App.Player = (function () {
     "use strict";
 
     var fn = function (game) {
+        Phaser.Group.call(this, game, null, 'player');
+
         this.game = game;
 
         // config data
@@ -28,6 +30,9 @@ App.Player = (function () {
         }).bind(this));
     };
 
+    fn.prototype = Object.create(Phaser.Group.prototype);
+    fn.prototype.constructor = fn;
+
     // hull
     fn.prototype.getHullConfig       = function () { return this.config.player.hulls[this.attributes.hull_class_id]; }
     fn.prototype.getHullId           = function () { return this.attributes.hull_class_id; };
@@ -38,7 +43,9 @@ App.Player = (function () {
     fn.prototype.getHullRotation     = function () { return this.getHullConfig().rotation; };
     fn.prototype.getHullSpriteConfig = function () { return this.getHullConfig().sprite; };
 
-    fn.prototype.getBulletType = function () { return this.config.player.bullet; };
+    // main gun info
+    fn.prototype.getMainGunBulletType      = function () { return this.config.player.main_gun.bullet_type; };
+    fn.prototype.getMainGunBulletPoolCount = function () { return this.config.player.main_gun.bullet_pool_count; };
 
     // current values
     fn.prototype.setHullHealthCur = function (health) { this.attributes.health = health; };
@@ -56,14 +63,17 @@ App.Player = (function () {
         this.game.load.audio(player_bullet_sound.key, player_bullet_sound.file);
     };
 
-    // setup player sound effects and music
-    fn.prototype.setupAudio = function () {
+    // ship
+    fn.prototype.setupShip = function () {
+        // add ship to the game
+        this.game.add.existing(this.getShip());
+
         // audio
         this.audio = {};
         this.audio.thrustSound = this.game.add.audio(this.config.assets.player.sounds.thrust.key);
         this.audio.bulletSound = this.game.add.audio(this.config.assets.player.sounds.bullet.key);
 
-        // audio events
+        // thruster audio events
         this.keyboard.thrustForward.onDown.add((function() {
             this.audio.thrustSound.play();
         }).bind(this));
@@ -76,25 +86,11 @@ App.Player = (function () {
         this.keyboard.thrustReverse.onUp.add((function() {
             this.audio.thrustSound.stop();
         }).bind(this));
-    };
 
-    // ship
-    fn.prototype.setupShip = function () {
-        // add ship to the game
-        this.game.add.existing(this.getShip());
-
-        // Define constants
-        this.SHOT_DELAY = 100; // milliseconds (10 bullets/second)
-        this.BULLET_SPEED = 500; // pixels/second
-        this.NUMBER_OF_BULLETS = 20;
-
-        // Create an object pool of bullets
-        this.bulletPool = this.game.add.group();
-        for(var i = 0; i < this.NUMBER_OF_BULLETS; i++) {
-            // Create each bullet and add it to the group.
-            var bullet = new App.Bullet(game, this);
-            this.bulletPool.add(bullet);
-        }
+        // weapon audio events
+        this.ship.getWeapon('main_gun').onFire.add((function () {
+            this.audio.bulletSound.play();
+        }).bind(this));
     };
 
     fn.prototype.getShip = function () {
@@ -130,50 +126,14 @@ App.Player = (function () {
         }
 
         if (this.keyboard.fireBullets.isDown) {
-            if (this.shootBullet()) {
-                this.audio.bulletSound.play();
-            }
+            // Shoot it in the right direction
+            var forward_rotation = this.ship.rotation - this.game.math.PI2 / 4;
+            var x = Math.cos(forward_rotation) + this.ship.x;
+            var y = Math.sin(forward_rotation) + this.ship.y;
+
+            this.ship.getWeapon('main_gun').fire(this.ship, x, y);
         }
     }
-
-    fn.prototype.shootBullet = function() {
-        // Enforce a short delay between shots by recording
-        // the time that each bullet is shot and testing if
-        // the amount of time since the last shot is more than
-        // the required delay.
-        if (this.lastBulletShotAt === undefined) this.lastBulletShotAt = 0;
-        if (this.game.time.now - this.lastBulletShotAt < this.SHOT_DELAY) return false;
-        this.lastBulletShotAt = this.game.time.now;
-
-        // Get a dead bullet from the pool
-        var bullet = this.bulletPool.getFirstDead();
-
-        // If there aren't any bullets available then don't shoot
-        if (bullet === null || bullet === undefined) return false;
-
-        // Revive the bullet
-        // This makes the bullet "alive"
-        bullet.revive();
-
-        // Bullets should kill themselves when they leave the world.
-        // Phaser takes care of this for me by setting this flag
-        // but you can do it yourself by killing the bullet if
-        // its x,y coordinates are outside of the world.
-        bullet.checkWorldBounds = true;
-        bullet.outOfBoundsKill = true;
-
-        // Set the bullet position to the gun position.
-        bullet.reset(this.ship.x, this.ship.y);
-        bullet.rotation = this.ship.rotation;
-
-        var forward_rotation = this.ship.rotation - this.game.math.PI2 / 4;
-
-        // Shoot it in the right direction
-        bullet.body.velocity.x = Math.cos(forward_rotation) * this.BULLET_SPEED;
-        bullet.body.velocity.y = Math.sin(forward_rotation) * this.BULLET_SPEED;
-
-        return true;
-    };
 
     return fn;
 })();

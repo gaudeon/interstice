@@ -38,6 +38,8 @@ App.Bot = (function () {
         if ('undefined' === typeof this.collision_group) {
             this.collision_group = this.game.global.collision_groups[this.attributes.bot_class_id];
             this.body.setCollisionGroup(this.collision_group);
+
+            this.game.global.collision_groups.all_enemies.push(this.collision_group);
         }
 
         // addition event signals this.events is a Phaser.Events object

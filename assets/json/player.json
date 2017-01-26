@@ -1,5 +1,8 @@
 {
-    "bullet": "green",
+    "main_gun": {
+        "bullet_type"       : "green",
+        "bullet_pool_count" : 30
+    },
     "hulls": {
         "balanced": {
             "name"     : "Balanced",

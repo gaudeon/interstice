@@ -55,6 +55,9 @@ App.LoadingState = (function () {
         this.game.physics.p2.setImpactEvents(true);
         this.game.physics.p2.restitution = 0.8;
 
+        // use arcade physics for weapons
+        this.game.physics.startSystem(Phaser.Physics.ARCADE);
+
         // setup player object
         this.game.global.player = new App.Player(this.game);
     };

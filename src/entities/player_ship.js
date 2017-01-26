@@ -10,12 +10,12 @@ App.PlayerShip = (function () {
 
         // config data
         this.config = {};
-        this.config.assets   = this.game.cache.getJSON('assetsConfig');
+        this.config.assets = this.game.cache.getJSON('assetsConfig');
+        this.config.player = this.game.cache.getJSON('playerConfig');
 
         // call sprite constructor
         var ship_hull_asset = this.config.assets.player.hulls[this.player.getHullId()];
         Phaser.Sprite.call(this, game, game.world.width / 2, game.world.height / 2, ship_hull_asset.key);
-
 
         // set how the graphic is displayed for the sprite
         this.anchor.setTo(player.getHullSpriteConfig().anchor);
@@ -23,10 +23,7 @@ App.PlayerShip = (function () {
 
         game.physics.p2.enable(this, false);
         this.body.setRectangle(40, 40);
-        this.fixedRotation = true;
-
-        // setup status flags
-        this.isFiring = false;
+        this.body.rotation = this.game.math.PI2 / 4;
 
         // setup collision_group globallly if not there
         game.physics.p2.updateBoundsCollisionGroup();
@@ -42,13 +39,28 @@ App.PlayerShip = (function () {
 
         // addition event signals this.events is a Phaser.Events object
         this.events.onCollide = new Phaser.Signal();
+
+        // setup ship weapons
+        this.weapon_registry = {};
+
+        // main gun
+        var main_gun = this.game.plugins.add(Phaser.Weapon);
+        main_gun._bulletClass   = App.Bullet;
+        main_gun.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
+        main_gun.bulletAngleOffset = 90;
+        main_gun.fireRate = 275;
+        main_gun.createBullets(this.player.getMainGunBulletPoolCount(), this.config.assets.bullets[this.player.getMainGunBulletType()].key);
+        this.weapon_registry['main_gun'] = main_gun;
     };
 
     fn.prototype = Object.create(Phaser.Sprite.prototype);
     fn.prototype.constructor = fn;
 
-    fn.prototype.getIsFiring = function () { return this.isFiring; };
-    fn.prototype.setIsFiring = function (bool) { this.isFiring = bool; return this.isFiring; };
+    fn.prototype.getWeapon = function (key) {
+        if (!this.weapon_registry[key]) return;
+
+        return this.weapon_registry[key];
+    }
 
     fn.prototype.getCollisionGroup = function() { return this.collision_group; };
 

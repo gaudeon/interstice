@@ -34,6 +34,7 @@
                 // setup global namespace under game for our global data
                 game.global = {};
                 game.global.collision_groups = {}; // sprite classes will generate collision groups on here as need and register themselves to them
+                game.global.collision_groups.all_enemies = []; // array of all enemy collision groups (useful for projectile collisions)
 
                 // states
                 game.state.add('Loading', App.LoadingState);
