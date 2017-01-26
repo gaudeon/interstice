@@ -44,8 +44,11 @@ App.Player = (function () {
     fn.prototype.getHullSpriteConfig = function () { return this.getHullConfig().sprite; };
 
     // main gun info
-    fn.prototype.getMainGunBulletType      = function () { return this.config.player.main_gun.bullet_type; };
-    fn.prototype.getMainGunBulletPoolCount = function () { return this.config.player.main_gun.bullet_pool_count; };
+    fn.prototype.getMainGunBulletType        = function () { return this.config.player.main_gun.bullet_type; };
+    fn.prototype.getMainGunBulletPoolCount   = function () { return this.config.player.main_gun.bullet_pool_count; };
+    fn.prototype.getMainGunBulletAngleOffset = function () { return this.config.player.main_gun.bullet_angle_offset; };
+    fn.prototype.getMainGunBulletFireRate    = function () { return this.config.player.main_gun.bullet_fire_rate; };
+    fn.prototype.getMainGunBulletSpeed       = function () { return this.config.player.main_gun.bullet_speed; };
 
     // current values
     fn.prototype.setHullHealthCur = function (health) { this.attributes.health = health; };
@@ -126,12 +129,18 @@ App.Player = (function () {
         }
 
         if (this.keyboard.fireBullets.isDown) {
-            // Shoot it in the right direction
-            var forward_rotation = this.ship.rotation - this.game.math.PI2 / 4;
-            var x = Math.cos(forward_rotation) + this.ship.x;
-            var y = Math.sin(forward_rotation) + this.ship.y;
+            // fire main gun
+            var main_gun = this.ship.getWeapon('main_gun');
 
-            this.ship.getWeapon('main_gun').fire(this.ship, x, y);
+            // Make sure the speed of the bullet accounts for the speed of the ship
+            main_gun.bulletSpeed = this.getMainGunBulletSpeed();
+
+            // Shoot it in the right direction
+            var forward_rotation = this.ship.rotation - Math.PI / 2;
+            var x = (Math.cos(forward_rotation) * 10) + this.ship.x;
+            var y = (Math.sin(forward_rotation) * 10) + this.ship.y;
+
+            main_gun.fire(this.ship, x, y);
         }
     }
 

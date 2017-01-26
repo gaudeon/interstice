@@ -44,11 +44,13 @@ App.PlayerShip = (function () {
         this.weapon_registry = {};
 
         // main gun
-        var main_gun = this.game.plugins.add(Phaser.Weapon);
-        main_gun._bulletClass   = App.Bullet;
-        main_gun.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
-        main_gun.bulletAngleOffset = 90;
-        main_gun.fireRate = 275;
+        var main_gun               = this.game.plugins.add(Phaser.Weapon);
+        main_gun._bulletClass      = App.Bullet;
+        main_gun.bulletKillType    = Phaser.Weapon.KILL_WORLD_BOUNDS;
+        main_gun.bulletAngleOffset = this.player.getMainGunBulletAngleOffset();
+        main_gun.fireRate          = this.player.getMainGunBulletFireRate();
+
+        main_gun.trackSprite(this);
         main_gun.createBullets(this.player.getMainGunBulletPoolCount(), this.config.assets.bullets[this.player.getMainGunBulletType()].key);
         this.weapon_registry['main_gun'] = main_gun;
     };
