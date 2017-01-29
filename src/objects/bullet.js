@@ -10,6 +10,13 @@ App.Bullet = (function () {
         // call bullet constructor
         Phaser.Bullet.call(this, game, x, y, key, frame);
 
+        // Bullets should kill themselves when they leave the world.
+        // Phaser takes care of this for me by setting this flag
+        // but you can do it yourself by killing the bullet if
+        // its x,y coordinates are outside of the world.
+        this.checkWorldBounds = true;
+        this.outOfBoundsKill = true;
+
         // Set its pivot point to the center of the bullet
         this.anchor.setTo(0.5, 0.5);
     };
@@ -19,8 +26,11 @@ App.Bullet = (function () {
 
     fn.prototype.update = function () {
         if (this.alive) {
-            // TODO: fix bullets not dying at world bounds bug
+            // TODO: Redesign weapons using my own classes and use P2 physics since Arcade and P2 physics don't mesh very well...
             // check for overlap on enemies group.
+            /*this.game.physics.arcade.overlap(this,this.game.global.enemies,(function () { // this breaks because minions are p2 bodys and their bodies don't have a getBounds function
+                this.kill();
+            }).bind(this));*/
         }
     };
 
