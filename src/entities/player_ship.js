@@ -53,6 +53,14 @@ App.PlayerShip = (function () {
         main_gun.trackSprite(this);
         main_gun.createBullets(this.player.getMainGunBulletPoolCount(), this.config.assets.bullets[this.player.getMainGunBulletType()].key);
         this.weapon_registry['main_gun'] = main_gun;
+
+        // new main gun
+        var p_main_gun = new App.WeaponMainGun(this.game, this.player, 'player_main_gun');
+        p_main_gun.createProjectiles(this.player.getMainGunBulletPoolCount());
+        p_main_gun.shotDelay       = this.player.getMainGunBulletFireRate();
+        p_main_gun.projectileSpeed = this.player.getMainGunBulletSpeed();
+        p_main_gun.trackSprite(this);
+        this.weapon_registry['p_main_gun'] = p_main_gun;
     };
 
     fn.prototype = Object.create(Phaser.Sprite.prototype);

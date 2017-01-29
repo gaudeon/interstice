@@ -11,16 +11,6 @@
                 "file" : "assets/images/playerShipO.png",
                 "key"  : "player_ship_sprite"
             }
-        },
-        "sounds": {
-            "thrust": {
-                "file" : "assets/sounds/thrust.wav",
-                "key"  : "player_ship_thrust"
-            },
-            "bullet": {
-                "file" : "assets/sounds/bullet.wav",
-                "key"  : "player_bullet_sound"
-            }
         }
     },
     "bullets": {
@@ -49,6 +39,16 @@
                 "file" : "assets/images/spaceBGDarkPurple.png",
                 "key"  : "space_bg_dark_purple"
             }
+        }
+    },
+    "sounds": {
+        "thrust": {
+            "file" : "assets/sounds/thrust.wav",
+            "key"  : "thrust_sound"
+        },
+        "bullet": {
+            "file" : "assets/sounds/bullet.wav",
+            "key"  : "bullet_sound"
         }
     }
 }
