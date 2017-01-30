@@ -15,9 +15,13 @@ App.ProjectileMainGun = (function () {
         App.Projectile.call(this, game, x, y, key);
 
         // setup collisions
-        this.game.global.collision_manager.addToPlayerProjectilesCG(this);
-        this.game.global.collision_manager.setCollidesWithEnemiesCG(this);
-        this.game.global.collision_manager.setCollidesWithEnemyProjectilesCG(this);
+        this.cgm = this.game.global.collision_manager;
+        this.cgm.addToPlayerProjectilesCG(this);
+        this.cgm.setCollidesWithEnemiesCG(this);
+        this.cgm.setCollidesWithEnemyProjectilesCG(this);
+        this.cgm.addCallbackForEnemiesCG(this, function () {
+            this.kill();
+        }, this);
     };
 
     fn.prototype = Object.create(App.Projectile.prototype);

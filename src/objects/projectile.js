@@ -5,10 +5,6 @@ App.Projectile = (function () {
     "use strict";
 
     var fn = function (game, x, y, key, frame) {
-        // config data
-        this.config = {};
-        this.config.assets = game.cache.getJSON('assetsConfig');
-
         // call bullet constructor
         Phaser.Sprite.call(this, game, x, y, key, frame);
 
@@ -17,7 +13,7 @@ App.Projectile = (function () {
 
         // physics settings
         this.body.fixedRotation = true;
-        //this.body.motionState   = Phaser.Physics.P2.Body.KINEMATIC;
+        this.body._collideWorldBounds = false; // project bodies die when they go out of bounds
 
         // Set its pivot point to the center of the bullet
         this.anchor.setTo(0.5, 0.5);
