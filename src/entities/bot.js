@@ -32,6 +32,7 @@ App.Bot = (function () {
         this.game.global.collision_manager.addToEnemiesCG(this);
         this.game.global.collision_manager.setCollidesWithPlayersCG(this);
         this.game.global.collision_manager.setCollidesWithPlayerProjectilesCG(this);
+        this.game.global.collision_manager.setCollidesWithEnemiesCG(this);
 
         // addition event signals this.events is a Phaser.Events object
         this.events.onCollide = new Phaser.Signal();
