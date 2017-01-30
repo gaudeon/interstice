@@ -11,21 +11,26 @@ App.CollisionManager = (function () {
         this.game = game;
     };
 
-    fn.prototype.getPlayersCG             = function () { return this.players_cg; };
-    fn.prototype.addToPlayersCG           = function (object) { object = object.body || object; object.setCollisionGroup(this.players_cg); };
-    fn.prototype.setCollidesWithPlayersCG = function (object) { object = object.body || object; object.collides(this.players_cg); };
+    fn.prototype.getPlayersCG             = function () { return this.getCollisionGroup('players_cg'); };
+    fn.prototype.addToPlayersCG           = function (object) { this.addToCollisionGroup('players_cg', object) };
+    fn.prototype.setCollidesWithPlayersCG = function (object, callback, context, shape) { this.setCollidesWithGroup('players_cg', object, callback, context, shape); };
 
-    fn.prototype.getPlayerProjectilesCG             = function () { return this.player_projectiles; };
-    fn.prototype.addToPlayerProjectilesCG           = function (object) { object = object.body || object; object.setCollisionGroup(this.player_projectiles_cg); };
-    fn.prototype.setCollidesWithPlayerProjectilesCG = function (object) { object = object.body || object; object.collides(this.player_projectiles_cg); };
+    fn.prototype.getPlayerProjectilesCG             = function () { return this.getCollisionGroup('player_projectiles_cg'); };
+    fn.prototype.addToPlayerProjectilesCG           = function (object) { this.addToCollisionGroup('player_projectiles_cg', object) };
+    fn.prototype.setCollidesWithPlayerProjectilesCG = function (object, callback, context, shape) { this.setCollidesWithGroup('player_projectiles_cg', object, callback, context, shape); };
 
-    fn.prototype.getEnemiesCG             = function () { return this.enemies; };
-    fn.prototype.addToEnemiesCG           = function (object) { object = object.body || object; object.setCollisionGroup(this.enemies_cg); };
-    fn.prototype.setCollidesWithEnemiesCG = function (object) { object = object.body || object; object.collides(this.enemies_cg); };
+    fn.prototype.getEnemiesCG             = function () { return this.getCollisionGroup('enemies_cg'); };
+    fn.prototype.addToEnemiesCG           = function (object) { this.addToCollisionGroup('enemies_cg', object) };
+    fn.prototype.setCollidesWithEnemiesCG = function (object, callback, context, shape) { this.setCollidesWithGroup('enemies_cg', object, callback, context, shape); };
 
-    fn.prototype.getEnemyProjectilesCG             = function () { return this.enemy_projectiles; };
-    fn.prototype.addToEnemyProjectilesCG           = function (object) { object = object.body || object; object.setCollisionGroup(this.enemy_projectiles_cg); };
-    fn.prototype.setCollidesWithEnemyProjectilesCG = function (object) { object = object.body || object; object.collides(this.enemy_projectiles_cg); };
+    fn.prototype.getEnemyProjectilesCG             = function () { return this.getCollisionGroup('enemy_projectiles_cg'); };
+    fn.prototype.addToEnemyProjectilesCG           = function (object) { this.addToCollisionGroup('enemy_projectiles_cg', object) };
+    fn.prototype.setCollidesWithEnemyProjectilesCG = function (object, callback, context, shape) { this.setCollidesWithGroup('enemy_projectiles_cg', object, callback, context, shape); };
+
+    // actual functions to keep the above getter/setters more DRY
+    fn.prototype.getCollisionGroup = function (key) { return this[key]; };
+    fn.prototype.addToCollisionGroup = function (key, object) { object = object.body || object; object.setCollisionGroup(this[key]); };
+    fn.prototype.setCollidesWithGroup = function (key, object, callback, context, shape) { object = object.body || object; object.collides(this[key], callback, context, shape); };
 
     // It's important that this is run before a given game loop happens so collisions happen against the boundaries of the world appropriately
     fn.prototype.setBounds = function (x,y,width,height) {
