@@ -29,18 +29,9 @@ App.Bot = (function () {
         this.body.setRectangle(40, 40);
 
         // setup collision_group globallly if not there
-        game.physics.p2.updateBoundsCollisionGroup();
-        if ('undefined' === typeof this.game.global.collision_groups[this.attributes.bot_class_id]) {
-            this.game.global.collision_groups[this.attributes.bot_class_id] = this.game.physics.p2.createCollisionGroup();
-        }
-
-        // setup collision_group for this object if not there
-        if ('undefined' === typeof this.collision_group) {
-            this.collision_group = this.game.global.collision_groups[this.attributes.bot_class_id];
-            this.body.setCollisionGroup(this.collision_group);
-
-            this.game.global.collision_groups.all_enemies.push(this.collision_group);
-        }
+        this.game.global.collision_manager.addToEnemiesCG(this);
+        this.game.global.collision_manager.setCollidesWithPlayersCG(this);
+        this.game.global.collision_manager.setCollidesWithPlayerProjectilesCG(this);
 
         // addition event signals this.events is a Phaser.Events object
         this.events.onCollide = new Phaser.Signal();

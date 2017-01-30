@@ -21,21 +21,14 @@ App.PlayerShip = (function () {
         this.anchor.setTo(player.getHullSpriteConfig().anchor);
         this.scale.setTo(player.getHullSpriteConfig().scale);
 
-        game.physics.p2.enable(this, false);
+        this.game.physics.p2.enable(this, false);
         this.body.setRectangle(40, 40);
         this.body.rotation = this.game.math.PI2 / 4;
 
-        // setup collision_group globallly if not there
-        game.physics.p2.updateBoundsCollisionGroup();
-        if ('undefined' === typeof this.game.global.collision_groups.player) {
-            this.game.global.collision_groups.player = this.game.physics.p2.createCollisionGroup();
-        }
-
-        // setup collision_group for this object if not there
-        if ('undefined' === typeof this.collision_group) {
-            this.collision_group = this.game.global.collision_groups.player;
-            this.body.setCollisionGroup(this.collision_group);
-        }
+        // setup collisions
+        this.game.global.collision_manager.addToPlayersCG(this);
+        this.game.global.collision_manager.setCollidesWithEnemiesCG(this);
+        this.game.global.collision_manager.setCollidesWithEnemyProjectilesCG(this);
 
         // addition event signals this.events is a Phaser.Events object
         this.events.onCollide = new Phaser.Signal();
@@ -43,19 +36,8 @@ App.PlayerShip = (function () {
         // setup ship weapons
         this.weapon_registry = {};
 
-        // main gun
-        var main_gun               = this.game.plugins.add(Phaser.Weapon);
-        main_gun._bulletClass      = App.Bullet;
-        main_gun.bulletKillType    = Phaser.Weapon.KILL_WORLD_BOUNDS;
-        main_gun.bulletAngleOffset = this.player.getMainGunBulletAngleOffset();
-        main_gun.fireRate          = this.player.getMainGunBulletFireRate();
-
-        main_gun.trackSprite(this);
-        main_gun.createBullets(this.player.getMainGunBulletPoolCount(), this.config.assets.bullets[this.player.getMainGunBulletType()].key);
-        this.weapon_registry['main_gun'] = main_gun;
-
         // new main gun
-        var p_main_gun = new App.WeaponMainGun(this.game, this.player, 'player_main_gun');
+        var p_main_gun = new App.WeaponMainGun(this.game, null, 'player_main_gun');
         p_main_gun.createProjectiles(this.player.getMainGunBulletPoolCount());
         p_main_gun.shotDelay       = this.player.getMainGunBulletFireRate();
         p_main_gun.projectileSpeed = this.player.getMainGunBulletSpeed();

@@ -9,8 +9,6 @@ App.Projectile = (function () {
         this.config = {};
         this.config.assets = game.cache.getJSON('assetsConfig');
 
-        key = key || this.config.assets.bullets.green.key; // default to green bullets
-
         // call bullet constructor
         Phaser.Sprite.call(this, game, x, y, key, frame);
 

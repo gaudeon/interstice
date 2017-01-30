@@ -58,6 +58,9 @@ App.LoadingState = (function () {
         // use arcade physics for weapons
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
 
+        // setup collision manager for p2 physics collisions
+        this.game.global.collision_manager = new App.CollisionManager(this.game);
+
         // setup player object
         this.game.global.player = new App.Player(this.game);
     };

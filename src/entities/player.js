@@ -91,10 +91,7 @@ App.Player = (function () {
         }).bind(this));
 
         // weapon audio events
-        this.ship.getWeapon('main_gun').onFire.add((function () {
-            this.audio.bulletSound.play();
-        }).bind(this));
-        this.ship.getWeapon('p_main_gun').onFire.add((function () {
+        this.ship.getWeapon('p_main_gun').events.onFire.add((function () {
             this.audio.bulletSound.play();
         }).bind(this));
     };
@@ -133,18 +130,7 @@ App.Player = (function () {
 
         if (this.keyboard.fireBullets.isDown) {
             // fire main gun
-            var main_gun = this.ship.getWeapon('main_gun');
             var p_main_gun = this.ship.getWeapon('p_main_gun');
-
-            // Make sure the speed of the bullet accounts for the speed of the ship
-            main_gun.bulletSpeed = this.getMainGunBulletSpeed();
-
-            // Shoot it in the right direction
-            var forward_rotation = this.ship.rotation - Math.PI / 2;
-            var x = (Math.cos(forward_rotation) * 10) + this.ship.x;
-            var y = (Math.sin(forward_rotation) * 10) + this.ship.y;
-
-            //main_gun.fire(this.ship, x, y);
 
             p_main_gun.fire();
         }

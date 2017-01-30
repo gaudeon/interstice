@@ -56,9 +56,11 @@ App.PlayMissionState = (function () {
     };
 
     fn.prototype.create = function () {
+        // setup world boundaries
+        this.game.global.collision_manager.setBounds(0, 0, this.sector.width, this.sector.height);
+
         // background
         this.background = this.add.tileSprite(0, 0, this.sector.width, this.sector.height, this.mission_assets.background.key);
-        this.game.world.setBounds(0, 0, this.sector.width, this.sector.height);
 
         // setup player ship
         this.player.setupShip();
@@ -66,12 +68,6 @@ App.PlayMissionState = (function () {
         this.player_ship = this.player.getShip();
 
         this.player_ship.body.onBeginContact.add(this.contactHandler, this);
-
-        this.player_ship.events.onCollide.add(function () {
-            // something hit the ship
-            // console.log(arguments);
-        });
-
 
         // setup a random group of enemys
         this.minions = [];

@@ -15,14 +15,6 @@ App.Bots.Minion = (function () {
         this.followingPlayer = false;
         this.followX         = this.game.world.randomX;
         this.followY         = this.game.world.randomY;
-
-        // make sure players collide with this bots collision group
-        this.player_ship.body.collides(this.getCollisionGroup(), (function () {
-            this.player_ship.events.onCollide.dispatch(this);
-        }).bind(this));
-
-        // make sure this bot collides with player collision group
-        this.body.collides(this.player_ship.getCollisionGroup());
     };
 
     fn.prototype = Object.create(App.Bot.prototype);

@@ -6,11 +6,11 @@ var App = App || {};
 App.Weapon = (function () {
     "use strict";
 
-    var fn = function (game, parent, name) {
-        name = name || 'weapon';
+    var fn = function (game) {
+        this.game = game;
 
-        // call bullet constructor
-        Phaser.Group.call(this, game, parent, name);
+        // projectile Group
+        this.projectilePool = this.game.add.group();
 
         // the class type of the projectile fired
         this.projectileClass = App.Projectile;
@@ -28,14 +28,12 @@ App.Weapon = (function () {
         this.projectileSpeed = 100;
 
         // setup event signals
-        this.onFire = new Phaser.Signal();
+        this.events = {};
+        this.events.onFire = new Phaser.Signal();
     };
 
-    fn.prototype = Object.create(Phaser.Group.prototype);
-    fn.prototype.constructor = fn;
-
     fn.prototype.createProjectiles = function (quantity) {
-        this.removeAll(true); // clear out old list of projectiles
+        this.projectilePool.removeAll(true); // clear out old list of projectiles
         this.lastProjectileShotAt = null; // reset last time projectile was shot
 
         quantity = quantity || this.projectCount; // default quantity if not supplied
@@ -46,7 +44,7 @@ App.Weapon = (function () {
         for(var i = 0; i < this.projectileCount; i++) {
             // Create each bullet and add it to the group.
             var projectile = new this.projectileClass(this.game, 0, 0);
-            this.add(projectile);
+            this.projectilePool.add(projectile);
         }
     };
 
@@ -68,7 +66,7 @@ App.Weapon = (function () {
         this.lastProjectileShotAt = this.game.time.now;
 
         // Get a dead projectile from the pool
-        var projectile = this.getFirstDead();
+        var projectile = this.projectilePool.getFirstDead();
 
         // If there aren't any projectiles available then don't shoot
         if (projectile === null || projectile === undefined) {
@@ -103,7 +101,7 @@ App.Weapon = (function () {
             console.log('firing without a originSprite is not yet implemented.');
         }
 
-        this.onFire.dispatch(true);
+        this.events.onFire.dispatch(true);
     };
 
     return fn;
