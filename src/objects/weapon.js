@@ -76,13 +76,6 @@ App.Weapon = (function () {
         // Revive the projectile
         projectile.revive();
 
-        // Bullets should kill themselves when they leave the world.
-        // Phaser takes care of this for me by setting this flag
-        // but you can do it yourself by killing the bullet if
-        // its x,y coordinates are outside of the world.
-        projectile.checkWorldBounds = true;
-        projectile.outOfBoundsKill = true;
-
         // Set the projectile position to the gun position.
         if (this.originSprite) {
             projectile.reset(this.originSprite.x, this.originSprite.y);

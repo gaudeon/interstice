@@ -15,6 +15,13 @@ App.Projectile = (function () {
         this.body.fixedRotation = true;
         this.body._collideWorldBounds = false; // project bodies die when they go out of bounds
 
+        // Bullets should kill themselves when they leave the world.
+        // Phaser takes care of this for me by setting this flag
+        // but you can do it yourself by killing the bullet if
+        // its x,y coordinates are outside of the world.
+        this.checkWorldBounds = true;
+        this.outOfBoundsKill = true;
+
         // Set its pivot point to the center of the bullet
         this.anchor.setTo(0.5, 0.5);
 
