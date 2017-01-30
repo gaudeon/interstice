@@ -24,6 +24,8 @@ App.Bot = (function () {
         // this needs to be set for each bot
         this.attributes.bot_class_id = class_id;
 
+        this.health = this.config[class_id].health;
+
         // setup physics body for this sprite
         this.game.physics.p2.enable(this, false);
         this.body.setRectangle(40, 40);

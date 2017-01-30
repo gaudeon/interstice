@@ -3,8 +3,9 @@
         "bullet_type"         : "green",
         "bullet_pool_count"   : 30,
         "bullet_angle_offset" : 90,
-        "bullet_fire_rate"    : 275,
-        "bullet_speed"        : 200
+        "bullet_shot_delay"   : 275,
+        "bullet_speed"        : 200,
+        "bullet_damage"       : 100
     },
     "hulls": {
         "balanced": {

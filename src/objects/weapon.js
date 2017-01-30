@@ -27,6 +27,9 @@ App.Weapon = (function () {
         // how fast does a projectile travel in pixles per second
         this.projectileSpeed = 100;
 
+        // offset angle (in degrees) around the orgin Sprite (in case bullet comes out an an undesired angle from the origin sprite)
+        this.projectileAngleOffset = 0;
+
         // setup event signals
         this.events = {};
         this.events.onFire = new Phaser.Signal();
@@ -82,7 +85,7 @@ App.Weapon = (function () {
 
             projectile.rotation = this.originSprite.rotation;
 
-            var forward_rotation = this.originSprite.rotation - Math.PI / 2;
+            var forward_rotation = this.originSprite.rotation - this.game.math.degToRad(this.projectileAngleOffset);
 
             // Shoot it in the right direction
             projectile.body.velocity.x = Math.cos(forward_rotation) * speed;
