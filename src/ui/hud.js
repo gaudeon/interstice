@@ -7,56 +7,91 @@ App.HUD = (function () {
     var fn = function (game) {
         this.game = game;
         this.player = this.game.global.player;
-    };
 
-    fn.prototype.drawBar = function (x, y, maxHealth, healthbarType, opacity) {
-        this.left = this.game.add.sprite(x, y, healthbarType + 'Left');
-        this.left.fixedToCamera = true;
-        this.left.alpha = opacity;
-        this.group.add(this.left);
-
-        var midXPos = x + this.left.width;
-        this.mid = this.game.add.sprite(midXPos, y, healthbarType + 'Mid');
-        this.mid.fixedToCamera = true;
-        this.mid.alpha = opacity;
-        this.mid.width = maxHealth;
-        this.group.add(this.mid);
-
-        var rightXPos = x + this.mid.width + this.left.width;
-        this.right = this.game.add.sprite(rightXPos, y, healthbarType + 'Right');
-        this.right.fixedToCamera = true;
-        this.right.alpha = opacity;
-        this.group.add(this.right);
+        // config data
+        this.config        = {};
+        this.config.assets = this.game.cache.getJSON('assetsConfig');
+        this.config.hud    = this.game.cache.getJSON('hudConfig');
     };
 
     fn.prototype.loadAssets = function () {
-        this.game.load.image('healthbarBgLeft', 'assets/images/hud_elements/barHorizontal_shadow_left.png');
-        this.game.load.image('healthbarBgMid', 'assets/images/hud_elements/barHorizontal_shadow_mid.png');
-        this.game.load.image('healthbarBgRight', 'assets/images/hud_elements/barHorizontal_shadow_right.png');
-        this.game.load.image('healthbarGreenLeft', 'assets/images/hud_elements/barHorizontal_green_left.png');
-        this.game.load.image('healthbarGreenMid', 'assets/images/hud_elements/barHorizontal_green_mid.png');
-        this.game.load.image('healthbarGreenRight', 'assets/images/hud_elements/barHorizontal_green_right.png');
-        this.game.load.image('healthbarYellowLeft', 'assets/images/hud_elements/barHorizontal_yellow_left.png');
-        this.game.load.image('healthbarYellowMid', 'assets/images/hud_elements/barHorizontal_yellow_mid.png');
-        this.game.load.image('healthbarYellowRight', 'assets/images/hud_elements/barHorizontal_yellow_right.png');
+        _.each(_.keys(this.config.assets.ui), (function (el) {
+            this.game.load.image(this.config.assets.ui[el].key, this.config.assets.ui[el].file);
+        }).bind(this));
     };
 
-    fn.prototype.displayHUD = function () {
-        this.group = this.game.add.group();
+    fn.prototype.setupHUD = function () {
+        this.hud = this.game.add.group();
+        this.hud.fixedToCamera = true;
 
-        var x_pos = 5;
-        var y_pos = 5;
-        var MAX_HEALTH = this.player.getHullHealth();
-        var MAX_ENERGY = this.player.getHullEnergy();
-        var CUR_HEALTH = this.player.getHullHealthCur();
+        _.each(['health_bar', 'energy_bar'], (function (bar) {
+            //  bar
+            this[bar] = {};
 
-        // draws the health bar
-        this.drawBar(x_pos, y_pos, MAX_HEALTH, 'healthbarBg', 1);
-        this.drawBar(x_pos, y_pos, CUR_HEALTH, 'healthbarGreen', 0.5);
+            // health bar background
+            this[bar].bg = {};
 
-        // draws the shield bar
-        this.drawBar(x_pos, y_pos + 30, MAX_ENERGY, 'healthbarBg', 1);
-        this.drawBar(x_pos, y_pos + 30, MAX_ENERGY, 'healthbarYellow', 0.5);
+            var x = this.config.hud[bar].x;
+            var y = this.config.hud[bar].y;
+
+            this[bar].bg.left = this.game.add.sprite(x, y, this.config.assets.ui.bar_bg_left.key);
+            this[bar].bg.left.alpha = this.config.hud.bar_bg.alpha;
+            this.hud.add(this[bar].bg.left);
+
+            x += this[bar].bg.left.width;
+            this[bar].bg.mid = this.game.add.sprite(x, y, this.config.assets.ui.bar_bg_mid.key);
+            this[bar].bg.mid.width = bar == 'health_bar' ? this.player.getHullHealth() : this.player.getHullEnergy();
+            this[bar].bg.mid.alpha = this.config.hud.bar_bg.alpha;
+            this.hud.add(this[bar].bg.mid);
+
+            x += this[bar].bg.mid.width;
+            this[bar].bg.right = this.game.add.sprite(x, y, this.config.assets.ui.bar_bg_right.key);
+            this[bar].bg.right.alpha = this.config.hud.bar_bg.alpha;
+            this.hud.add(this[bar].bg.right);
+
+            // bar foreground
+            this[bar].fg = {};
+
+            x = this.config.hud[bar].x;
+            y = this.config.hud[bar].y;
+            this[bar].fg.left = this.game.add.sprite(x, y, this.config.assets.ui[bar + '_left'].key);
+            this[bar].fg.left.alpha = this.config.hud[bar].alpha;
+            this.hud.add(this[bar].fg.left);
+
+            x += this[bar].fg.left.width;
+            this[bar].fg.mid = this.game.add.sprite(x, y, this.config.assets.ui[bar + '_mid'].key);
+            this[bar].fg.mid.width = bar == 'health_bar' ? this.player.getHullHealth() : this.player.getHullEnergy();
+            this[bar].fg.mid.alpha = this.config.hud[bar].alpha;
+            this.hud.add(this[bar].fg.mid);
+
+            x += this[bar].fg.mid.width;
+            this[bar].fg.right = this.game.add.sprite(x, y, this.config.assets.ui[bar + '_right'].key);
+            this[bar].fg.right.alpha = this.config.hud[bar].alpha;
+            this.hud.add(this[bar].fg.right);
+        }).bind(this));
+    };
+
+    fn.prototype.tick = function () {
+        _.each(['health_bar', 'energy_bar'], (function (bar) {
+
+            var amount = bar == 'health_bar' ? this.player.getHealth() : this.player.getEnergy();
+            if (amount <= 0) { // hide bar if empty
+                this[bar].fg.left.visible  = false;
+                this[bar].fg.mid.visible   = false;
+                this[bar].fg.right.visible = false;
+            }
+            else {
+                this[bar].fg.left.visible  = true;
+                this[bar].fg.mid.visible   = true;
+                this[bar].fg.right.visible = true;
+
+                this[bar].fg.mid.width = amount;
+
+                var x = this[bar].fg.left.x + this[bar].fg.left.width + this[bar].fg.mid.width;
+                var y = this.config.hud[bar].y;
+                this[bar].fg.right.reset(x,y);
+            }
+        }).bind(this));
     };
 
     return fn;

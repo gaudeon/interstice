@@ -77,7 +77,7 @@ App.PlayMissionState = (function () {
         }
 
         // hud
-        this.hud.displayHUD();
+        this.hud.setupHUD();
     };
 
     fn.prototype.contactHandler = function (body, shape1, shape2, equation) {
@@ -95,13 +95,11 @@ App.PlayMissionState = (function () {
         var xdiff = Math.abs(v1.x - v2.x);
         var ydiff = Math.abs(v1.y - v2.y);
 
-        var curhealth = this.player.getHullHealthCur();
+        var curhealth = this.player.getHealth();
         if (xdiff > 500 || ydiff > 500) { //Massive damage!
-            this.player.setHullHealthCur(curhealth - 20);
-            this.hud.displayHUD();
+            this.player.setHealth(curhealth - 20);
         } else if (xdiff > 200 || ydiff > 200) { //Slight damage
-            this.player.setHullHealthCur(curhealth - 10);
-            this.hud.displayHUD();
+            this.player.setHealth(curhealth - 10);
         }
     }
 
@@ -111,6 +109,8 @@ App.PlayMissionState = (function () {
         this.game.global.enemies.forEach(function (enemy) {
             enemy.tick();
         }, this);
+
+        this.hud.tick();
     }
 
     return fn;

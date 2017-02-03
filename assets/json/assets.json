@@ -50,5 +50,43 @@
             "file" : "assets/sounds/bullet.wav",
             "key"  : "bullet_sound"
         }
+    },
+    "ui": {
+        "bar_bg_left": {
+            "file" : "assets/images/hud_elements/barHorizontal_shadow_left.png",
+            "key"  : "barBgLeft"
+        },
+        "bar_bg_mid": {
+            "file" : "assets/images/hud_elements/barHorizontal_shadow_mid.png",
+            "key"  : "barBgMid"
+        },
+        "bar_bg_right": {
+            "file" : "assets/images/hud_elements/barHorizontal_shadow_right.png",
+            "key"  : "barBgRight"
+        },
+        "health_bar_left": {
+            "file" : "assets/images/hud_elements/barHorizontal_green_left.png",
+            "key"  : "healthbarGreenLeft"
+        },
+        "health_bar_mid": {
+            "file" : "assets/images/hud_elements/barHorizontal_green_mid.png",
+            "key"  : "healthbarGreenMid"
+        },
+        "health_bar_right": {
+            "file" : "assets/images/hud_elements/barHorizontal_green_right.png",
+            "key"  : "healthbarGreenRight"
+        },
+        "energy_bar_left": {
+            "file" : "assets/images/hud_elements/barHorizontal_yellow_left.png",
+            "key"  : "healthbarYellowLeft"
+        },
+        "energy_bar_mid": {
+            "file" : "assets/images/hud_elements/barHorizontal_yellow_mid.png",
+            "key"  : "healthbarYellowMid"
+        },
+        "energy_bar_right": {
+            "file" : "assets/images/hud_elements/barHorizontal_yellow_right.png",
+            "key"  : "healthbarYellowRight"
+        }
     }
 }

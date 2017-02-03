@@ -21,6 +21,7 @@ App.Player = (function () {
         // default to balanced hull class. TODO: Change me to support player chosen hull classes
         this.attributes.hull_class_id = "balanced";
         this.attributes.health = this.getHullHealth();
+        this.attributes.energy = this.getHullEnergy();
 
         // keyboard events
         this.keyboard = this.game.input.keyboard.createCursorKeys();
@@ -51,8 +52,11 @@ App.Player = (function () {
     fn.prototype.getMainGunBulletSpeed       = function () { return this.config.player.main_gun.bullet_speed; };
 
     // current values
-    fn.prototype.setHullHealthCur = function (health) { this.attributes.health = health; };
-    fn.prototype.getHullHealthCur = function () { return this.attributes.health; };
+    fn.prototype.setHealth = function (health) { this.attributes.health = health; };
+    fn.prototype.getHealth = function () { return this.attributes.health; };
+
+    fn.prototype.setEnergy = function (health) { this.attributes.energy = energy; };
+    fn.prototype.getEnergy = function () { return this.attributes.energy; };
 
     // load assets
     fn.prototype.loadAssets = function () {
