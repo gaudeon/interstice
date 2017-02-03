@@ -95,12 +95,21 @@ App.PlayMissionState = (function () {
         var xdiff = Math.abs(v1.x - v2.x);
         var ydiff = Math.abs(v1.y - v2.y);
 
-        var curhealth = this.player.getHealth();
+        var damage = 0;
         if (xdiff > 500 || ydiff > 500) { //Massive damage!
-            this.player.setHealth(curhealth - 20);
+            damage = 20;
         } else if (xdiff > 200 || ydiff > 200) { //Slight damage
-            this.player.setHealth(curhealth - 10);
+            damage = 10;
         }
+
+        var curEnergy = this.player.getEnergy();
+        var curHealth = this.player.getHealth();
+
+        var remaining_damage = curEnergy < damage ? damage - curEnergy : 0;
+
+        // damage energy shield first then player health
+        this.player.setEnergy(curEnergy - damage + remaining_damage);
+        this.player.setHealth(curHealth - remaining_damage);
     }
 
     fn.prototype.update = function () {
