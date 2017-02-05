@@ -70,7 +70,7 @@ App.PlayMissionState = (function () {
         // setup a random group of enemys
         this.minions = [];
         this.game.global.enemies = new Phaser.Group(this.game);
-        for (var m = 0; m < this.game.rnd.integerInRange(1,5); m++) {
+        for (var m = 0; m < this.game.rnd.integerInRange(3,6); m++) {
             this.game.global.enemies.add(this.add.existing(new App.Bots.Minion(this.game, this.game.rnd.integerInRange(50, this.game.world.width - 50), this.game.rnd.integerInRange(50, this.game.world.height - 50))));
         }
 

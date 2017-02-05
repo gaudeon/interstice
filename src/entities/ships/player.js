@@ -37,8 +37,9 @@ App.Player = (function () {
     fn.prototype.getMainGunBulletAngleOffset = function () { return this.config.player.main_gun.bullet_angle_offset; };
     fn.prototype.getMainGunBulletFireRate    = function () { return this.config.player.main_gun.bullet_fire_rate; };
     fn.prototype.getMainGunBulletSpeed       = function () { return this.config.player.main_gun.bullet_speed; };
+    fn.prototype.getMainGunBulletEnergyCost  = function () { return this.config.player.main_gun.bullet_energy_cost; };
 
-    // current values
+    // health
     fn.prototype.setHealth = function (health) {
         this.attributes.health = health;
 
@@ -47,6 +48,7 @@ App.Player = (function () {
     };
     fn.prototype.getHealth = function () { return this.attributes.health; };
 
+    // energy
     fn.prototype.setEnergy = function (energy) {
         this.attributes.energy = energy;
 
@@ -69,7 +71,7 @@ App.Player = (function () {
         this.game.load.audio(player_bullet_sound.key, player_bullet_sound.file);
     };
 
-    // ship
+    // setup ship
     fn.prototype.setupShip = function () {
         // default to balanced hull class. TODO: Change me to support player chosen hull classes
         this.ship_class_id = 'balanced';
@@ -103,8 +105,8 @@ App.Player = (function () {
         this.getCollisionManager().setCollidesWithEnemiesCG(this);
         this.getCollisionManager().setCollidesWithEnemyProjectilesCG(this);
 
-        // new main gun
-        var main_gun = new App.WeaponMainGun(this.game);
+        // main gun
+        var main_gun = new App.WeaponPlayerMainGun(this.game);
         main_gun.createProjectiles(this.getMainGunBulletPoolCount());
         main_gun.trackSprite(this);
         this.addWeapon('main_gun', main_gun);
@@ -123,13 +125,15 @@ App.Player = (function () {
 
         // thruster audio events
         this.keyboard.thrustForward.onDown.add((function() {
-            this.audio.thrustSound.play();
+            if (this.alive)
+                this.audio.thrustSound.play();
         }).bind(this));
         this.keyboard.thrustForward.onUp.add((function() {
             this.audio.thrustSound.stop();
         }).bind(this));
         this.keyboard.thrustReverse.onDown.add((function() {
-            this.audio.thrustSound.play();
+            if (this.alive)
+                this.audio.thrustSound.play();
         }).bind(this));
         this.keyboard.thrustReverse.onUp.add((function() {
             this.audio.thrustSound.stop();
@@ -139,37 +143,55 @@ App.Player = (function () {
         this.getWeapon('main_gun').events.onFire.add((function () {
             this.audio.bulletSound.play();
 
-            this.setEnergy( this.getEnergy() - this.config.player.main_gun.bullet_energy_cost );
+            this.setEnergy( this.getEnergy() - this.getMainGunBulletEnergyCost() );
         }).bind(this));
     };
 
+    // taking damage
+    fn.prototype.damage = function (amount) {
+        var curEnergy = this.getEnergy();
+        var curHealth = this.getHealth();
+
+        var remaining_amount = curEnergy < amount ? amount - curEnergy : 0;
+
+        // damage energy shield first then player health
+        this.setEnergy(curEnergy - amount + remaining_amount);
+        this.setHealth(curHealth - remaining_amount);
+
+        if (this.getHealth() <= 0) {
+            this.kill();
+        }
+    };
+
     fn.prototype.tick = function () {
-        if (this.keyboard.thrustForward.isDown) {
-            this.body.thrust(this.getHullThrust());
-        }
-        else if (this.keyboard.thrustReverse.isDown) {
-            this.body.reverse(this.getHullThrust());
-        }
-
-        if (this.keyboard.rotateLeft.isDown) {
-            this.body.rotateLeft(this.getHullRotation());
-        }
-        else if (this.keyboard.rotateRight.isDown) {
-            this.body.rotateRight(this.getHullRotation());
-        }
-        else {
-            this.body.setZeroRotation();
-        }
-
-        if (this.keyboard.fireBullets.isDown) {
-            if (this.getEnergy() > 0) {
-                // fire main gun
-                this.getWeapon('main_gun').fire();
+        if (this.alive) {
+            if (this.keyboard.thrustForward.isDown) {
+                this.body.thrust(this.getHullThrust());
             }
-        }
+            else if (this.keyboard.thrustReverse.isDown) {
+                this.body.reverse(this.getHullThrust());
+            }
 
-        if (this.getHullEnergyRegenRate() > 0 && this.getEnergy() < this.getHullEnergy()) {
-            this.setEnergy( this.getEnergy() + this.getHullEnergyRegenRate() );
+            if (this.keyboard.rotateLeft.isDown) {
+                this.body.rotateLeft(this.getHullRotation());
+            }
+            else if (this.keyboard.rotateRight.isDown) {
+                this.body.rotateRight(this.getHullRotation());
+            }
+            else {
+                this.body.setZeroRotation();
+            }
+
+            if (this.keyboard.fireBullets.isDown) {
+                if (this.getEnergy() > 0) {
+                    // fire main gun
+                    this.getWeapon('main_gun').fire();
+                }
+            }
+
+            if (this.getHullEnergyRegenRate() > 0 && this.getEnergy() < this.getHullEnergy()) {
+                this.setEnergy( this.getEnergy() + this.getHullEnergyRegenRate() );
+            }
         }
     }
 

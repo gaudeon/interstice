@@ -1,10 +1,22 @@
 {
     "minion": {
-        "name"   : "Minion",
-        "energy" : 100,
-        "health" : 100,
-        "speed"  : 60,
-        "bullet" : "red",
+        "name"                   : "Minion",
+        "energy"                 : 50,
+        "energy_regen_rate"      : 0.08,
+        "energy_is_shield"       : false,
+        "health"                 : 50,
+        "health_regen_rate"      : 0,
+        "speed"                  : 60,
+        "targeting_angle_offset" : 90,
+        "main_gun": {
+            "bullet_type"         : "red",
+            "bullet_pool_count"   : 30,
+            "bullet_angle_offset" : 90,
+            "bullet_shot_delay"   : 275,
+            "bullet_speed"        : 200,
+            "bullet_damage"       : 5,
+            "bullet_energy_cost"  : 5
+        },
         "sprite": {
             "scale": -0.5,
             "anchor": 0.5

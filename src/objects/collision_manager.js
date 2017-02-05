@@ -21,7 +21,7 @@ App.CollisionManager = (function () {
     fn.prototype.getPlayerProjectilesCG             = function () { return this.getCollisionGroup('player_projectiles'); };
     fn.prototype.addToPlayerProjectilesCG           = function (object) { this.addToCollisionGroup('player_projectiles', object) };
     fn.prototype.setCollidesWithPlayerProjectilesCG = function (object) { this.setCollidesWithGroup('player_projectiles', object); };
-    fn.prototype.addCallbackForEnemiesCG  = function (object, callback, context) { this.addCollisionGroupCallback('player_projectiles', object, callback, context); };
+    fn.prototype.addCallbackForPlayerProjectilesCG  = function (object, callback, context) { this.addCollisionGroupCallback('player_projectiles', object, callback, context); };
 
     // enemies_cg
     fn.prototype.getEnemiesCG             = function () { return this.getCollisionGroup('enemies'); };

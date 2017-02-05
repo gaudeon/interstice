@@ -1,7 +1,7 @@
 // namespace
 var App = App || {};
 
-App.ProjectileMainGun = (function () {
+App.ProjectilePlayerMainGun = (function () {
     "use strict";
 
     var fn = function (game, x, y) {
@@ -26,6 +26,9 @@ App.ProjectileMainGun = (function () {
         this.gcm.setCollidesWithEnemyProjectilesCG(this);
         this.gcm.addCallbackForEnemiesCG(this, function (my_body, enemy_body) {
             enemy_body.sprite.damage(this.attributes.damage);
+            this.kill();
+        }, this);
+        this.gcm.addCallbackForEnemyProjectilesCG(this, function (my_body, player_body) {
             this.kill();
         }, this);
     };

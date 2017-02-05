@@ -3,7 +3,7 @@ var App = App || {};
 
 // Note: Bullets need to be used by a weapon, arcade physics will be applied object instanciated with this clas
 
-App.WeaponMainGun = (function () {
+App.WeaponPlayerMainGun = (function () {
     "use strict";
 
     var fn = function (game) {
@@ -15,7 +15,7 @@ App.WeaponMainGun = (function () {
         this.config.player = game.cache.getJSON('playerConfig');
 
         // set our projectile to the main gun projectile
-        this.projectileClass = App.ProjectileMainGun;
+        this.projectileClass = App.ProjectilePlayerMainGun;
 
         // the default amount of projectiles created
         this.projectileCount = this.config.player.main_gun.bullet_pool_count;

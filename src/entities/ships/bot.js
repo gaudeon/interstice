@@ -19,12 +19,14 @@ App.Bot = (function () {
         this.scale.setTo(this.config[class_id].sprite.scale);
 
         // bot attributes
-        this.attributes = {};
+        this.attributes = this.attributes || {};
 
         // this needs to be set for each bot
         this.attributes.bot_class_id = class_id;
 
-        this.health = this.config[class_id].health;
+        // setup bot attributes
+        this.addAttribute('health', this.getMaxHealth());
+        this.addAttribute('energy', this.getMaxEnergy());
 
         // setup physics body for this sprite
         this.game.physics.p2.enable(this, false);
@@ -48,10 +50,63 @@ App.Bot = (function () {
         return this.attributes.bot_class_id;
     };
 
-    fn.prototype.getBotConfig      = function () { return this.config[this.getBotClassId()]; };
-    fn.prototype.getSpeed          = function () { return this.getBotConfig().speed; };
-    fn.prototype.getBulletType     = function () { return this.getBotConfig().bullet; };
-    fn.prototype.getCollisionGroup = function () { return this.collision_group; };
+    fn.prototype.getBotConfig            = function () { return this.config[this.getBotClassId()]; };
+    fn.prototype.getSpeed                = function () { return this.getBotConfig().speed; };
+    fn.prototype.getCollisionGroup       = function () { return this.collision_group; };
+    fn.prototype.getTargetingAngleOffset = function () { return this.getBotConfig().targeting_angle_offset; };
+    fn.prototype.getMaxEnergy            = function () { return this.getBotConfig().energy; };
+    fn.prototype.getEnergyRegenRate      = function () { return this.getBotConfig().energy_regen_rate; };
+    fn.prototype.getEnergyIsShield       = function () { return this.getBotConfig().energy_is_shield; };
+    fn.prototype.getMaxHealth            = function () { return this.getBotConfig().health; };
+    fn.prototype.getHealthRegenRate      = function () { return this.getBotConfig().health_regen_rate; };
+
+    // main gun info
+    fn.prototype.getMainGunBulletType        = function () { return this.getBotConfig().main_gun.bullet_type; };
+    fn.prototype.getMainGunBulletPoolCount   = function () { return this.getBotConfig().main_gun.bullet_pool_count; };
+    fn.prototype.getMainGunBulletAngleOffset = function () { return this.getBotConfig().main_gun.bullet_angle_offset; };
+    fn.prototype.getMainGunBulletFireRate    = function () { return this.getBotConfig().main_gun.bullet_fire_rate; };
+    fn.prototype.getMainGunBulletSpeed       = function () { return this.getBotConfig().main_gun.bullet_speed; };
+    fn.prototype.getMainGunBulletEnergyCost  = function () { return this.getBotConfig().main_gun.bullet_energy_cost; };
+
+    // health
+    fn.prototype.setHealth = function (health) {
+        this.attributes.health = health;
+
+        // don't exceed maximum
+        if (this.attributes.health > this.getMaxHealth()) this.attributes.health = this.getMaxHealth();
+    };
+    fn.prototype.getHealth = function () { return this.attributes.health; };
+
+    // energy
+    fn.prototype.setEnergy = function (energy) {
+        this.attributes.energy = energy;
+
+        // don't exceed maximum
+        if (this.attributes.energy > this.getMaxEnergy()) this.attributes.health = this.getMaxEnergy();
+    };
+    fn.prototype.getEnergy = function () { return this.attributes.energy; };
+
+    // taking damage
+    fn.prototype.damage = function (amount) {
+        if (this.getEnergyIsShield()) {
+            var curEnergy = this.getEnergy();
+            var curHealth = this.getHealth();
+
+            var remaining_amount = curEnergy < amount ? amount - curEnergy : 0;
+
+            // damage energy shield first then player health
+            this.setEnergy(curEnergy - amount + remaining_amount);
+            this.setHealth(curHealth - remaining_amount);
+        }
+        else {
+            var curHealth = this.getHealth();
+            this.setHealth(curHealth - amount);
+        }
+
+        if (this.getHealth() <= 0) {
+            this.kill();
+        }
+    };
 
     fn.prototype.tick = function () { /* overwrite me to do stuff */ };
 
@@ -68,6 +123,17 @@ App.Bot = (function () {
         if ('object' !== typeof dest) return;
 
         this.accelerateToPoint(dest.x, dest.y, speed);
+    };
+
+    fn.prototype.hasLOSWithPlayer = function () {
+        var forward_rotation = this.rotation - this.game.math.degToRad(this.getTargetingAngleOffset() || 0);
+        var forward_ray = new Phaser.Line(this.x, this.y,
+            this.x + Math.cos(forward_rotation) * 1000, this.y + Math.sin(forward_rotation) * 1000);
+
+        var player_ray = new Phaser.Line();
+        player_ray.fromSprite(this,this.player);
+
+        return Phaser.Math.fuzzyEqual(forward_ray.normalAngle, player_ray.normalAngle, 0.05);
     };
 
     return fn;
