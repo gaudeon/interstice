@@ -31,12 +31,12 @@ App.LoadingState = (function () {
 
     fn.prototype.preload = function () {
         // load json configuration files
-        this.load.json('assetsConfig', '/assets/json/assets.json');
-        this.load.json('controlsConfig', '/assets/json/controls.json');
-        this.load.json('mainMenuConfig', '/assets/json/main_menu.json');
-        this.load.json('playerConfig', '/assets/json/player.json');
-        this.load.json('botsConfig', '/assets/json/bots.json');
-        this.load.json('hudConfig', '/assets/json/hud.json');
+        this.load.json('assetsConfig', 'assets/json/assets.json');
+        this.load.json('controlsConfig', 'assets/json/controls.json');
+        this.load.json('mainMenuConfig', 'assets/json/main_menu.json');
+        this.load.json('playerConfig', 'assets/json/player.json');
+        this.load.json('botsConfig', 'assets/json/bots.json');
+        this.load.json('hudConfig', 'assets/json/hud.json');
 
         // load web fonts
         WebFont.load({

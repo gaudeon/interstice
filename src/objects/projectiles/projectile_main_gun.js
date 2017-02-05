@@ -20,11 +20,11 @@ App.ProjectileMainGun = (function () {
         this.attributes.damage = this.config.player.main_gun.bullet_damage;
 
         // setup collisions
-        this.cgm = this.game.global.collision_manager;
-        this.cgm.addToPlayerProjectilesCG(this);
-        this.cgm.setCollidesWithEnemiesCG(this);
-        this.cgm.setCollidesWithEnemyProjectilesCG(this);
-        this.cgm.addCallbackForEnemiesCG(this, function (my_body, enemy_body) {
+        this.gcm = this.game.global.collision_manager;
+        this.gcm.addToPlayerProjectilesCG(this);
+        this.gcm.setCollidesWithEnemiesCG(this);
+        this.gcm.setCollidesWithEnemyProjectilesCG(this);
+        this.gcm.addCallbackForEnemiesCG(this, function (my_body, enemy_body) {
             enemy_body.sprite.damage(this.attributes.damage);
             this.kill();
         }, this);

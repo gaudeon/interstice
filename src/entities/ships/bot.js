@@ -7,7 +7,7 @@ App.Bot = (function () {
     var fn = function (game, x, y, class_id) {
         var asset_config = game.cache.getJSON('assetsConfig').bots[class_id];
 
-        Phaser.Sprite.call(this, game, x, y, asset_config.key);
+        App.Ship.call(this, game, x, y, asset_config.key);
 
         this.game = game;
 
@@ -35,12 +35,9 @@ App.Bot = (function () {
         this.game.global.collision_manager.setCollidesWithPlayersCG(this);
         this.game.global.collision_manager.setCollidesWithPlayerProjectilesCG(this);
         this.game.global.collision_manager.setCollidesWithEnemiesCG(this);
-
-        // addition event signals this.events is a Phaser.Events object
-        this.events.onCollide = new Phaser.Signal();
     };
 
-    fn.prototype = Object.create(Phaser.Sprite.prototype);
+    fn.prototype = Object.create(App.Ship.prototype);
     fn.prototype.constructor = fn;
 
     fn.prototype.getBotClassId  = function () {

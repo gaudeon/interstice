@@ -65,9 +65,7 @@ App.PlayMissionState = (function () {
         // setup player ship
         this.player.setupShip();
 
-        this.player_ship = this.player.getShip();
-
-        this.player_ship.body.onBeginContact.add(this.contactHandler, this);
+        this.player.body.onBeginContact.add(this.contactHandler, this);
 
         // setup a random group of enemys
         this.minions = [];
@@ -89,7 +87,7 @@ App.PlayMissionState = (function () {
             y = body.velocity.y;
         }
 
-        var v1 = new Phaser.Point(this.player_ship.body.velocity.x, this.player_ship.body.velocity.y);
+        var v1 = new Phaser.Point(this.player.body.velocity.x, this.player.body.velocity.y);
         var v2 = new Phaser.Point(x, y);
 
         var xdiff = Math.abs(v1.x - v2.x);

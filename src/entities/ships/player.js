@@ -5,38 +5,23 @@ App.Player = (function () {
     "use strict";
 
     var fn = function (game) {
-        Phaser.Group.call(this, game, null, 'player');
-
-        this.game = game;
+        App.Ship.call(this, game);
 
         // config data
-        this.config = {};
-        this.config.assets   = this.game.cache.getJSON('assetsConfig');
-        this.config.controls = this.game.cache.getJSON('controlsConfig');
-        this.config.player   = this.game.cache.getJSON('playerConfig');
-
-        // player attributes
-        this.attributes = {};
-
-        // default to balanced hull class. TODO: Change me to support player chosen hull classes
-        this.attributes.hull_class_id = "balanced";
-        this.attributes.health = this.getHullHealth();
-        this.attributes.energy = this.getHullEnergy();
-
-        // keyboard events
-        this.keyboard = this.game.input.keyboard.createCursorKeys();
-        _.each(['thrustForward','thrustReverse','rotateLeft','rotateRight','fireBullets'], (function (control) {
-            var keycode = Phaser.KeyCode[this.config.controls[control]];
-            this.keyboard[control] = this.game.input.keyboard.addKey(keycode);
-        }).bind(this));
+        this.config          = this.config          || {};
+        this.config.assets   = this.config.assets   || game.cache.getJSON('assetsConfig');
+        this.config.controls = this.config.controls || game.cache.getJSON('controlsConfig');
+        this.config.player   = this.config.player   || game.cache.getJSON('playerConfig');
     };
 
-    fn.prototype = Object.create(Phaser.Group.prototype);
+    fn.prototype = Object.create(App.Ship.prototype);
     fn.prototype.constructor = fn;
 
+    // player class id
+    fn.prototype.getShipClassId = function () { return this.ship_class_id; };
+
     // hull
-    fn.prototype.getHullConfig          = function () { return this.config.player.hulls[this.attributes.hull_class_id]; }
-    fn.prototype.getHullId              = function () { return this.attributes.hull_class_id; };
+    fn.prototype.getHullConfig          = function () { return this.config.player.hulls[this.getShipClassId()]; }
     fn.prototype.getHullName            = function () { return this.getHullConfig().name; };
     fn.prototype.getHullEnergy          = function () { return this.getHullConfig().energy; };
     fn.prototype.getHullEnergyRegenRate = function () { return this.getHullConfig().energy_regen_rate; };
@@ -72,8 +57,10 @@ App.Player = (function () {
 
     // load assets
     fn.prototype.loadAssets = function () {
-        var player_hull_asset = this.config.assets.player.hulls[this.attributes.hull_class_id];
-        this.game.load.image(player_hull_asset.key, player_hull_asset.file);
+        _.each(['balanced'], (function (class_id) {
+            var player_hull_asset = this.config.assets.player.hulls[class_id];
+            this.game.load.image(player_hull_asset.key, player_hull_asset.file);
+        }).bind(this));
 
         var player_thrust_sound = this.config.assets.sounds.thrust;
         this.game.load.audio(player_thrust_sound.key, player_thrust_sound.file);
@@ -84,13 +71,55 @@ App.Player = (function () {
 
     // ship
     fn.prototype.setupShip = function () {
+        // default to balanced hull class. TODO: Change me to support player chosen hull classes
+        this.ship_class_id = 'balanced';
+
+        this.loadTexture(this.config.assets.player.hulls[this.ship_class_id].key);
+        this.reset(this.game.world.width / 2, this.game.world.height / 2);
+
+        // set how the graphic is displayed for the sprite
+        this.anchor.setTo(this.getHullSpriteConfig().anchor);
+        this.scale.setTo(this.getHullSpriteConfig().scale);
+
+        // physics related
+        this.body.setRectangle(40, 40);
+        this.body.rotation = this.game.math.PI2 / 4;
+
         // add ship to the game
-        this.game.add.existing(this.getShip());
+        this.game.add.existing(this);
+
+        //  Notice that the sprite doesn't have any momentum at all,
+        //  it's all just set by the camera follow type.
+        //  0.1 is the amount of linear interpolation to use.
+        //  The smaller the value, the smooth the camera (and the longer it takes to catch up)
+        this.game.camera.follow(this, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
+
+        // setup player attributes
+        this.addAttribute('health', this.getHullHealth());
+        this.addAttribute('energy', this.getHullEnergy());
+
+        // setup collisions
+        this.getCollisionManager().addToPlayersCG(this);
+        this.getCollisionManager().setCollidesWithEnemiesCG(this);
+        this.getCollisionManager().setCollidesWithEnemyProjectilesCG(this);
+
+        // new main gun
+        var main_gun = new App.WeaponMainGun(this.game);
+        main_gun.createProjectiles(this.getMainGunBulletPoolCount());
+        main_gun.trackSprite(this);
+        this.addWeapon('main_gun', main_gun);
 
         // audio
         this.audio = {};
         this.audio.thrustSound = this.game.add.audio(this.config.assets.sounds.thrust.key);
         this.audio.bulletSound = this.game.add.audio(this.config.assets.sounds.bullet.key);
+
+        // keyboard events
+        this.keyboard = this.game.input.keyboard.createCursorKeys();
+        _.each(['thrustForward','thrustReverse','rotateLeft','rotateRight','fireBullets'], (function (control) {
+            var keycode = Phaser.KeyCode[this.config.controls[control]];
+            this.keyboard[control] = this.game.input.keyboard.addKey(keycode);
+        }).bind(this));
 
         // thruster audio events
         this.keyboard.thrustForward.onDown.add((function() {
@@ -107,51 +136,35 @@ App.Player = (function () {
         }).bind(this));
 
         // weapon audio events
-        this.ship.getWeapon('p_main_gun').events.onFire.add((function () {
+        this.getWeapon('main_gun').events.onFire.add((function () {
             this.audio.bulletSound.play();
 
             this.setEnergy( this.getEnergy() - this.config.player.main_gun.bullet_energy_cost );
         }).bind(this));
     };
 
-    fn.prototype.getShip = function () {
-        if ('undefined' !== typeof this.ship) return this.ship;
-
-        this.ship = new App.PlayerShip(this.game, this);
-
-        //  Notice that the sprite doesn't have any momentum at all,
-        //  it's all just set by the camera follow type.
-        //  0.1 is the amount of linear interpolation to use.
-        //  The smaller the value, the smooth the camera (and the longer it takes to catch up)
-        this.game.camera.follow(this.ship, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
-
-        return this.ship;
-    };
-
     fn.prototype.tick = function () {
         if (this.keyboard.thrustForward.isDown) {
-            this.ship.body.thrust(this.getHullThrust());
+            this.body.thrust(this.getHullThrust());
         }
         else if (this.keyboard.thrustReverse.isDown) {
-            this.ship.body.reverse(this.getHullThrust());
+            this.body.reverse(this.getHullThrust());
         }
 
         if (this.keyboard.rotateLeft.isDown) {
-            this.ship.body.rotateLeft(this.getHullRotation());
+            this.body.rotateLeft(this.getHullRotation());
         }
         else if (this.keyboard.rotateRight.isDown) {
-            this.ship.body.rotateRight(this.getHullRotation());
+            this.body.rotateRight(this.getHullRotation());
         }
         else {
-            this.ship.body.setZeroRotation();
+            this.body.setZeroRotation();
         }
 
         if (this.keyboard.fireBullets.isDown) {
             if (this.getEnergy() > 0) {
                 // fire main gun
-                var p_main_gun = this.ship.getWeapon('p_main_gun');
-
-                p_main_gun.fire();
+                this.getWeapon('main_gun').fire();
             }
         }
 
