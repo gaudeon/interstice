@@ -58,12 +58,6 @@ App.LoadingState = (function () {
 
         // use arcade physics for weapons
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
-
-        // setup collision manager for p2 physics collisions
-        this.game.global.collision_manager = new App.CollisionManager(this.game);
-
-        // setup player object
-        this.game.global.player = new App.Player(this.game);
     };
 
     fn.prototype.webfontloaded = function () {
@@ -72,7 +66,7 @@ App.LoadingState = (function () {
 
     fn.prototype.update = function () {
         if (this.are_fonts_loaded) {
-            this.state.start('PlayMission');
+            this.state.start('MainMenu');
         }
     };
 

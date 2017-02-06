@@ -12,8 +12,6 @@ App.PlayMissionState = (function () {
     fn.prototype.constructor = fn;
 
     fn.prototype.init = function () {
-        this.hud = new App.HUD(this.game);
-
         // config
         this.config = {};
         this.config.assets = game.cache.getJSON('assetsConfig');
@@ -27,8 +25,14 @@ App.PlayMissionState = (function () {
             height: this.game.world.height * 2
         };
 
-        // create a shorter accessor to the player object
-        this.player = this.game.global.player;
+        // setup collision manager for p2 physics collisions
+        this.gcm = this.game.global.collision_manager = new App.CollisionManager(this.game);
+
+        // setup player object
+        this.player = this.game.global.player = new App.Player(this.game);
+
+        // setup hud
+        this.hud = new App.HUD(this.game);
     };
 
     fn.prototype.preload = function () {
@@ -118,6 +122,10 @@ App.PlayMissionState = (function () {
         }, this);
 
         this.hud.tick();
+
+        if (!this.player.alive) {
+            this.state.start('MainMenu');
+        }
     }
 
     return fn;

@@ -5,11 +5,21 @@
                 "fontSize": 48,
                 "boundsAlignH": "center",
                 "boundsAlignV": "middle"
-            },
+    },
+    "label": {
+        "color": "#ffffff"
+    },
+    "link": {
+        "color": "#4f4fbf"
+    },
     "items": [
         {
+            "label": "... interstice ...",
+            "state": false
+        },
+        {
             "label": "Play",
-            "state": "Game"
+            "state": "PlayMission"
         }
     ]
 }

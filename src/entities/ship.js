@@ -11,6 +11,8 @@ App.Ship = (function () {
         this.config        = this.config        || {};
         this.config.assets = this.config.assets || this.game.cache.getJSON('assetsConfig');
 
+        this._game = game;
+
         // enable p2 physics
         this.game.physics.p2.enable(this, false);
 

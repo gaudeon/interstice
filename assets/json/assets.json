@@ -15,11 +15,11 @@
     },
     "bullets": {
         "green": {
-            "file" : "assets/images/LaserGreen.png",
+            "file" : "assets/images/BulletGreen.png",
             "key"  : "bullet_green"
         },
         "red": {
-            "file" : "assets/images/LaserRed.png",
+            "file" : "assets/images/BulletRed.png",
             "key"  : "bullet_red"
         }
     },
