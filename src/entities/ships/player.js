@@ -113,7 +113,7 @@ App.Player = (function () {
 
         // audio
         this.audio = {};
-        this.audio.thrustSound = this.game.add.audio(this.config.assets.sounds.thrust.key);
+        this.audio.thrustSound = this.game.add.audio(this.config.assets.sounds.thrust.key, 1, true);
         this.audio.bulletSound = this.game.add.audio(this.config.assets.sounds.bullet.key);
 
         // keyboard events
