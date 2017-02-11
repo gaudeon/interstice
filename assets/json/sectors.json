@@ -1,0 +1,15 @@
+{
+    "sector_1": {
+        "background": "dark_purple",
+        "tilemap": "sector_1",
+        "tilesets": ["planets"],
+        "layers": [
+            {
+                "name": "scenery",
+                "hasCollisions": false,
+                "firstCollisionTileId": 0,
+                "lastCollisionTileId": 0
+            }
+        ]
+    }
+}

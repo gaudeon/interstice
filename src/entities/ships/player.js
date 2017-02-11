@@ -105,6 +105,9 @@ App.Player = (function () {
         this.getCollisionManager().setCollidesWithEnemiesCG(this);
         this.getCollisionManager().setCollidesWithEnemyProjectilesCG(this);
 
+        // ship impact
+        this.body.onBeginContact.add(this.impactHandler, this);
+
         // main gun
         var main_gun = new App.WeaponPlayerMainGun(this.game);
         main_gun.createProjectiles(this.getMainGunBulletPoolCount());
@@ -193,6 +196,38 @@ App.Player = (function () {
                 this.setEnergy( this.getEnergy() + this.getHullEnergyRegenRate() );
             }
         }
+    }
+
+    fn.prototype.impactHandler = function (body, shape1, shape2, equation) {
+        var x = 0;
+        var y = 0;
+
+        if (body && body !== 'null' && body !== 'undefined') {
+            x = body.velocity.x;
+            y = body.velocity.y;
+        }
+
+        var v1 = new Phaser.Point(this.body.velocity.x, this.body.velocity.y);
+        var v2 = new Phaser.Point(x, y);
+
+        var xdiff = Math.abs(v1.x - v2.x);
+        var ydiff = Math.abs(v1.y - v2.y);
+
+        var damage = 0;
+        if (xdiff > 500 || ydiff > 500) { //Massive damage!
+            damage = 20;
+        } else if (xdiff > 200 || ydiff > 200) { //Slight damage
+            damage = 10;
+        }
+
+        var curEnergy = this.getEnergy();
+        var curHealth = this.getHealth();
+
+        var remaining_damage = curEnergy < damage ? damage - curEnergy : 0;
+
+        // damage energy shield first then player health
+        this.setEnergy(curEnergy - damage + remaining_damage);
+        this.setHealth(curHealth - remaining_damage);
     }
 
     return fn;

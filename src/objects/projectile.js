@@ -8,6 +8,9 @@ App.Projectile = (function () {
         // call bullet constructor
         Phaser.Sprite.call(this, game, x, y, key, frame);
 
+        // project attributes
+        this.attributes = this.attributes || {};
+
         // enable physics
         game.physics.p2.enable(this, false);
 

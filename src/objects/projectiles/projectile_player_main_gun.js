@@ -17,7 +17,8 @@ App.ProjectilePlayerMainGun = (function () {
 
         // setup this projectiles attributes
         this.attributes = {};
-        this.attributes.damage = this.config.player.main_gun.bullet_damage;
+        this.attributes.damage   = this.config.player.main_gun.bullet_damage;
+        this.attributes.lifespan = this.config.player.main_gun.bullet_lifespan;
 
         // setup collisions
         this.gcm = this.game.global.collision_manager;

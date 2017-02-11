@@ -15,9 +15,11 @@ App.ProjectileMinionMainGun = (function () {
         // call bullet constructor
         App.Projectile.call(this, game, x, y, key);
 
+
         // setup this projectiles attributes
         this.attributes = {};
-        this.attributes.damage = this.config.bots.minion.main_gun.bullet_damage;
+        this.attributes.damage   = this.config.bots.minion.main_gun.bullet_damage;
+        this.attributes.lifespan = this.config.bots.minion.main_gun.bullet_lifespan;
 
         // setup collisions
         this.gcm = this.game.global.collision_manager;

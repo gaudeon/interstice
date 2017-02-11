@@ -2,7 +2,7 @@
 
 {
 	"filename": "planet-1_300.png",
-	"frame": {"x":0,"y":0,"w":300,"h":300},
+	"frame": {"x":32,"y":32,"w":300,"h":300},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":300,"h":300},
@@ -10,7 +10,7 @@
 },
 {
 	"filename": "planet-2_300.png",
-	"frame": {"x":300,"y":0,"w":300,"h":300},
+	"frame": {"x":364,"y":32,"w":300,"h":300},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":300,"h":300},
@@ -18,7 +18,7 @@
 },
 {
 	"filename": "planet-3_300.png",
-	"frame": {"x":600,"y":0,"w":300,"h":300},
+	"frame": {"x":696,"y":32,"w":300,"h":300},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":300,"h":300},
@@ -26,7 +26,7 @@
 },
 {
 	"filename": "planet-4_300.png",
-	"frame": {"x":900,"y":0,"w":300,"h":300},
+	"frame": {"x":1028,"y":32,"w":300,"h":300},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":300,"h":300},
@@ -34,7 +34,7 @@
 },
 {
 	"filename": "planet-5_300.png",
-	"frame": {"x":0,"y":300,"w":300,"h":300},
+	"frame": {"x":32,"y":364,"w":300,"h":300},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":300,"h":300},
@@ -42,7 +42,7 @@
 },
 {
 	"filename": "planet-6_300.png",
-	"frame": {"x":300,"y":300,"w":300,"h":300},
+	"frame": {"x":364,"y":364,"w":300,"h":300},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":300,"h":300},
@@ -50,7 +50,7 @@
 },
 {
 	"filename": "planet-7_300.png",
-	"frame": {"x":600,"y":300,"w":300,"h":300},
+	"frame": {"x":696,"y":364,"w":300,"h":300},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":300,"h":300},
@@ -58,7 +58,7 @@
 },
 {
 	"filename": "planet-8_300.png",
-	"frame": {"x":900,"y":300,"w":300,"h":300},
+	"frame": {"x":1028,"y":364,"w":300,"h":300},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":300,"h":300},
@@ -66,7 +66,7 @@
 },
 {
 	"filename": "planet-9_300.png",
-	"frame": {"x":0,"y":600,"w":300,"h":300},
+	"frame": {"x":32,"y":696,"w":300,"h":300},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":300,"h":300},
@@ -74,7 +74,7 @@
 },
 {
 	"filename": "planet-10_300.png",
-	"frame": {"x":300,"y":600,"w":300,"h":300},
+	"frame": {"x":364,"y":696,"w":300,"h":300},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":300,"h":300},
@@ -82,7 +82,7 @@
 },
 {
 	"filename": "planet-11_300.png",
-	"frame": {"x":600,"y":600,"w":300,"h":300},
+	"frame": {"x":696,"y":696,"w":300,"h":300},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":300,"h":300},
@@ -90,7 +90,7 @@
 },
 {
 	"filename": "planet-12_300.png",
-	"frame": {"x":900,"y":600,"w":300,"h":300},
+	"frame": {"x":1028,"y":696,"w":300,"h":300},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":300,"h":300},
@@ -98,7 +98,7 @@
 },
 {
 	"filename": "planet-13_300.png",
-	"frame": {"x":0,"y":900,"w":300,"h":300},
+	"frame": {"x":32,"y":1028,"w":300,"h":300},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":300,"h":300},
@@ -106,7 +106,7 @@
 },
 {
 	"filename": "planet-14_300.png",
-	"frame": {"x":300,"y":900,"w":300,"h":300},
+	"frame": {"x":364,"y":1028,"w":300,"h":300},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":300,"h":300},
@@ -114,7 +114,7 @@
 },
 {
 	"filename": "planet-15_300.png",
-	"frame": {"x":600,"y":900,"w":300,"h":300},
+	"frame": {"x":696,"y":1028,"w":300,"h":300},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":300,"h":300},
@@ -122,7 +122,7 @@
 },
 {
 	"filename": "planet-16_300.png",
-	"frame": {"x":900,"y":900,"w":300,"h":300},
+	"frame": {"x":1028,"y":1028,"w":300,"h":300},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":300,"h":300},
@@ -133,8 +133,8 @@
 	"version": "1.0",
 	"image": "planets.png",
 	"format": "RGBA8888",
-	"size": {"w":1200,"h":1200},
+	"size": {"w":1376,"h":1376},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:0c868285f5b23792f6ce456b254b20b6:82f881d77d8c231cc45d122cd207d181:b39012af8c10e6f2542ba48f4ca1957d$"
+	"smartupdate": "$TexturePacker:SmartUpdate:f7c20df76f607e7baccee2a61695fff1:82f881d77d8c231cc45d122cd207d181:b39012af8c10e6f2542ba48f4ca1957d$"
 }
 }

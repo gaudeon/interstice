@@ -37,6 +37,7 @@ App.LoadingState = (function () {
         this.load.json('playerConfig', 'assets/json/player.json');
         this.load.json('botsConfig', 'assets/json/bots.json');
         this.load.json('hudConfig', 'assets/json/hud.json');
+        this.load.json('sectorsConfig', 'assets/json/sectors.json');
 
         // load web fonts
         WebFont.load({

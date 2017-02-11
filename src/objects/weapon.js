@@ -79,6 +79,11 @@ App.Weapon = (function () {
         // Revive the projectile
         projectile.revive();
 
+        // set projectile lifespan
+        if (projectile.attributes.lifespan) {
+            projectile.lifespan = projectile.attributes.lifespan;
+        }
+
         // Set the projectile position to the gun position.
         if (this.originSprite) {
             projectile.reset(this.originSprite.x, this.originSprite.y);

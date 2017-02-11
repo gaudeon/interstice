@@ -33,12 +33,10 @@
             "key"  : "missile_red"
         }
     },
-    "missions": {
-        "default": {
-            "background": {
-                "file" : "assets/images/spaceBGDarkPurple.png",
-                "key"  : "space_bg_dark_purple"
-            }
+    "backgrounds": {
+        "dark_purple": {
+            "file" : "assets/images/spaceBGDarkPurple.png",
+            "key"  : "space_bg_dark_purple"
         }
     },
     "sounds": {
@@ -49,6 +47,18 @@
         "bullet": {
             "file" : "assets/sounds/bullet.wav",
             "key"  : "bullet_sound"
+        }
+    },
+    "tilemaps": {
+        "sector_1": {
+            "file" : "assets/json/tilemaps/sector_1.json",
+            "key"  : "sector_1"
+        }
+    },
+    "tilesets": {
+        "planets": {
+            "file" : "assets/images/tilesets/planets.png",
+            "key"  : "planets_tileset"
         }
     },
     "ui": {
