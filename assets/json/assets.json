@@ -47,6 +47,10 @@
         "bullet": {
             "file" : "assets/sounds/bullet.wav",
             "key"  : "bullet_sound"
+        },
+        "ship_explosion": {
+            "file" : "assets/sounds/ship_explosion.wav",
+            "key"  : "ship_explosion_sound"
         }
     },
     "tilemaps": {

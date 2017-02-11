@@ -64,11 +64,15 @@ App.Player = (function () {
             this.game.load.image(player_hull_asset.key, player_hull_asset.file);
         }).bind(this));
 
-        var player_thrust_sound = this.config.assets.sounds.thrust;
-        this.game.load.audio(player_thrust_sound.key, player_thrust_sound.file);
+        // sounds
+        var thrust = this.config.assets.sounds.thrust;
+        this.game.load.audio(thrust.key, thrust.file);
 
-        var player_bullet_sound = this.config.assets.sounds.bullet;
-        this.game.load.audio(player_bullet_sound.key, player_bullet_sound.file);
+        var bullet = this.config.assets.sounds.bullet;
+        this.game.load.audio(bullet.key, bullet.file);
+
+        var ship_explosion = this.config.assets.sounds.ship_explosion;
+        this.game.load.audio(ship_explosion.key, ship_explosion.file);
     };
 
     // setup ship
@@ -116,8 +120,9 @@ App.Player = (function () {
 
         // audio
         this.audio = {};
-        this.audio.thrustSound = this.game.add.audio(this.config.assets.sounds.thrust.key, 1, true);
-        this.audio.bulletSound = this.game.add.audio(this.config.assets.sounds.bullet.key);
+        this.audio.thrustSound        = this.game.add.audio(this.config.assets.sounds.thrust.key, 1, true);
+        this.audio.bulletSound        = this.game.add.audio(this.config.assets.sounds.bullet.key);
+        this.audio.shipExplosionSound = this.game.add.audio(this.config.assets.sounds.ship_explosion.key);
 
         // keyboard events
         this.keyboard = this.game.input.keyboard.createCursorKeys();
@@ -147,6 +152,11 @@ App.Player = (function () {
             this.audio.bulletSound.play();
 
             this.setEnergy( this.getEnergy() - this.getMainGunBulletEnergyCost() );
+        }).bind(this));
+
+        // death audio events
+        this.events.onKilled.add((function () {
+            this.audio.shipExplosionSound.play();
         }).bind(this));
     };
 

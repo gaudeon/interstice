@@ -5,18 +5,18 @@ App.Bot = (function () {
     "use strict";
 
     var fn = function (game, x, y, class_id) {
-        var asset_config = game.cache.getJSON('assetsConfig').bots[class_id];
+        // config data
+        this.config       = this.config || {};
+        this.config.bots  = this.config.bots || game.cache.getJSON('botsConfig');
+        this.config.asset = this.config.assets || game.cache.getJSON('assetsConfig').bots[class_id];
 
-        App.Ship.call(this, game, x, y, asset_config.key);
+        App.Ship.call(this, game, x, y, this.config.asset.key);
 
         this.game = game;
 
-        // config data
-        this.config = game.cache.getJSON('botsConfig');
-
         // sprite attributes
-        this.anchor.setTo(this.config[class_id].sprite.anchor);
-        this.scale.setTo(this.config[class_id].sprite.scale);
+        this.anchor.setTo(this.config.bots[class_id].sprite.anchor);
+        this.scale.setTo(this.config.bots[class_id].sprite.scale);
 
         // bot attributes
         this.attributes = this.attributes || {};
@@ -37,6 +37,15 @@ App.Bot = (function () {
         this.game.global.collision_manager.setCollidesWithPlayersCG(this);
         this.game.global.collision_manager.setCollidesWithPlayerProjectilesCG(this);
         this.game.global.collision_manager.setCollidesWithEnemiesCG(this);
+
+        // audio
+        this.audio = {};
+        this.audio.shipExplosionSound = this.game.add.audio(this.config.assets.sounds.ship_explosion.key);
+
+        // explode on death
+        this.events.onKilled.add((function () {
+            this.audio.shipExplosionSound.play();
+        }).bind(this));
     };
 
     fn.prototype = Object.create(App.Ship.prototype);
@@ -50,7 +59,7 @@ App.Bot = (function () {
         return this.attributes.bot_class_id;
     };
 
-    fn.prototype.getBotConfig            = function () { return this.config[this.getBotClassId()]; };
+    fn.prototype.getBotConfig            = function () { return this.config.bots[this.getBotClassId()]; };
     fn.prototype.getSpeed                = function () { return this.getBotConfig().speed; };
     fn.prototype.getCollisionGroup       = function () { return this.collision_group; };
     fn.prototype.getTargetingAngleOffset = function () { return this.getBotConfig().targeting_angle_offset; };
