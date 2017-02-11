@@ -156,6 +156,7 @@ App.Player = (function () {
 
         // death audio events
         this.events.onKilled.add((function () {
+            this.audio.thrustSound.stop();
             this.audio.shipExplosionSound.play();
         }).bind(this));
     };
