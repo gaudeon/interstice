@@ -39,6 +39,7 @@ App.LoadingState = (function () {
         this.load.json('hudConfig', 'assets/json/hud.json');
         this.load.json('sectorsConfig', 'assets/json/sectors.json');
 
+
         // load web fonts
         WebFont.load({
             active: (function () {

@@ -32,6 +32,12 @@ App.PlayMissionState = (function () {
     };
 
     fn.prototype.preload = function () {
+        // load image atlases so everything else can use them
+        _.each(_.keys(this.config.assets.atlases), (function (key) {
+            var atlas_asset = this.config.assets.atlases[key];
+            this.game.load.atlas(atlas_asset.key, atlas_asset.file, atlas_asset.json, Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
+        }).bind(this));
+
         // sector assets
         this.sector.loadAssets();
 
@@ -41,13 +47,17 @@ App.PlayMissionState = (function () {
         // bullet assets
         _.each(_.keys(this.config.assets.bullets), (function (bullet_type) {
             var bullet_asset = this.config.assets.bullets[bullet_type];
-            this.load.image(bullet_asset.key, bullet_asset.file);
+            if (!bullet_asset.in_atlas) {
+                this.load.image(bullet_asset.key, bullet_asset.file);
+            }
         }).bind(this));
 
         // bot assets TODO: only load bot assets we use on a stage
         _.each(_.keys(this.config.bots), (function (bot_class_id) {
             var bot_asset_config = this.config.assets.bots[bot_class_id];
-            this.load.image(bot_asset_config.key, bot_asset_config.file);
+            if (!bot_asset_config.in_atlas) {
+                this.load.image(bot_asset_config.key, bot_asset_config.file);
+            }
         }).bind(this));
 
         // hud assets

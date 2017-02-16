@@ -61,7 +61,9 @@ App.Player = (function () {
     fn.prototype.loadAssets = function () {
         _.each(['balanced'], (function (class_id) {
             var player_hull_asset = this.config.assets.player.hulls[class_id];
-            this.game.load.image(player_hull_asset.key, player_hull_asset.file);
+            if (!player_hull_asset.in_atlas) {
+                this.game.load.image(player_hull_asset.key, player_hull_asset.file);
+            }
         }).bind(this));
 
         // sounds
@@ -81,6 +83,9 @@ App.Player = (function () {
         this.ship_class_id = 'balanced';
 
         this.loadTexture(this.config.assets.player.hulls[this.ship_class_id].key);
+        if (this.config.assets.player.hulls[this.ship_class_id].in_atlas) {
+            this.frameName = this.config.assets.player.hulls[this.ship_class_id].frame;
+        }
         this.reset(this.game.world.width / 2, this.game.world.height / 2);
 
         // set how the graphic is displayed for the sprite

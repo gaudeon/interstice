@@ -15,6 +15,9 @@ App.ProjectileMinionMainGun = (function () {
         // call bullet constructor
         App.Projectile.call(this, game, x, y, key);
 
+        if (this.config.assets.bullets.red.in_atlas) {
+            this.frameName = this.config.assets.bullets.red.frame;
+        }
 
         // setup this projectiles attributes
         this.attributes = {};

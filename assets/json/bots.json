@@ -19,7 +19,7 @@
             "bullet_lifespan"     : 5000
         },
         "sprite": {
-            "scale": -0.5,
+            "scale": 1,
             "anchor": 0.5
         }
     }

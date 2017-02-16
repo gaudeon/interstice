@@ -33,7 +33,9 @@ App.Sector = (function () {
 
        if (this.sectorConfig().background) {
            var bg_asset = this.backgroundAssetConfig();
-           this.game.load.image(bg_asset.key, bg_asset.file);
+           if ( !bg_asset.in_atlas) {
+               this.game.load.image(bg_asset.key, bg_asset.file);
+           }
        }
     };
 
@@ -66,6 +68,9 @@ App.Sector = (function () {
         // apply background
         if (this.sectorConfig().background) {
             this.background = this.game.add.tileSprite(0, 0, this.widthInPixels(), this.heightInPixels(), this.backgroundAssetConfig().key);
+            if (this.backgroundAssetConfig().in_atlas) {
+                this.background.frameName = this.backgroundAssetConfig().frame;
+            }
 
             this.game.world.sendToBack(this.background);
         }

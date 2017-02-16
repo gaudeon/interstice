@@ -12,6 +12,10 @@ App.Bot = (function () {
 
         App.Ship.call(this, game, x, y, this.config.asset.key);
 
+        if (this.config.asset.in_atlas) {
+            this.frameName = this.config.asset.frame;
+        }
+
         this.game = game;
 
         // sprite attributes

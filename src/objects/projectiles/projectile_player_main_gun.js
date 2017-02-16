@@ -15,6 +15,10 @@ App.ProjectilePlayerMainGun = (function () {
         // call bullet constructor
         App.Projectile.call(this, game, x, y, key);
 
+        if (this.config.assets.bullets.green.in_atlas) {
+            this.frameName = this.config.assets.bullets.green.frame;
+        }
+
         // setup this projectiles attributes
         this.attributes = {};
         this.attributes.damage   = this.config.player.main_gun.bullet_damage;

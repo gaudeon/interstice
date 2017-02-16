@@ -19,7 +19,7 @@
             "thrust"            : 300,
             "rotation"          : 100,
             "sprite": {
-                "scale": 0.5,
+                "scale": 1,
                 "anchor": 0.5
             }
         }
