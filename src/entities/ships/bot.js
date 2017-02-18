@@ -41,6 +41,7 @@ App.Bot = (function () {
         this.game.global.collision_manager.setCollidesWithPlayersCG(this);
         this.game.global.collision_manager.setCollidesWithPlayerProjectilesCG(this);
         this.game.global.collision_manager.setCollidesWithEnemiesCG(this);
+        this.game.global.collision_manager.setCollidesWithSectorCG(this);
 
         // audio
         this.audio = {};

@@ -71,6 +71,9 @@ App.PlayMissionState = (function () {
         // setup world boundaries
         this.game.global.collision_manager.setBounds(0, 0, this.sector.widthInPixels(), this.sector.heightInPixels());
 
+        // setup sector tile collisions
+        this.sector.setupSectorCollisions();
+
         // setup player ship
         this.player.setupShip();
 

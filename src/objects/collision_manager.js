@@ -35,6 +35,12 @@ App.CollisionManager = (function () {
     fn.prototype.setCollidesWithEnemyProjectilesCG = function (object) { this.setCollidesWithGroup('enemy_projectiles', object); };
     fn.prototype.addCallbackForEnemyProjectilesCG  = function (object, callback, context) { this.addCollisionGroupCallback('enemy_projectiles', object, callback, context); };
 
+    // map_cg
+    fn.prototype.getSectorCG             = function () { return this.getCollisionGroup('sector'); };
+    fn.prototype.addToSectorCG           = function (object) { this.addToCollisionGroup('sector', object) };
+    fn.prototype.setCollidesWithSectorCG = function (object) { this.setCollidesWithGroup('sector', object); };
+    fn.prototype.addCallbackForSectorCG  = function (object, callback, context) { this.addCollisionGroupCallback('sector', object, callback, context); };
+
     // actual functions to keep the above getter/setters more DRY
     fn.prototype.getCollisionGroup = function (key) { return this.cg[key]; };
     fn.prototype.addToCollisionGroup = function (key, object) { object = object.body || object; object.setCollisionGroup(this.cg[key]); };
@@ -53,6 +59,7 @@ App.CollisionManager = (function () {
         this.cg.player_projectiles = this.game.physics.p2.createCollisionGroup();
         this.cg.enemies            = this.game.physics.p2.createCollisionGroup();
         this.cg.enemy_projectiles  = this.game.physics.p2.createCollisionGroup();
+        this.cg.sector             = this.game.physics.p2.createCollisionGroup();
     };
 
     return fn;

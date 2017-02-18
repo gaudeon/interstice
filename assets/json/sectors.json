@@ -2,19 +2,14 @@
     "sector_1": {
         "background": "dark_purple",
         "tilemap": "sector_1",
-        "tilesets": ["sector_tileset"],
+        "tilesets": ["scenery_tileset", "sector_tileset"],
         "layers": [
             {
-                "name": "scenery",
-                "hasCollisions": false,
-                "firstCollisionTileId": 0,
-                "lastCollisionTileId": 0
+                "name": "scenery"
             },
             {
-                "name": "walls",
-                "hasCollisions": false,
-                "firstCollisionTileId": 0,
-                "lastCollisionTileId": 0
+                "name": "sector",
+                "collisionIds": [4097,4098,4099,4050,4051,4052,4053,4054,4055,4056,4057,4058,4059,4060]
             }
         ]
     }

@@ -54,10 +54,6 @@ App.Sector = (function () {
 
         _.each(this.sectorConfig().layers, (function (layer) {
            this.layers[layer.name] = this.map.createLayer(layer.name);
-
-           if (layer.hasCollisions) {
-               this.map.setCollisionBetween(layer.firstCollisionTileId, layer.lastCollisionTileId, true, layer.name);
-           }
         }).bind(this));
 
         // TODO: setup  object layers
@@ -74,6 +70,24 @@ App.Sector = (function () {
 
             this.game.world.sendToBack(this.background);
         }
+    };
+
+    fn.prototype.setupSectorCollisions = function () {
+        _.each(this.sectorConfig().layers, (function (layer) {
+           if (layer.collisionIds) {
+               this.map.setCollision(layer.collisionIds, true, layer.name);
+
+               // needed for p2 physics collisions to work
+               var bodies = this.game.physics.p2.convertTilemap(this.map, layer.name);
+               _.each(bodies, (function (body) {
+                   this.game.global.collision_manager.addToSectorCG(body);
+                   this.game.global.collision_manager.setCollidesWithPlayersCG(body);
+                   this.game.global.collision_manager.setCollidesWithPlayerProjectilesCG(body);
+                   this.game.global.collision_manager.setCollidesWithEnemiesCG(body);
+                   this.game.global.collision_manager.setCollidesWithEnemyProjectilesCG(body);
+               }).bind(this));
+           }
+        }).bind(this));
     };
 
     fn.prototype.widthInPixels  = function () { return this.map.widthInPixels; };

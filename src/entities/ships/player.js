@@ -113,6 +113,7 @@ App.Player = (function () {
         this.getCollisionManager().addToPlayersCG(this);
         this.getCollisionManager().setCollidesWithEnemiesCG(this);
         this.getCollisionManager().setCollidesWithEnemyProjectilesCG(this);
+        this.getCollisionManager().setCollidesWithSectorCG(this);
 
         // ship impact
         this.body.onBeginContact.add(this.impactHandler, this);

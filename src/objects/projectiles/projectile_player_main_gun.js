@@ -29,6 +29,7 @@ App.ProjectilePlayerMainGun = (function () {
         this.gcm.addToPlayerProjectilesCG(this);
         this.gcm.setCollidesWithEnemiesCG(this);
         this.gcm.setCollidesWithEnemyProjectilesCG(this);
+        this.gcm.setCollidesWithSectorCG(this);
         this.gcm.addCallbackForEnemiesCG(this, function (my_body, enemy_body) {
             enemy_body.sprite.damage(this.attributes.damage);
             this.kill();

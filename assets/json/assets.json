@@ -55,6 +55,10 @@
         }
     },
     "tilesets": {
+        "scenery_tileset": {
+            "file" : "assets/images/scenery_tileset.png",
+            "key"  : "scenery_tileset"
+        },
         "sector_tileset": {
             "file" : "assets/images/sector_tileset.png",
             "key"  : "sector_tileset"

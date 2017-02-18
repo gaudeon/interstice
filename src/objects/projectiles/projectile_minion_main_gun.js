@@ -29,6 +29,7 @@ App.ProjectileMinionMainGun = (function () {
         this.gcm.addToEnemyProjectilesCG(this);
         this.gcm.setCollidesWithPlayersCG(this);
         this.gcm.setCollidesWithPlayerProjectilesCG(this);
+        this.gcm.setCollidesWithSectorCG(this);
         this.gcm.addCallbackForPlayersCG(this, function (my_body, player_body) {
             player_body.sprite.damage(this.attributes.damage);
             this.kill();
