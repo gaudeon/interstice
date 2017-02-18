@@ -17,15 +17,14 @@ App.PlayMissionState = (function () {
         this.config.assets = game.cache.getJSON('assetsConfig');
         this.config.bots   = this.game.cache.getJSON('botsConfig');
 
-        this.background = this.config.assets.backgrounds.dark_purple;
-
-        this.sector = new App.Sector(this.game, 'sector_1');
-
         // setup collision manager for p2 physics collisions
         this.gcm = this.game.global.collision_manager = new App.CollisionManager(this.game);
 
         // setup player object
         this.player = this.game.global.player = new App.Player(this.game);
+
+        // setup the sector object
+        this.sector = new App.Sector(this.game, this.player, this.gcm, 'sector_1');
 
         // setup hud
         this.hud = new App.HUD(this.game);
@@ -68,32 +67,12 @@ App.PlayMissionState = (function () {
         // setup sector
         this.sector.setupSector();
 
-        // setup world boundaries
-        this.game.global.collision_manager.setBounds(0, 0, this.sector.widthInPixels(), this.sector.heightInPixels());
-
-        // setup sector tile collisions
-        this.sector.setupSectorCollisions();
-
-        // setup player ship
-        this.player.setupShip();
-
-        // setup a random group of enemys
-        this.minions = [];
-        this.game.global.enemies = new Phaser.Group(this.game);
-        for (var m = 0; m < this.game.rnd.integerInRange(3,6); m++) {
-            this.game.global.enemies.add(this.add.existing(new App.Bots.Minion(this.game, this.game.rnd.integerInRange(50, this.game.world.width - 50), this.game.rnd.integerInRange(50, this.game.world.height - 50))));
-        }
-
         // hud
         this.hud.setupHUD();
     };
 
     fn.prototype.update = function () {
-        this.player.tick();
-
-        this.game.global.enemies.forEach(function (enemy) {
-            enemy.tick();
-        }, this);
+        this.sector.tick();
 
         this.hud.tick();
 

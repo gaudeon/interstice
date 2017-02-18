@@ -78,15 +78,18 @@ App.Player = (function () {
     };
 
     // setup ship
-    fn.prototype.setupShip = function () {
+    fn.prototype.setupShip = function (x, y) {
         // default to balanced hull class. TODO: Change me to support player chosen hull classes
         this.ship_class_id = 'balanced';
+
+        if ('undefined' === typeof x) x = this.game.world.width / 2;
+        if ('undefined' === typeof y) y = this.game.world.height / 2;
 
         this.loadTexture(this.config.assets.player.hulls[this.ship_class_id].key);
         if (this.config.assets.player.hulls[this.ship_class_id].in_atlas) {
             this.frameName = this.config.assets.player.hulls[this.ship_class_id].frame;
         }
-        this.reset(this.game.world.width / 2, this.game.world.height / 2);
+        this.reset(x, y);
 
         // set how the graphic is displayed for the sprite
         this.anchor.setTo(this.getHullSpriteConfig().anchor);
@@ -98,6 +101,9 @@ App.Player = (function () {
 
         // add ship to the game
         this.game.add.existing(this);
+
+        // entities are on top
+        this.game.world.bringToTop(this);
 
         //  Notice that the sprite doesn't have any momentum at all,
         //  it's all just set by the camera follow type.

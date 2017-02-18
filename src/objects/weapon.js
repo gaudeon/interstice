@@ -79,6 +79,9 @@ App.Weapon = (function () {
         // Revive the projectile
         projectile.revive();
 
+        // sprites are on top
+        this.game.world.bringToTop(projectile);
+
         // set projectile lifespan
         if (projectile.attributes.lifespan) {
             projectile.lifespan = projectile.attributes.lifespan;
