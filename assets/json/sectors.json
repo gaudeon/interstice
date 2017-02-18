@@ -9,6 +9,12 @@
                 "hasCollisions": false,
                 "firstCollisionTileId": 0,
                 "lastCollisionTileId": 0
+            },
+            {
+                "name": "walls",
+                "hasCollisions": false,
+                "firstCollisionTileId": 0,
+                "lastCollisionTileId": 0
             }
         ]
     }
