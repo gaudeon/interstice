@@ -2,7 +2,7 @@
     "bots": {
         "minion": {
             "in_atlas" : true,
-            "key"      : "img_atlas",
+            "key"      : "game_atlas",
             "frame"    : "enemyShipG"
         }
     },
@@ -10,7 +10,7 @@
         "hulls": {
             "balanced": {
                 "in_atlas" : true,
-                "key"      : "img_atlas",
+                "key"      : "game_atlas",
                 "frame"    : "playerShipO"
             }
         }
@@ -18,19 +18,19 @@
     "bullets": {
         "green": {
             "in_atlas" : true,
-            "key"      : "img_atlas",
+            "key"      : "game_atlas",
             "frame"    : "BulletGreen"
         },
         "red": {
             "in_atlas" : true,
-            "key"      : "img_atlas",
+            "key"      : "game_atlas",
             "frame"    : "BulletRed"
         }
     },
     "backgrounds": {
         "dark_purple": {
             "in_atlas" : true,
-            "key"      : "img_atlas",
+            "key"      : "game_atlas",
             "frame"    : "spaceBGDarkPurple"
         }
     },
@@ -55,62 +55,62 @@
         }
     },
     "tilesets": {
-        "img_atlas": {
-            "file" : "assets/images/img_atlas.png",
-            "key"  : "img_atlas_tileset"
+        "sector_tileset": {
+            "file" : "assets/images/sector_tileset.png",
+            "key"  : "sector_tileset"
         }
     },
     "atlases": {
-        "img_atlas": {
-            "file" : "assets/images/img_atlas.png",
-            "json" : "assets/json/img_atlas.json",
-            "key"  : "img_atlas"
+        "game_atlas": {
+            "file" : "assets/images/game_atlas.png",
+            "json" : "assets/json/game_atlas.json",
+            "key"  : "game_atlas"
         }
     },
     "ui": {
         "bar_bg_left": {
             "in_atlas" : true,
-            "key"      : "img_atlas",
+            "key"      : "game_atlas",
             "frame"    : "barHorizontal_shadow_left"
         },
         "bar_bg_mid": {
             "in_atlas" : true,
-            "key"      : "img_atlas",
+            "key"      : "game_atlas",
             "frame"    : "barHorizontal_shadow_mid"
         },
         "bar_bg_right": {
             "in_atlas" : true,
-            "key"      : "img_atlas",
+            "key"      : "game_atlas",
             "frame"    : "barHorizontal_shadow_right"
         },
         "health_bar_left": {
             "in_atlas" : true,
-            "key"      : "img_atlas",
+            "key"      : "game_atlas",
             "frame"    : "barHorizontal_green_left"
         },
         "health_bar_mid": {
             "in_atlas" : true,
-            "key"      : "img_atlas",
+            "key"      : "game_atlas",
             "frame"    : "barHorizontal_green_mid"
         },
         "health_bar_right": {
             "in_atlas" : true,
-            "key"      : "img_atlas",
+            "key"      : "game_atlas",
             "frame"    : "barHorizontal_green_right"
         },
         "energy_bar_left": {
             "in_atlas" : true,
-            "key"      : "img_atlas",
+            "key"      : "game_atlas",
             "frame"    : "barHorizontal_yellow_left"
         },
         "energy_bar_mid": {
             "in_atlas" : true,
-            "key"      : "img_atlas",
+            "key"      : "game_atlas",
             "frame"    : "barHorizontal_yellow_mid"
         },
         "energy_bar_right": {
             "in_atlas" : true,
-            "key"      : "img_atlas",
+            "key"      : "game_atlas",
             "frame"    : "barHorizontal_yellow_right"
         }
     }

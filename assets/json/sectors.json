@@ -2,7 +2,7 @@
     "sector_1": {
         "background": "dark_purple",
         "tilemap": "sector_1",
-        "tilesets": ["img_atlas"],
+        "tilesets": ["sector_tileset"],
         "layers": [
             {
                 "name": "scenery",
