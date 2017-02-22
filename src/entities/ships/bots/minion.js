@@ -25,10 +25,28 @@ App.Bots.Minion = (function () {
         main_gun.events.onFire.add((function () {
             this.setEnergy( this.getEnergy() - this.getMainGunBulletEnergyCost() );
         }).bind(this));
+
+        this.taxonomy = 'bot.enemy.minion';
     };
 
     fn.prototype = Object.create(App.Bot.prototype);
     fn.prototype.constructor = fn;
+
+    fn.prototype.setupCollisions = function () {
+        this.game.global.collision_manager.addToEnemiesCG(this);
+        this.game.global.collision_manager.setCollidesWithPlayersCG(this);
+        this.game.global.collision_manager.setCollidesWithPlayerProjectilesCG(this);
+        this.game.global.collision_manager.setCollidesWithEnemiesCG(this);
+        this.game.global.collision_manager.setCollidesWithSectorCG(this);
+    };
+
+    fn.prototype.isEnemy = function (ship) {
+        if (ship.getTaxonomy().match(/player/)) {
+            return true;
+        }
+        
+        return false;
+    };
 
     fn.prototype.tick = function () {
         if (this.alive) {

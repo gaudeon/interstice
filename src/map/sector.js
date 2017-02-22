@@ -108,7 +108,6 @@ App.Sector = (function () {
         var entity_layer = this.sectorConfig().object_layers['entities'];
 
         this.map.objects[entity_layer].forEach((function(entity) {
-            console.log(entity);
             //Phaser uses top left, Tiled bottom left so we have to adjust the y position
             //also keep in mind that the cup images are a bit smaller than the tile which is 16x16
             //so they might not be placed in the exact pixel position as in Tiled
@@ -151,6 +150,9 @@ App.Sector = (function () {
 
     fn.prototype.tileWidth  = function () { return this.map.tileWidth; };
     fn.prototype.tileHeight = function () { return this.map.tileHeight; };
+
+    fn.prototype.getBots   = function () { return this.bots; };
+    fn.prototype.getPlayer = function () { return this.player; };
 
     return fn;
 })();

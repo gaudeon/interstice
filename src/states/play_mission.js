@@ -76,7 +76,14 @@ App.PlayMissionState = (function () {
 
         this.hud.tick();
 
-        if (!this.player.alive) {
+        var still_has_enemies = false;
+        this.sector.getBots().forEach((function (bot) {
+            if (bot.isEnemy(this.sector.getPlayer()) && bot.alive) {
+                still_has_enemies = true;
+            }
+        }).bind(this));
+
+        if (!this.player.alive || !still_has_enemies) {
             this.state.start('MainMenu');
         }
     }

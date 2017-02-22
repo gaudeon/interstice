@@ -12,6 +12,8 @@ App.Player = (function () {
         this.config.assets   = this.config.assets   || game.cache.getJSON('assetsConfig');
         this.config.controls = this.config.controls || game.cache.getJSON('controlsConfig');
         this.config.player   = this.config.player   || game.cache.getJSON('playerConfig');
+
+        this.taxonomy = 'human.player';
     };
 
     fn.prototype = Object.create(App.Ship.prototype);

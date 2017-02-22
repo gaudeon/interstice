@@ -28,6 +28,9 @@ App.Ship = (function () {
 
         // track ship weapons
         this.weapons = this.weapons || {};
+
+        // default taxonomy
+        this.taxonomy = 'ship';
     };
 
     fn.prototype = Object.create(Phaser.Sprite.prototype);
@@ -54,6 +57,8 @@ App.Ship = (function () {
 
         this.events.onChangeAttribute.dispatch(key, value, old_value);
     };
+
+    fn.prototype.getTaxonomy = function () { return this.taxonomy; };
 
     return fn;
 })();

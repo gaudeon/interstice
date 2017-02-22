@@ -37,11 +37,7 @@ App.Bot = (function () {
         this.body.setRectangle(40, 40);
 
         // setup collision_group globallly if not there
-        this.game.global.collision_manager.addToEnemiesCG(this);
-        this.game.global.collision_manager.setCollidesWithPlayersCG(this);
-        this.game.global.collision_manager.setCollidesWithPlayerProjectilesCG(this);
-        this.game.global.collision_manager.setCollidesWithEnemiesCG(this);
-        this.game.global.collision_manager.setCollidesWithSectorCG(this);
+        this.setupCollisions();
 
         // audio
         this.audio = {};
@@ -51,6 +47,8 @@ App.Bot = (function () {
         this.events.onKilled.add((function () {
             this.audio.shipExplosionSound.play();
         }).bind(this));
+
+        this.taxonomy = 'bot';
     };
 
     fn.prototype = Object.create(App.Ship.prototype);
@@ -148,6 +146,14 @@ App.Bot = (function () {
         player_ray.fromSprite(this,this.player);
 
         return Phaser.Math.fuzzyEqual(forward_ray.normalAngle, player_ray.normalAngle, 0.05);
+    };
+
+    // default collisions setup, child bots should overwrite this
+    fn.prototype.setupCollisions = function () { };
+
+    // default is enemy test, child bots should overwrite this
+    fn.prototype.isEnemy = function (ship) {
+        return false;
     };
 
     return fn;
