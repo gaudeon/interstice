@@ -8,7 +8,7 @@
         "bullet_damage"       : 10,
         "bullet_energy_cost"  : 5,
         "bullet_lifespan"     : 5000,
-        "bullet_mass"         : 0.1
+        "bullet_mass"         : 0.01
     },
     "hulls": {
         "balanced": {
