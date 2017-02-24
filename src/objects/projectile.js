@@ -10,6 +10,7 @@ App.Projectile = (function () {
 
         // project attributes
         this.attributes = this.attributes || {};
+        this.attributes.mass = this.attributes.mass || 1; // get project mass from children or default to 1
 
         // enable physics
         game.physics.p2.enable(this, false);
@@ -17,6 +18,7 @@ App.Projectile = (function () {
         // physics settings
         this.body.fixedRotation = true;
         this.body._collideWorldBounds = false; // project bodies die when they go out of bounds
+        this.body.mass = this.attributes.mass;
 
         // Bullets should kill themselves when they leave the world.
         // Phaser takes care of this for me by setting this flag

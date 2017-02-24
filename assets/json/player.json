@@ -7,13 +7,14 @@
         "bullet_speed"        : 200,
         "bullet_damage"       : 10,
         "bullet_energy_cost"  : 5,
-        "bullet_lifespan"     : 5000
+        "bullet_lifespan"     : 5000,
+        "bullet_mass"         : 0.1
     },
     "hulls": {
         "balanced": {
             "name"              : "Balanced",
             "energy"            : 100,
-            "energy_regen_rate" : 0.1,
+            "energy_regen_rate" : 0.15,
             "health"            : 100,
             "health_regen_rate" : 0,
             "thrust"            : 300,

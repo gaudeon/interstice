@@ -1,7 +1,7 @@
 {
-  "name": "space_shooter",
+  "name": "interstice",
   "version": "1.0.0",
-  "description": "Space Shooter",
+  "description": "Interstice",
   "main": "server/index.js",
   "private": true,
   "scripts": {
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gaudeon/space_shooter.git"
+    "url": "git+https://github.com/gaudeon/interstice.git"
   },
   "author": "",
   "license": "SEE LICENSE IN LICENSE.md",
   "bugs": {
-    "url": "https://github.com/gaudeon/space_shooter/issues"
+    "url": "https://github.com/gaudeon/interstice/issues"
   },
-  "homepage": "https://github.com/gaudeon/space_shooter#readme",
+  "homepage": "https://github.com/gaudeon/interstice#readme",
   "dependencies": {
     "body-parser": "^1.15.2",
     "debug": "^2.2.0",
@@ -34,6 +34,7 @@
   },
   "devDependencies": {
     "lodash": "^4.17.0",
-    "phaser": "^2.6.2"
+    "phaser": "^2.6.2",
+    "phaser-ce": "^2.7.3"
   }
 }
