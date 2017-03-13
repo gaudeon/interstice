@@ -4,8 +4,8 @@ var App = App || {};
 App.Player = (function () {
     "use strict";
 
-    var fn = function (game) {
-        App.Ship.call(this, game);
+    var fn = function (game, collision_manager) {
+        App.Ship.call(this, game, 0, 0, null, null, collision_manager);
 
         // config data
         this.config          = this.config          || {};
@@ -127,7 +127,7 @@ App.Player = (function () {
         this.body.onBeginContact.add(this.impactHandler, this);
 
         // main gun
-        var main_gun = new App.WeaponPlayerMainGun(this.game);
+        var main_gun = new App.WeaponPlayerMainGun(this.game, this.collision_manager);
         main_gun.createProjectiles(this.getMainGunBulletPoolCount());
         main_gun.trackSprite(this);
         this.addWeapon('main_gun', main_gun);

@@ -4,19 +4,17 @@ var App = App || {};
 App.Bot = (function () {
     "use strict";
 
-    var fn = function (game, x, y, class_id) {
+    var fn = function (game, x, y, player, collision_manager, class_id) {
         // config data
         this.config       = this.config || {};
         this.config.bots  = this.config.bots || game.cache.getJSON('botsConfig');
         this.config.asset = this.config.assets || game.cache.getJSON('assetsConfig').bots[class_id];
 
-        App.Ship.call(this, game, x, y, this.config.asset.key);
+        App.Ship.call(this, game, x, y, this.config.asset.key, null, collision_manager);
 
         if (this.config.asset.in_atlas) {
             this.frameName = this.config.asset.frame;
         }
-
-        this.game = game;
 
         // sprite attributes
         this.anchor.setTo(this.config.bots[class_id].sprite.anchor);
@@ -25,8 +23,9 @@ App.Bot = (function () {
         // bot attributes
         this.attributes = this.attributes || {};
 
-        // this needs to be set for each bot
+        // these need to be set for each bot
         this.attributes.bot_class_id = class_id;
+        this.player                  = player;
 
         // setup bot attributes
         this.addAttribute('health', this.getMaxHealth());

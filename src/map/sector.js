@@ -5,10 +5,10 @@ App.Sector = (function () {
     "use strict";
 
     var fn = function (game, player, collision_manager, key) {
-        this.game   = game;
-        this.player = player;
-        this.gcm    = collision_manager;
-        this.key    = key;
+        this.game              = game;
+        this.player            = player;
+        this.collision_manager = collision_manager;
+        this.key               = key;
 
         // config data
         this.config          = this.config          || {};
@@ -77,7 +77,7 @@ App.Sector = (function () {
         }
 
         // setup world boundaries
-        this.gcm.setBounds(0, 0, this.widthInPixels(), this.heightInPixels());
+        this.collision_manager.setBounds(0, 0, this.widthInPixels(), this.heightInPixels());
 
         // setup sector collisions
         this.setupSectorCollisions();
@@ -94,11 +94,11 @@ App.Sector = (function () {
                // needed for p2 physics collisions to work
                var bodies = this.game.physics.p2.convertTilemap(this.map, layer.name);
                _.each(bodies, (function (body) {
-                   this.gcm.addToSectorCG(body);
-                   this.gcm.setCollidesWithPlayersCG(body);
-                   this.gcm.setCollidesWithPlayerProjectilesCG(body);
-                   this.gcm.setCollidesWithEnemiesCG(body);
-                   this.gcm.setCollidesWithEnemyProjectilesCG(body);
+                   this.collision_manager.addToSectorCG(body);
+                   this.collision_manager.setCollidesWithPlayersCG(body);
+                   this.collision_manager.setCollidesWithPlayerProjectilesCG(body);
+                   this.collision_manager.setCollidesWithEnemiesCG(body);
+                   this.collision_manager.setCollidesWithEnemyProjectilesCG(body);
                }).bind(this));
            }
         }).bind(this));
@@ -119,7 +119,7 @@ App.Sector = (function () {
 
                     break;
                 case 'bot_minion':
-                    var bot = new App.Bots.Minion(this.game, entity.x, entity.y);
+                    var bot = new App.Bots.Minion(this.game, entity.x, entity.y, this.player, this.collision_manager);
 
                     this.bots.add(this.game.add.existing(bot));
 

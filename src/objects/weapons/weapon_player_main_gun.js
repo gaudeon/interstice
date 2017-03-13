@@ -6,9 +6,9 @@ var App = App || {};
 App.WeaponPlayerMainGun = (function () {
     "use strict";
 
-    var fn = function (game) {
+    var fn = function (game, collision_manager) {
         // call bullet constructor
-        App.Weapon.call(this, game);
+        App.Weapon.call(this, game, collision_manager);
 
         // config data
         this.config = {};

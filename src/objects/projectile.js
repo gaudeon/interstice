@@ -4,9 +4,12 @@ var App = App || {};
 App.Projectile = (function () {
     "use strict";
 
-    var fn = function (game, x, y, key, frame) {
+    var fn = function (game, x, y, key, frame, collision_manager) {
         // call bullet constructor
         Phaser.Sprite.call(this, game, x, y, key, frame);
+
+        // the collision manager
+        this.collision_manager = collision_manager;
 
         // project attributes
         this.attributes = this.attributes || {};

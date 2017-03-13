@@ -6,8 +6,10 @@ var App = App || {};
 App.Weapon = (function () {
     "use strict";
 
-    var fn = function (game) {
+    var fn = function (game, collision_manager) {
         this.game = game;
+
+        this.collision_manager = collision_manager;
 
         // projectile Group
         this.projectilePool = this.game.add.group();
@@ -46,7 +48,7 @@ App.Weapon = (function () {
         // Create an object pool of bullets
         for(var i = 0; i < this.projectileCount; i++) {
             // Create each bullet and add it to the group.
-            var projectile = new this.projectileClass(this.game, 0, 0);
+            var projectile = new this.projectileClass(this.game, 0, 0, this.collision_manager);
             this.projectilePool.add(projectile);
         }
     };

@@ -5,18 +5,17 @@ App.Bots = App.Bots || {};
 App.Bots.Minion = (function () {
     "use strict";
 
-    var fn = function (game, x, y) {
+    var fn = function (game, x, y, player, collision_manager) {
         var class_id = 'minion';
 
-        App.Bot.call(this, game, x, y, class_id);
+        App.Bot.call(this, game, x, y, player, collision_manager, class_id);
 
-        this.player          = this.game.global.player;
         this.followingPlayer = false;
         this.followX         = this.game.world.randomX;
         this.followY         = this.game.world.randomY;
 
         // main gun
-        var main_gun = new App.WeaponMinionMainGun(this.game);
+        var main_gun = new App.WeaponMinionMainGun(this.game, collision_manager);
         main_gun.createProjectiles(this.getMainGunBulletPoolCount());
         main_gun.trackSprite(this);
         this.addWeapon('main_gun', main_gun);
@@ -33,18 +32,18 @@ App.Bots.Minion = (function () {
     fn.prototype.constructor = fn;
 
     fn.prototype.setupCollisions = function () {
-        this.game.global.collision_manager.addToEnemiesCG(this);
-        this.game.global.collision_manager.setCollidesWithPlayersCG(this);
-        this.game.global.collision_manager.setCollidesWithPlayerProjectilesCG(this);
-        this.game.global.collision_manager.setCollidesWithEnemiesCG(this);
-        this.game.global.collision_manager.setCollidesWithSectorCG(this);
+        this.collision_manager.addToEnemiesCG(this);
+        this.collision_manager.setCollidesWithPlayersCG(this);
+        this.collision_manager.setCollidesWithPlayerProjectilesCG(this);
+        this.collision_manager.setCollidesWithEnemiesCG(this);
+        this.collision_manager.setCollidesWithSectorCG(this);
     };
 
     fn.prototype.isEnemy = function (ship) {
         if (ship.getTaxonomy().match(/player/)) {
             return true;
         }
-        
+
         return false;
     };
 

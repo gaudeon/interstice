@@ -4,7 +4,7 @@ var App = App || {};
 App.ProjectilePlayerMainGun = (function () {
     "use strict";
 
-    var fn = function (game, x, y) {
+    var fn = function (game, x, y, collision_manager) {
         // config data
         this.config = {};
         this.config.assets = game.cache.getJSON('assetsConfig');
@@ -19,22 +19,21 @@ App.ProjectilePlayerMainGun = (function () {
         this.attributes.mass     = this.config.player.main_gun.bullet_mass;
 
         // call bullet constructor
-        App.Projectile.call(this, game, x, y, key);
+        App.Projectile.call(this, game, x, y, key, null, collision_manager);
 
         if (this.config.assets.bullets.green.in_atlas) {
             this.frameName = this.config.assets.bullets.green.frame;
         }
 
         // setup collisions
-        this.gcm = this.game.global.collision_manager;
-        this.gcm.addToPlayerProjectilesCG(this);
-        this.gcm.setCollidesWithEnemiesCG(this);
-        this.gcm.setCollidesWithSectorCG(this);
-        this.gcm.addCallbackForEnemiesCG(this, function (my_body, enemy_body) {
+        this.collision_manager.addToPlayerProjectilesCG(this);
+        this.collision_manager.setCollidesWithEnemiesCG(this);
+        this.collision_manager.setCollidesWithSectorCG(this);
+        this.collision_manager.addCallbackForEnemiesCG(this, function (my_body, enemy_body) {
             enemy_body.sprite.damage(this.attributes.damage);
             this.kill();
         }, this);
-        this.gcm.addCallbackForEnemyProjectilesCG(this, function (my_body, player_body) {
+        this.collision_manager.addCallbackForEnemyProjectilesCG(this, function (my_body, player_body) {
             this.kill();
         }, this);
     };

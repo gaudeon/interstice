@@ -4,9 +4,9 @@ var App = App || {};
 App.HUD = (function () {
     "use strict";
 
-    var fn = function (game) {
+    var fn = function (game, player) {
         this.game = game;
-        this.player = this.game.global.player;
+        this.player = player;
 
         // config data
         this.config        = {};

@@ -11,82 +11,56 @@ App.PlayMissionState = (function () {
     fn.prototype = Object.create(Phaser.State.prototype);
     fn.prototype.constructor = fn;
 
-    fn.prototype.init = function () {
-        // config
-        this.config = {};
-        this.config.assets = game.cache.getJSON('assetsConfig');
-        this.config.bots   = this.game.cache.getJSON('botsConfig');
+    fn.prototype.init = function (mission) {
+        // for now default mission to KillMinionsMission
+        if ("undefined" === typeof mission) {
+            mission = "KillMinionsMission";
+        }
 
-        // setup collision manager for p2 physics collisions
-        this.gcm = this.game.global.collision_manager = new App.CollisionManager(this.game);
+        // load mission
+        var mission_object = eval("App." + mission);
+        if ("undefined" === typeof mission_object) {
+            mission_object = App.KillMinionsMission;
+        }
 
-        // setup player object
-        this.player = this.game.global.player = new App.Player(this.game);
-
-        // setup the sector object
-        this.sector = new App.Sector(this.game, this.player, this.gcm, 'sector_1');
+        this.mission = new mission_object(this.game);
 
         // setup hud
-        this.hud = new App.HUD(this.game);
+        this.hud = new App.HUD(this.game, this.mission.getPlayer());
     };
 
     fn.prototype.preload = function () {
-        // load image atlases so everything else can use them
-        _.each(_.keys(this.config.assets.atlases), (function (key) {
-            var atlas_asset = this.config.assets.atlases[key];
-            this.game.load.atlas(atlas_asset.key, atlas_asset.file, atlas_asset.json, Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
-        }).bind(this));
-
-        // sector assets
-        this.sector.loadAssets();
-
-        // player assets
-        this.player.loadAssets();
-
-        // bullet assets
-        _.each(_.keys(this.config.assets.bullets), (function (bullet_type) {
-            var bullet_asset = this.config.assets.bullets[bullet_type];
-            if (!bullet_asset.in_atlas) {
-                this.load.image(bullet_asset.key, bullet_asset.file);
-            }
-        }).bind(this));
-
-        // bot assets TODO: only load bot assets we use on a stage
-        _.each(_.keys(this.config.bots), (function (bot_class_id) {
-            var bot_asset_config = this.config.assets.bots[bot_class_id];
-            if (!bot_asset_config.in_atlas) {
-                this.load.image(bot_asset_config.key, bot_asset_config.file);
-            }
-        }).bind(this));
+        // mission assets
+        this.mission.loadAssets();
 
         // hud assets
         this.hud.loadAssets();
     };
 
     fn.prototype.create = function () {
-        // setup sector
-        this.sector.setupSector();
+        // mission
+        this.mission.setupMission();
 
         // hud
         this.hud.setupHUD();
     };
 
     fn.prototype.update = function () {
-        this.sector.tick();
+        this.mission.tick();
 
         this.hud.tick();
 
         var still_has_enemies = false;
-        this.sector.getBots().forEach((function (bot) {
-            if (bot.isEnemy(this.sector.getPlayer()) && bot.alive) {
+        this.mission.sector.getBots().forEach((function (bot) {
+            if (bot.isEnemy(this.mission.sector.getPlayer()) && bot.alive) {
                 still_has_enemies = true;
             }
         }).bind(this));
 
-        if (!this.player.alive || !still_has_enemies) {
+        if (!this.mission.player.alive || !still_has_enemies) {
             this.state.start('MainMenu');
         }
-    }
+    };
 
     return fn;
 })();
