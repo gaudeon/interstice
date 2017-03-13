@@ -50,6 +50,7 @@ App.PlayMissionState = (function () {
 
         this.hud.tick();
 
+        // TODO: move this into mission as objective that when complete fires a success or failure signal. Then we add a signal callback in this state to change to the next state
         var still_has_enemies = false;
         this.mission.sector.getBots().forEach((function (bot) {
             if (bot.isEnemy(this.mission.sector.getPlayer()) && bot.alive) {
