@@ -43,24 +43,22 @@ App.PlayMissionState = (function () {
 
         // hud
         this.hud.setupHUD();
+
+        // define what happens when player successfully completes mission
+        this.mission.events.onSuccess.add((function () {
+            this.state.start('MainMenu');
+        }).bind(this));
+
+        // define what happens when a player fails to complete a mission
+        this.mission.events.onFailure.add((function () {
+            this.state.start('MainMenu');
+        }).bind(this));
     };
 
     fn.prototype.update = function () {
         this.mission.tick();
 
         this.hud.tick();
-
-        // TODO: move this into mission as objective that when complete fires a success or failure signal. Then we add a signal callback in this state to change to the next state
-        var still_has_enemies = false;
-        this.mission.sector.getBots().forEach((function (bot) {
-            if (bot.isEnemy(this.mission.sector.getPlayer()) && bot.alive) {
-                still_has_enemies = true;
-            }
-        }).bind(this));
-
-        if (!this.mission.player.alive || !still_has_enemies) {
-            this.state.start('MainMenu');
-        }
     };
 
     return fn;

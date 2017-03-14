@@ -115,10 +115,15 @@ App.Mission = (function () {
     };
 
     fn.prototype.isMissionSuccess = function () {
+        // it's not successful if there are not objectives
+        if (Object.keys(this.success_objectives).length < 1) {
+            return false;
+        }
+
         var all_objectives_successful = true;
 
         for (var key in this.success_objectives) {
-            if (!this.success_objectives[key].isComplete) {
+            if (!this.success_objectives[key].isComplete()) {
                 all_objectives_successful = false;
                 break;
             }
@@ -128,10 +133,15 @@ App.Mission = (function () {
     };
 
     fn.prototype.isMissionFailure = function () {
+        // it's not successful if there are not objectives
+        if (Object.keys(this.failure_objectives).length < 1) {
+            return false;
+        }
+
         var all_objectives_failure = true;
 
         for (var key in this.failure_objectives) {
-            if (!this.failure_objectives[key].isComplete) {
+            if (!this.failure_objectives[key].isComplete()) {
                 all_objectives_failure = false;
                 break;
             }
