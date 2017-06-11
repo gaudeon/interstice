@@ -8,8 +8,7 @@ A 2D top down space shooter with lite RPG Elements
 
 ## Setup
 1. clone the repo
-2. run: `npm install`
-3. run: `gulp`
+4. run: `npm start`
 4. browse to localhost:8080 in your browser
 
 ## Creating Distribution Versions
