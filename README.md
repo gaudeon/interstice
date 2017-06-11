@@ -4,7 +4,7 @@ A 2D top down space shooter with lite RPG Elements
 
 ## Requirements
 - node.js
-- gulp
+- yarn
 
 ## Setup
 1. clone the repo
