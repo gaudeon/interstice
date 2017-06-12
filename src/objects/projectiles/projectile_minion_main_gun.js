@@ -2,6 +2,9 @@ import Projectile from '../projectile';
 
 export default class ProjectileMinionMainGun extends Projectile {
     constructor (game, x, y, collision_manager) {
+        // call bullet constructor
+        super(game, x, y, key, null, collision_manager);
+
         // config data
         this.config = {};
         this.config.assets = game.cache.getJSON('assetsConfig');
@@ -10,13 +13,10 @@ export default class ProjectileMinionMainGun extends Projectile {
         var key = this.config.assets.bullet_red.key;
 
         // setup this projectiles attributes
-        this.attributes = {};
+        this.attributes = this.attributes || {};
         this.attributes.damage   = this.config.bots.minion.main_gun.bullet_damage;
         this.attributes.lifespan = this.config.bots.minion.main_gun.bullet_lifespan;
         this.attributes.mass     = this.config.bots.minion.main_gun.bullet_mass;
-
-        // call bullet constructor
-        super(game, x, y, key, null, collision_manager);
 
         if (this.config.assets.bullets.red.in_atlas) {
             this.frameName = this.config.assets.bullet_red.frame;

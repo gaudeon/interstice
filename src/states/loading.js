@@ -1,8 +1,3 @@
-// web fonts
-import WebFont from 'webfontloader';
-require('../../assets/css/fonts.css');
-require('../../assets/fonts/Exo2-SemiBold.ttf');
-
 // json configuration
 import assetsConfig from '../../assets/json/assets.json';
 import controlsConfig from '../../assets/json/controls.json';
@@ -13,38 +8,37 @@ import hudConfig from '../../assets/json/hud.json';
 import sectorsConfig from '../../assets/json/sectors.json';
 import missionsConfig from '../../assets/json/missions.json';
 
-// require assets
-_.each(
-    _.filter(
-        Object.keys(assetsConfig),
-        (key) => { return "undefined" !== typeof(assetsConfig[key]['file']); }
-    ),
-    (key) => {
-        require('../../' + assetsConfig[key]['file']);
-    }
-);
+// web fonts
+import WebFont from 'webfontloader';
+require('../../assets/css/fonts.css');
+require('../../assets/fonts/Exo2-SemiBold.ttf');
+
+// require asset files so webpack pulls them into dist
+require('../../assets/sounds/thrust.wav');
+require('../../assets/sounds/bullet.wav');
+require('../../assets/sounds/ship_explosion.wav');
+require('../../assets/json/tilemaps/sector_1.json');
+require('../../assets/images/scenery_tileset.png');
+require('../../assets/images/sector_tileset.png');
+require('../../assets/images/game_atlas.png');
 
 export default class LoadingState extends Phaser.State {
-    constructor (game) {
-        super(game);
-    }
-
     init () {
         // font loading
         this.are_fonts_loaded = false;
 
-        //var loading_text = "Loading..."; # no need, loads to fast
-        var loading_text = "";
+        // var loadingText = "Loading..."; # no need, loads to fast
+        var loadingText = '';
 
-        var text = this.add.text(0, 0, loading_text, {
-            font: "Helvetica, Arial, Sans-Serif",
-            fill: "#ffffff",
+        var text = this.add.text(0, 0, loadingText, {
+            font: 'Helvetica, Arial, Sans-Serif',
+            fill: '#ffffff',
             fontSize: 48,
-            boundsAlignH: "center",
-            boundsAlignV: "middle"
+            boundsAlignH: 'center',
+            boundsAlignV: 'middle'
         });
 
-        text.setTextBounds(0,0,this.world.width,this.world.height);
+        text.setTextBounds(0, 0, this.world.width, this.world.height);
     }
 
     preload () {
@@ -60,9 +54,9 @@ export default class LoadingState extends Phaser.State {
 
         // load web fonts
         WebFont.load({
-            active: (function () {
+            active: function () {
                 this.webfontloaded();
-            }).bind(this),
+            }.bind(this),
             custom: {
                 families: ['Exo2 SemiBold'],
                 urls: ['/assets/fonts.css']

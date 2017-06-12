@@ -5,27 +5,23 @@ import KillMinionsMission from '../levels/missions/kill_minions';
 import HUD from '../ui/hud';
 
 const MissionDictionary = {
-    "KillMinions": KillMinionsMission
+    'KillMinions': KillMinionsMission
 };
 
 export default class PlayMissionState extends Phaser.State {
-    constructor (game) {
-        super(game);
-    }
-
     init (mission) {
         // for now default mission to KillMinionsMission
-        if ("undefined" === typeof mission) {
-            mission = "KillMinions";
+        if (typeof mission === 'undefined') {
+            mission = 'KillMinions';
         }
 
         // load mission
-        var mission_object = MissionDictionary[mission];
-        if ("undefined" === typeof mission_object) {
-            mission_object = MissionDictionary["KillMinions"];
+        let MissionClass = MissionDictionary[mission];
+        if (typeof MissionClass === 'undefined') {
+            MissionClass = MissionDictionary['KillMinions'];
         }
 
-        this.mission = new mission_object(this.game);
+        this.mission = new MissionClass(this.game);
 
         // setup hud
         this.hud = new HUD(this.game, this.mission.getPlayer());
@@ -47,14 +43,14 @@ export default class PlayMissionState extends Phaser.State {
         this.hud.setupHUD();
 
         // define what happens when player successfully completes mission
-        this.mission.events.onSuccess.add((function () {
+        this.mission.events.onSuccess.add(function () {
             this.state.start('MainMenu');
-        }).bind(this));
+        }.bind(this));
 
         // define what happens when a player fails to complete a mission
-        this.mission.events.onFailure.add((function () {
+        this.mission.events.onFailure.add(function () {
             this.state.start('MainMenu');
-        }).bind(this));
+        }.bind(this));
     }
 
     update () {

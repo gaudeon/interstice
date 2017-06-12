@@ -3,13 +3,14 @@ import Ship from '../ship';
 export default class Bot extends Ship {
     constructor (game, x, y, player, collision_manager, class_id) {
         const BOT_ASSET_KEY = 'bot_' + class_id;
+        let assetConfig     = game.cache.getJSON('assetsConfig')[BOT_ASSET_KEY];
+
+        super(game, x, y, assetConfig.key, null, collision_manager);
 
         // config data
         this.config       = this.config || {};
-        this.config.bots  = this.config.bots || game.cache.getJSON('botsConfig');
-        this.config.asset = this.config.assets || game.cache.getJSON('assetsConfig')[BOT_ASSET_KEY];
-
-        super(game, x, y, this.config.asset.key, null, collision_manager);
+        this.config.bots  = game.cache.getJSON('botsConfig');
+        this.config.asset = assetConfig;
 
         if (this.config.asset.in_atlas) {
             this.frameName = this.config.asset.frame;

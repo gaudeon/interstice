@@ -1,8 +1,8 @@
-export default classe MinionBot extends Bot {
-    constructor (game, x, y, player, collision_manager) {
-        var class_id = 'minion';
+import Bot from '../bot';
 
-        super(game, x, y, player, collision_manager, class_id);
+export default class MinionBot extends Bot {
+    constructor (game, x, y, player, collision_manager) {
+        super(game, x, y, player, collision_manager, 'minion');
 
         this.followingPlayer = false;
         this.followX         = this.game.world.randomX;

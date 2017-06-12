@@ -60,12 +60,13 @@ export default class Player extends Ship {
 
     // load assets
     loadAssets () {
-        _.each(['balanced'], (function (class_id) {
-            var player_hull_asset = this.config.assets.player.hulls[class_id];
+        _.each(['balanced'], (class_id) => {
+            const PLAYER_HULL_CLASS_ID = 'player_hull_' + class_id;
+            let player_hull_asset = this.config.assets[PLAYER_HULL_CLASS_ID];
             if (!player_hull_asset.in_atlas) {
                 this.game.load.image(player_hull_asset.key, player_hull_asset.file);
             }
-        }).bind(this));
+        });
 
         // sounds
         var thrust = this.config.assets[this.thrust_sound_asset_key()];
@@ -86,9 +87,10 @@ export default class Player extends Ship {
         if ('undefined' === typeof x) x = this.game.world.width / 2;
         if ('undefined' === typeof y) y = this.game.world.height / 2;
 
-        this.loadTexture(this.config.assets.player.hulls[this.ship_class_id].key);
-        if (this.config.assets.player.hulls[this.ship_class_id].in_atlas) {
-            this.frameName = this.config.assets.player.hulls[this.ship_class_id].frame;
+        const PLAYER_HULL_CLASS_ID = 'player_hull_' + this.ship_class_id;
+        this.loadTexture(this.config.assets[PLAYER_HULL_CLASS_ID].key);
+        if (this.config.assets[PLAYER_HULL_CLASS_ID].in_atlas) {
+            this.frameName = this.config.assets[PLAYER_HULL_CLASS_ID].frame;
         }
         this.reset(x, y);
 
@@ -139,10 +141,10 @@ export default class Player extends Ship {
 
         // keyboard events
         this.keyboard = this.game.input.keyboard.createCursorKeys();
-        _.each(['thrustForward','thrustReverse','rotateLeft','rotateRight','fireBullets'], (function (control) {
+        _.each(['thrustForward','thrustReverse','rotateLeft','rotateRight','fireBullets'], (control) => {
             var keycode = Phaser.KeyCode[this.config.controls[control]];
             this.keyboard[control] = this.game.input.keyboard.addKey(keycode);
-        }).bind(this));
+        });
 
         // thruster audio events
         this.keyboard.thrustForward.onDown.add((function() {

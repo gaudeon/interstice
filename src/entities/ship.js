@@ -1,11 +1,11 @@
 export default class Ship extends Phaser.Sprite {
-    constructor (game, x, y, key, frame, collision_manager) {
+    constructor (game, x, y, key, frame, collisionManager) {
         // call sprite constructor
         super(game, x, y, key, frame);
 
         // config data
-        this.config        = this.config        || {};
-        this.config.assets = this.config.assets || this.game.cache.getJSON('assetsConfig');
+        this.config = this.config || {};
+        this.config.assets = this.game.cache.getJSON('assetsConfig');
 
         // enable p2 physics
         this.game.physics.p2.enable(this, false);
@@ -13,11 +13,11 @@ export default class Ship extends Phaser.Sprite {
         // ship attributes
         this.attributes = this.attributes || {};
 
-        // add alias to the collision_manager
-        this.collision_manager = collision_manager;
+        // add alias to the collisionManager
+        this.collisionManager = collisionManager;
 
         // addition event signals this.events is a Phaser.Events object
-        this.events                   = this.events || {};
+        this.events = this.events || {};
         this.events.onChangeAttribute = new Phaser.Signal();
 
         // track ship weapons
@@ -27,7 +27,7 @@ export default class Ship extends Phaser.Sprite {
         this.taxonomy = 'ship';
     }
 
-    getCollisionManager () { return this.collision_manager; }
+    getCollisionManager () { return this.collisionManager; }
 
     getWeapon (key) {
         if (!this.weapons[key]) return;
@@ -42,11 +42,11 @@ export default class Ship extends Phaser.Sprite {
     getAttribute (key) { return this.attributes[key]; }
 
     setAttribute (key, value) {
-        var old_value = this.attributes[key];
+        var oldValue = this.attributes[key];
 
         this.attributes[key] = value;
 
-        this.events.onChangeAttribute.dispatch(key, value, old_value);
+        this.events.onChangeAttribute.dispatch(key, value, oldValue);
     }
 
     addAttribute (key, value) { this.setAttribute(key, value); }

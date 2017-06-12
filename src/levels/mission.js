@@ -5,17 +5,17 @@ import Sector from '../map/sector';
 export default class Mission {
     constructor (game, key) {
         this.game = game;
-        this.key  = key;
+        this.key = key;
 
         // config data
-        this.config          = this.config || {};
+        this.config = this.config || {};
         this.config.missions = game.cache.getJSON('missionsConfig');
-        this.config.assets   = game.cache.getJSON('assetsConfig');
-        this.config.bots     = game.cache.getJSON('botsConfig');
+        this.config.assets = game.cache.getJSON('assetsConfig');
+        this.config.bots = game.cache.getJSON('botsConfig');
 
         // mission keys should be defined in any child object inheriting from this object
-        if ("undefined" === typeof this.key || "undefined" === typeof this.config.missions[this.key]) {
-            throw "mission key is not defined";
+        if (typeof this.key === 'undefined' || typeof this.config.missions[this.key] === 'undefined') {
+            throw new Error('mission key is not defined');
         }
 
         this.config.mission = this.config.missions[this.key];
@@ -46,8 +46,8 @@ export default class Mission {
                 (key) => { return key.match(/^atlas_/); }
             ),
             (key) => {
-                var atlas_asset = this.config.assets[key];
-                this.game.load.atlas(atlas_asset.key, atlas_asset.file, atlas_asset.json, Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
+                var atlasAsset = this.config.assets[key];
+                this.game.load.atlas(atlasAsset.key, atlasAsset.file, atlasAsset.json, Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
             }
         );
 
@@ -58,20 +58,22 @@ export default class Mission {
         this.player.loadAssets();
 
         // bullet assets
-        _.each(_.keys(this.config.assets.bullets), (function (bullet_type) {
-            var bullet_asset = this.config.assets.bullets[bullet_type];
-            if (!bullet_asset.in_atlas) {
-                this.load.image(bullet_asset.key, bullet_asset.file);
+        _.each(_.keys(this.config.assets.bullets), function (bulletType) {
+            const BULLET_ASSET_KEY = 'bullet_' + bulletType;
+            let bulletAsset = this.config.assets[BULLET_ASSET_KEY];
+            if (!bulletAsset.in_atlas) {
+                this.load.image(bulletAsset.key, bulletAsset.file);
             }
-        }).bind(this));
+        }.bind(this));
 
         // bot assets TODO: only load bot assets we use on a stage
-        _.each(_.keys(this.config.bots), (function (bot_class_id) {
-            var bot_asset_config = this.config.assets.bots[bot_class_id];
-            if (!bot_asset_config.in_atlas) {
-                this.load.image(bot_asset_config.key, bot_asset_config.file);
+        _.each(_.keys(this.config.bots), function (botClassId) {
+            const BOTS_ASSET_KEY = 'bot_' + botClassId;
+            let botAssetConfig = this.config.assets[BOTS_ASSET_KEY];
+            if (!botAssetConfig.in_atlas) {
+                this.load.image(botAssetConfig.key, botAssetConfig.file);
             }
-        }).bind(this));
+        }.bind(this));
     }
 
     setupMission () {
@@ -98,16 +100,16 @@ export default class Mission {
     getCollisionManager () { return this.collision_manager; }
 
     addSuccessObjective (key, objective) {
-        if ("undefined" === typeof objective || "function" !== typeof objective.isComplete) {
-            throw "invalid objectitve";
+        if (typeof objective === 'undefined' || typeof objective.isComplete !== 'function') {
+            throw new Error('invalid objective');
         }
 
         this.success_objectives[key] = objective;
     }
 
     addFailureObjective (key, objective) {
-        if ("undefined" === typeof objective || "function" !== typeof objective.isComplete) {
-            throw "invalid objectitve";
+        if (typeof objective === 'undefined' || typeof objective.isComplete !== 'function') {
+            throw new Error('invalid objective');
         }
 
         this.failure_objectives[key] = objective;
@@ -127,16 +129,16 @@ export default class Mission {
             return false;
         }
 
-        var all_objectives_successful = true;
+        var allObjectivesSuccessful = true;
 
         for (var key in this.success_objectives) {
             if (!this.success_objectives[key].isComplete()) {
-                all_objectives_successful = false;
+                allObjectivesSuccessful = false;
                 break;
             }
         }
 
-        return all_objectives_successful;
+        return allObjectivesSuccessful;
     }
 
     isMissionFailure () {
@@ -145,15 +147,15 @@ export default class Mission {
             return false;
         }
 
-        var all_objectives_failure = true;
+        var allObjectivesFailure = true;
 
         for (var key in this.failure_objectives) {
             if (!this.failure_objectives[key].isComplete()) {
-                all_objectives_failure = false;
+                allObjectivesFailure = false;
                 break;
             }
         }
 
-        return all_objectives_failure;
+        return allObjectivesFailure;
     }
 };

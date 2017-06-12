@@ -1,10 +1,10 @@
-export default class Projectile {
-    constructor (game, x, y, key, frame, collision_manager) {
+export default class Projectile extends Phaser.Sprite {
+    constructor (game, x, y, key, frame, collisionManager) {
         // call bullet constructor
         super(game, x, y, key, frame);
 
         // the collision manager
-        this.collision_manager = collision_manager;
+        this.collisionManager = collisionManager;
 
         // project attributes
         this.attributes = this.attributes || {};

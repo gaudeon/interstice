@@ -66,7 +66,7 @@ module.exports = {
                 }],
             },
             {
-                test: /\.(css|jpe?g|gif|png|svg|woff|ttf|wav|mp3)$/,
+                test: /assets\/.*\.(css|jpe?g|gif|png|svg|woff|ttf|wav|mp3)$/,
                 use: [{
                     loader: "file-loader",
                     options: {
@@ -84,7 +84,9 @@ module.exports = {
     resolve: {
         alias: {
             'phaser': phaser,
+            'Phaser': phaser,
             'pixi': pixi,
+            'PIXI': pixi,
             'p2': p2
         }
     }

@@ -1,16 +1,17 @@
 // Note: Bullets need to be used by a weapon, arcade physics will be applied object instanciated with this clas
+import Projectile from './projectile';
 
 export default class Weapon {
-    constructor (game, collision_manager) {
+    constructor (game, collisionManager) {
         this.game = game;
 
-        this.collision_manager = collision_manager;
+        this.collisionManager = collisionManager;
 
         // projectile Group
         this.projectilePool = this.game.add.group();
 
         // the class type of the projectile fired
-        this.projectileClass = App.Projectile;
+        this.ProjectileClass = Projectile;
 
         // the default amount of projectiles created
         this.projectileCount = 20;
@@ -41,9 +42,9 @@ export default class Weapon {
         this.projectileCount = quantity; // update projectileCount
 
         // Create an object pool of bullets
-        for(var i = 0; i < this.projectileCount; i++) {
+        for (var i = 0; i < this.projectileCount; i++) {
             // Create each bullet and add it to the group.
-            var projectile = new this.projectileClass(this.game, 0, 0, this.collision_manager);
+            var projectile = new this.ProjectileClass(this.game, 0, 0, this.collisionManager);
             this.projectilePool.add(projectile);
         }
     }
@@ -90,13 +91,12 @@ export default class Weapon {
 
             projectile.rotation = this.originSprite.rotation;
 
-            var forward_rotation = this.originSprite.rotation - this.game.math.degToRad(this.projectileAngleOffset);
+            var forwardRotation = this.originSprite.rotation - this.game.math.degToRad(this.projectileAngleOffset);
 
             // Shoot it in the right direction
-            projectile.body.velocity.x = Math.cos(forward_rotation) * speed;
-            projectile.body.velocity.y = Math.sin(forward_rotation) * speed;
-        }
-        else {
+            projectile.body.velocity.x = Math.cos(forwardRotation) * speed;
+            projectile.body.velocity.y = Math.sin(forwardRotation) * speed;
+        } else {
             projectile.reset(projectile.startX, projectile.startY);
 
             console.log('firing without a originSprite is not yet implemented.');
