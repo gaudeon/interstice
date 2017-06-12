@@ -1,10 +1,5 @@
-// namespace
-var App = App || {};
-
-App.HUD = (function () {
-    "use strict";
-
-    var fn = function (game, player) {
+export default class HUD {
+    constructor (game, player) {
         this.game = game;
         this.player = player;
 
@@ -12,17 +7,23 @@ App.HUD = (function () {
         this.config        = {};
         this.config.assets = this.game.cache.getJSON('assetsConfig');
         this.config.hud    = this.game.cache.getJSON('hudConfig');
-    };
+    }
 
-    fn.prototype.loadAssets = function () {
-        _.each(_.keys(this.config.assets.ui), (function (el) {
-            if (!this.config.assets.ui[el].in_atlas) {
-                this.game.load.image(this.config.assets.ui[el].key, this.config.assets.ui[el].file);
+    loadAssets () {
+        _.each(
+            _.filter(
+                _.keys(this.config.assets),
+                (key) => { return key.match(/^ui_/); }
+            ),
+            (el) => {
+                if (!this.config.assets[el].in_atlas) {
+                    this.game.load.image(this.config.assets[el].key, this.config.assets[el].file);
+                }
             }
-        }).bind(this));
-    };
+        );
+    }
 
-    fn.prototype.setupHUD = function () {
+    setupHUD () {
         this.hud = this.game.add.group();
         this.hud.fixedToCamera = true;
 
@@ -36,18 +37,18 @@ App.HUD = (function () {
             var x = this.config.hud[bar].x;
             var y = this.config.hud[bar].y;
 
-            this[bar].bg.left = this.game.add.sprite(x, y, this.config.assets.ui.bar_bg_left.key, this.config.assets.ui.bar_bg_left.frame);
+            this[bar].bg.left = this.game.add.sprite(x, y, this.config.assets.ui_bar_bg_left.key, this.config.assets.ui_bar_bg_left.frame);
             this[bar].bg.left.alpha = this.config.hud.bar_bg.alpha;
             this.hud.add(this[bar].bg.left);
 
             x += this[bar].bg.left.width;
-            this[bar].bg.mid = this.game.add.sprite(x, y, this.config.assets.ui.bar_bg_mid.key, this.config.assets.ui.bar_bg_mid.frame);
+            this[bar].bg.mid = this.game.add.sprite(x, y, this.config.assets.ui_bar_bg_mid.key, this.config.assets.ui_bar_bg_mid.frame);
             this[bar].bg.mid.width = bar == 'health_bar' ? this.player.getHullHealth() : this.player.getHullEnergy();
             this[bar].bg.mid.alpha = this.config.hud.bar_bg.alpha;
             this.hud.add(this[bar].bg.mid);
 
             x += this[bar].bg.mid.width;
-            this[bar].bg.right = this.game.add.sprite(x, y, this.config.assets.ui.bar_bg_right.key, this.config.assets.ui.bar_bg_right.frame);
+            this[bar].bg.right = this.game.add.sprite(x, y, this.config.assets.ui_bar_bg_right.key, this.config.assets.ui_bar_bg_right.frame);
             this[bar].bg.right.alpha = this.config.hud.bar_bg.alpha;
             this.hud.add(this[bar].bg.right);
 
@@ -56,24 +57,24 @@ App.HUD = (function () {
 
             x = this.config.hud[bar].x;
             y = this.config.hud[bar].y;
-            this[bar].fg.left = this.game.add.sprite(x, y, this.config.assets.ui[bar + '_left'].key, this.config.assets.ui[bar + '_left'].frame);
+            this[bar].fg.left = this.game.add.sprite(x, y, this.config.assets['ui_' + bar + '_left'].key, this.config.assets['ui_' + bar + '_left'].frame);
             this[bar].fg.left.alpha = this.config.hud[bar].alpha;
             this.hud.add(this[bar].fg.left);
 
             x += this[bar].fg.left.width;
-            this[bar].fg.mid = this.game.add.sprite(x, y, this.config.assets.ui[bar + '_mid'].key, this.config.assets.ui[bar + '_mid'].frame);
+            this[bar].fg.mid = this.game.add.sprite(x, y, this.config.assets['ui_' + bar + '_mid'].key, this.config.assets['ui_' + bar + '_mid'].frame);
             this[bar].fg.mid.width = bar == 'health_bar' ? this.player.getHullHealth() : this.player.getHullEnergy();
             this[bar].fg.mid.alpha = this.config.hud[bar].alpha;
             this.hud.add(this[bar].fg.mid);
 
             x += this[bar].fg.mid.width;
-            this[bar].fg.right = this.game.add.sprite(x, y, this.config.assets.ui[bar + '_right'].key, this.config.assets.ui[bar + '_right'].frame);
+            this[bar].fg.right = this.game.add.sprite(x, y, this.config.assets['ui_' + bar + '_right'].key, this.config.assets['ui_' + bar + '_right'].frame);
             this[bar].fg.right.alpha = this.config.hud[bar].alpha;
             this.hud.add(this[bar].fg.right);
         }).bind(this));
-    };
+    }
 
-    fn.prototype.tick = function () {
+    tick () {
         _.each(['health_bar', 'energy_bar'], (function (bar) {
 
             var amount = bar == 'health_bar' ? this.player.getHealth() : this.player.getEnergy();
@@ -94,7 +95,6 @@ App.HUD = (function () {
                 this[bar].fg.right.reset(x,y);
             }
         }).bind(this));
-    };
+    }
 
-    return fn;
-})();
+};

@@ -1,16 +1,15 @@
-// namespace
-var App = App || {};
+import Ship from '../ship';
 
-App.Bot = (function () {
-    "use strict";
+export default class Bot extends Ship {
+    constructor (game, x, y, player, collision_manager, class_id) {
+        const BOT_ASSET_KEY = 'bot_' + class_id;
 
-    var fn = function (game, x, y, player, collision_manager, class_id) {
         // config data
         this.config       = this.config || {};
         this.config.bots  = this.config.bots || game.cache.getJSON('botsConfig');
-        this.config.asset = this.config.assets || game.cache.getJSON('assetsConfig').bots[class_id];
+        this.config.asset = this.config.assets || game.cache.getJSON('assetsConfig')[BOT_ASSET_KEY];
 
-        App.Ship.call(this, game, x, y, this.config.asset.key, null, collision_manager);
+        super(game, x, y, this.config.asset.key, null, collision_manager);
 
         if (this.config.asset.in_atlas) {
             this.frameName = this.config.asset.frame;
@@ -39,8 +38,9 @@ App.Bot = (function () {
         this.setupCollisions();
 
         // audio
+        const SHIP_EXPLOSION_SOUND_ASSET_KEY = 'sound_ship_explosion';
         this.audio = {};
-        this.audio.shipExplosionSound = this.game.add.audio(this.config.assets.sounds.ship_explosion.key);
+        this.audio.shipExplosionSound = this.game.add.audio(this.config.assets[SHIP_EXPLOSION_SOUND_ASSET_KEY].key);
 
         // explode on death
         this.events.onKilled.add((function () {
@@ -48,57 +48,54 @@ App.Bot = (function () {
         }).bind(this));
 
         this.taxonomy = 'bot';
-    };
+    }
 
-    fn.prototype = Object.create(App.Ship.prototype);
-    fn.prototype.constructor = fn;
-
-    fn.prototype.getBotClassId  = function () {
+    getBotClassId  () {
         if ('undefined' === typeof this.attributes.bot_class_id) {
             throw "Bot Class Id is not defined";
         }
 
         return this.attributes.bot_class_id;
-    };
+    }
 
-    fn.prototype.getBotConfig            = function () { return this.config.bots[this.getBotClassId()]; };
-    fn.prototype.getSpeed                = function () { return this.getBotConfig().speed; };
-    fn.prototype.getCollisionGroup       = function () { return this.collision_group; };
-    fn.prototype.getTargetingAngleOffset = function () { return this.getBotConfig().targeting_angle_offset; };
-    fn.prototype.getMaxEnergy            = function () { return this.getBotConfig().energy; };
-    fn.prototype.getEnergyRegenRate      = function () { return this.getBotConfig().energy_regen_rate; };
-    fn.prototype.getEnergyIsShield       = function () { return this.getBotConfig().energy_is_shield; };
-    fn.prototype.getMaxHealth            = function () { return this.getBotConfig().health; };
-    fn.prototype.getHealthRegenRate      = function () { return this.getBotConfig().health_regen_rate; };
+    getBotConfig            () { return this.config.bots[this.getBotClassId()]; }
+    getSpeed                () { return this.getBotConfig().speed; }
+    getCollisionGroup       () { return this.collision_group; }
+    getTargetingAngleOffset () { return this.getBotConfig().targeting_angle_offset; }
+    getMaxEnergy            () { return this.getBotConfig().energy; }
+    getEnergyRegenRate      () { return this.getBotConfig().energy_regen_rate; }
+    getEnergyIsShield       () { return this.getBotConfig().energy_is_shield; }
+    getMaxHealth            () { return this.getBotConfig().health; }
+    getHealthRegenRate      () { return this.getBotConfig().health_regen_rate; }
 
     // main gun info
-    fn.prototype.getMainGunBulletType        = function () { return this.getBotConfig().main_gun.bullet_type; };
-    fn.prototype.getMainGunBulletPoolCount   = function () { return this.getBotConfig().main_gun.bullet_pool_count; };
-    fn.prototype.getMainGunBulletAngleOffset = function () { return this.getBotConfig().main_gun.bullet_angle_offset; };
-    fn.prototype.getMainGunBulletFireRate    = function () { return this.getBotConfig().main_gun.bullet_fire_rate; };
-    fn.prototype.getMainGunBulletSpeed       = function () { return this.getBotConfig().main_gun.bullet_speed; };
-    fn.prototype.getMainGunBulletEnergyCost  = function () { return this.getBotConfig().main_gun.bullet_energy_cost; };
+    getMainGunBulletType        () { return this.getBotConfig().main_gun.bullet_type; }
+    getMainGunBulletPoolCount   () { return this.getBotConfig().main_gun.bullet_pool_count; }
+    getMainGunBulletAngleOffset () { return this.getBotConfig().main_gun.bullet_angle_offset; }
+    getMainGunBulletFireRate    () { return this.getBotConfig().main_gun.bullet_fire_rate; }
+    getMainGunBulletSpeed       () { return this.getBotConfig().main_gun.bullet_speed; }
+    getMainGunBulletEnergyCost  () { return this.getBotConfig().main_gun.bullet_energy_cost; }
 
     // health
-    fn.prototype.setHealth = function (health) {
+    setHealth (health) {
         this.attributes.health = health;
 
         // don't exceed maximum
         if (this.attributes.health > this.getMaxHealth()) this.attributes.health = this.getMaxHealth();
-    };
-    fn.prototype.getHealth = function () { return this.attributes.health; };
+    }
+    getHealth () { return this.attributes.health; };
 
     // energy
-    fn.prototype.setEnergy = function (energy) {
+    setEnergy (energy) {
         this.attributes.energy = energy;
 
         // don't exceed maximum
         if (this.attributes.energy > this.getMaxEnergy()) this.attributes.health = this.getMaxEnergy();
-    };
-    fn.prototype.getEnergy = function () { return this.attributes.energy; };
+    }
+    getEnergy () { return this.attributes.energy; }
 
     // taking damage
-    fn.prototype.damage = function (amount) {
+    damage (amount) {
         if (this.getEnergyIsShield()) {
             var curEnergy = this.getEnergy();
             var curHealth = this.getHealth();
@@ -117,26 +114,26 @@ App.Bot = (function () {
         if (this.getHealth() <= 0) {
             this.kill();
         }
-    };
+    }
 
-    fn.prototype.tick = function () { /* overwrite me to do stuff */ };
+    tick () { /* overwrite me to do stuff */ }
 
-    fn.prototype.accelerateToPoint = function (x, y, speed) {
+    accelerateToPoint (x, y, speed) {
         var speed = speed || this.getBotConfig().speed || 0;
 
         var angle = Math.atan2(y - this.y, x - this.x);
         this.body.rotation = angle + game.math.degToRad(90);  // correct angle of angry bullets (depends on the sprite used)
         this.body.force.x = Math.cos(angle) * speed;    // accelerateToObject
         this.body.force.y = Math.sin(angle) * speed;
-    };
+    }
 
-    fn.prototype.accelerateToObject = function (dest, speed) {
+    accelerateToObject (dest, speed) {
         if ('object' !== typeof dest) return;
 
         this.accelerateToPoint(dest.x, dest.y, speed);
-    };
+    }
 
-    fn.prototype.hasLOSWithPlayer = function () {
+    hasLOSWithPlayer () {
         var forward_rotation = this.rotation - this.game.math.degToRad(this.getTargetingAngleOffset() || 0);
         var forward_ray = new Phaser.Line(this.x, this.y,
             this.x + Math.cos(forward_rotation) * 1000, this.y + Math.sin(forward_rotation) * 1000);
@@ -145,15 +142,13 @@ App.Bot = (function () {
         player_ray.fromSprite(this,this.player);
 
         return Phaser.Math.fuzzyEqual(forward_ray.normalAngle, player_ray.normalAngle, 0.05);
-    };
+    }
 
     // default collisions setup, child bots should overwrite this
-    fn.prototype.setupCollisions = function () { };
+    setupCollisions () { }
 
     // default is enemy test, child bots should overwrite this
-    fn.prototype.isEnemy = function (ship) {
+    isEnemy (ship) {
         return false;
-    };
-
-    return fn;
-})();
+    }
+};

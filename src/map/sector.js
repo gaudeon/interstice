@@ -1,10 +1,5 @@
-// namespace
-var App = App || {};
-
-App.Sector = (function () {
-    "use strict";
-
-    var fn = function (game, player, collision_manager, key) {
+export default class Sector {
+    constructor (game, player, collision_manager, key) {
         this.game              = game;
         this.player            = player;
         this.collision_manager = collision_manager;
@@ -17,15 +12,20 @@ App.Sector = (function () {
 
         // area to hold bots
         this.bots = new Phaser.Group(this.game);
-    };
+    }
 
-    fn.prototype.sectorConfig          = function () { return this.config.sectors[this.key]; };
-    fn.prototype.tilemapAssetConfig    = function () { return this.config.assets.tilemaps[this.sectorConfig().tilemap]; };
-    fn.prototype.tilesetList           = function () { return this.sectorConfig().tilesets; };
-    fn.prototype.tilesetAssetConfig    = function (key) { return this.config.assets.tilesets[key]; };
-    fn.prototype.backgroundAssetConfig = function () { return this.config.assets.backgrounds[this.sectorConfig().background]; };
+    sectorConfig          () { return this.config.sectors[this.key]; }
+    tilemapAssetConfig    () {
+        const TILEMAP_ASSET_KEY = 'tilemap_' + this.sectorConfig().tilemap;
+        return this.config.assets[TILEMAP_ASSET_KEY]; }
+    tilesetList           () { return this.sectorConfig().tilesets; }
+    tilesetAssetConfig    (key) { return this.config.assets[key]; }
+    backgroundAssetConfig () {
+        const SECTOR_BACKGROUND_KEY = 'background_' + this.sectorConfig().background;
+        return this.config.assets[SECTOR_BACKGROUND_KEY];
+    }
 
-    fn.prototype.loadAssets = function () {
+    loadAssets () {
         var tilesets = this.sectorConfig().tilesets;
         _.each(this.tilesetList(), (function (tileset) {
             var config = this.tilesetAssetConfig(tileset);
@@ -41,9 +41,9 @@ App.Sector = (function () {
                this.game.load.image(bg_asset.key, bg_asset.file);
            }
        }
-    };
+    }
 
-    fn.prototype.setupSector = function () {
+    setupSector () {
         // init map
         this.map = this.game.add.tilemap(this.tilemapAssetConfig().key);
 
@@ -84,9 +84,9 @@ App.Sector = (function () {
 
         // setup sector entities (has be be after world boundaries and collisions because of custom collision groups)
         this.setupSectorEntities();
-    };
+    }
 
-    fn.prototype.setupSectorCollisions = function () {
+    setupSectorCollisions () {
         _.each(this.sectorConfig().layers, (function (layer) {
            if (layer.collisionIds) {
                this.map.setCollision(layer.collisionIds, true, layer.name);
@@ -102,9 +102,9 @@ App.Sector = (function () {
                }).bind(this));
            }
         }).bind(this));
-    };
+    }
 
-    fn.prototype.setupSectorEntities = function () {
+    setupSectorEntities () {
         var entity_layer = this.sectorConfig().object_layers['entities'];
 
         this.map.objects[entity_layer].forEach((function(entity) {
@@ -131,28 +131,26 @@ App.Sector = (function () {
                     break;
             }
         }).bind(this));
-    };
+    }
 
     // updates for sector
-    fn.prototype.tick = function () {
+    tick () {
         this.player.tick();
 
         this.bots.forEach(function (bot) {
             bot.tick(bot);
         }, this);
-    };
+    }
 
-    fn.prototype.widthInPixels  = function () { return this.map.widthInPixels; };
-    fn.prototype.heightInPixels = function () { return this.map.heightInPixels; };
+    widthInPixels  () { return this.map.widthInPixels; }
+    heightInPixels () { return this.map.heightInPixels; }
 
-    fn.prototype.widthInTiles  = function () { return this.map.width; };
-    fn.prototype.heightInTiles = function () { return this.map.height; };
+    widthInTiles  () { return this.map.width; }
+    heightInTiles () { return this.map.height; }
 
-    fn.prototype.tileWidth  = function () { return this.map.tileWidth; };
-    fn.prototype.tileHeight = function () { return this.map.tileHeight; };
+    tileWidth  () { return this.map.tileWidth; }
+    tileHeight () { return this.map.tileHeight; }
 
-    fn.prototype.getBots   = function () { return this.bots; };
-    fn.prototype.getPlayer = function () { return this.player; };
-
-    return fn;
-})();
+    getBots   () { return this.bots; }
+    getPlayer () { return this.player; }
+};

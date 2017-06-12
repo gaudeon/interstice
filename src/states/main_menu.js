@@ -1,17 +1,9 @@
-// namespace
-var App = App || {};
+export default class MainMenuState extends Phaser.State {
+    constructor (game) {
+        super(game);
+    }
 
-App.MainMenuState = (function () {
-    "use strict";
-
-    var fn = function (game) {
-        Phaser.State.call(this, game);
-    };
-
-    fn.prototype = Object.create(Phaser.State.prototype);
-    fn.prototype.constructor = fn;
-
-    fn.prototype.init = function () {
+    init () {
         this.config = this.game.cache.getJSON('mainMenuConfig');
 
         // set world bounds because playing missions will change it
@@ -38,7 +30,5 @@ App.MainMenuState = (function () {
 
             y += this.config.style.fontSize;
         }).bind(this));
-    };
-
-    return fn;
-})();
+    }
+};

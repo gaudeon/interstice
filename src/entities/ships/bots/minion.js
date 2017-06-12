@@ -1,14 +1,8 @@
-// namespace
-var App      = App || {};
-App.Bots = App.Bots || {};
-
-App.Bots.Minion = (function () {
-    "use strict";
-
-    var fn = function (game, x, y, player, collision_manager) {
+export default classe MinionBot extends Bot {
+    constructor (game, x, y, player, collision_manager) {
         var class_id = 'minion';
 
-        App.Bot.call(this, game, x, y, player, collision_manager, class_id);
+        super(game, x, y, player, collision_manager, class_id);
 
         this.followingPlayer = false;
         this.followX         = this.game.world.randomX;
@@ -26,28 +20,25 @@ App.Bots.Minion = (function () {
         }).bind(this));
 
         this.taxonomy = 'bot.enemy.minion';
-    };
+    }
 
-    fn.prototype = Object.create(App.Bot.prototype);
-    fn.prototype.constructor = fn;
-
-    fn.prototype.setupCollisions = function () {
+    setupCollisions () {
         this.collision_manager.addToEnemiesCG(this);
         this.collision_manager.setCollidesWithPlayersCG(this);
         this.collision_manager.setCollidesWithPlayerProjectilesCG(this);
         this.collision_manager.setCollidesWithEnemiesCG(this);
         this.collision_manager.setCollidesWithSectorCG(this);
-    };
+    }
 
-    fn.prototype.isEnemy = function (ship) {
+    isEnemy (ship) {
         if (ship.getTaxonomy().match(/player/)) {
             return true;
         }
 
         return false;
-    };
+    }
 
-    fn.prototype.tick = function () {
+    tick () {
         if (this.alive) {
 
             if (this.player.alive) {
@@ -83,7 +74,5 @@ App.Bots.Minion = (function () {
                 this.setEnergy( this.getEnergy() + this.getEnergyRegenRate() );
             }
         }
-    };
-
-    return fn;
-})();
+    }
+};

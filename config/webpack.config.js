@@ -20,14 +20,14 @@ module.exports = {
         vendor: ['lodash', 'pixi', 'p2', 'phaser', 'webfontloader'],
     },
     output: {
-        filename: 'interstice.bundle.js',
+        filename: '[name].bundle.js',
         pathinfo: true,
         path: path.resolve(__dirname, '../dist/assets/'),
         publicPath: '/assets/',
     },
     devtool: 'cheap-source-map',
     devServer: {
-        contentBase: path.resolve(__dirname, '../src'), 
+        contentBase: path.resolve(__dirname, '../src'),
         watchContentBase: true,
     },
     plugins: [
@@ -44,8 +44,8 @@ module.exports = {
                     options: { presets: ['es2015'] },
                 }],
             },
-            { 
-                test: /pixi\.js/, 
+            {
+                test: /pixi\.js/,
                 use: [{
                     loader: 'expose-loader',
                     options: 'PIXI'
@@ -65,10 +65,13 @@ module.exports = {
                     options: 'p2'
                 }],
             },
-            { 
-                test: /\.(jpe?g|gif|png|svg|woff|ttf|wav|mp3)$/, 
+            {
+                test: /\.(css|jpe?g|gif|png|svg|woff|ttf|wav|mp3)$/,
                 use: [{
-                    loader: "file" 
+                    loader: "file-loader",
+                    options: {
+                        name: '[name].[ext]',
+                    }
                 }],
             },
         ],

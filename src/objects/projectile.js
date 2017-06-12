@@ -1,12 +1,7 @@
-// namespace
-var App = App || {};
-
-App.Projectile = (function () {
-    "use strict";
-
-    var fn = function (game, x, y, key, frame, collision_manager) {
+export default class Projectile {
+    constructor (game, x, y, key, frame, collision_manager) {
         // call bullet constructor
-        Phaser.Sprite.call(this, game, x, y, key, frame);
+        super(game, x, y, key, frame);
 
         // the collision manager
         this.collision_manager = collision_manager;
@@ -39,10 +34,5 @@ App.Projectile = (function () {
 
         // default bullets as dead
         this.kill();
-    };
-
-    fn.prototype = Object.create(Phaser.Sprite.prototype);
-    fn.prototype.constructor = fn;
-
-    return fn;
-})();
+    }
+};

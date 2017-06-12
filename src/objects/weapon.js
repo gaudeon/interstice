@@ -1,12 +1,7 @@
-// namespace
-var App = App || {};
-
 // Note: Bullets need to be used by a weapon, arcade physics will be applied object instanciated with this clas
 
-App.Weapon = (function () {
-    "use strict";
-
-    var fn = function (game, collision_manager) {
+export default class Weapon {
+    constructor (game, collision_manager) {
         this.game = game;
 
         this.collision_manager = collision_manager;
@@ -35,9 +30,9 @@ App.Weapon = (function () {
         // setup event signals
         this.events = {};
         this.events.onFire = new Phaser.Signal();
-    };
+    }
 
-    fn.prototype.createProjectiles = function (quantity) {
+    createProjectiles (quantity) {
         this.projectilePool.removeAll(true); // clear out old list of projectiles
         this.lastProjectileShotAt = null; // reset last time projectile was shot
 
@@ -51,13 +46,13 @@ App.Weapon = (function () {
             var projectile = new this.projectileClass(this.game, 0, 0, this.collision_manager);
             this.projectilePool.add(projectile);
         }
-    };
+    }
 
-    fn.prototype.trackSprite = function (target) {
+    trackSprite (target) {
         this.originSprite = target;
-    };
+    }
 
-    fn.prototype.fire = function (speed) {
+    fire (speed) {
         speed = speed || this.projectileSpeed;
 
         // Enforce a short delay between shots by recording
@@ -108,7 +103,5 @@ App.Weapon = (function () {
         }
 
         this.events.onFire.dispatch(true);
-    };
-
-    return fn;
-})();
+    }
+};

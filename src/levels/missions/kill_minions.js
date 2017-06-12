@@ -1,20 +1,14 @@
-var App = App || {};
+import Mission from '../mission';
+import KillShipsObjective from '../objectives/kill_ships';
 
-App.KillMinionsMission = (function () {
-    "use strict";
+export default class KillMinionsMission extends Mission {
+    constructor (game) {
+        super(game, "kill_minions");
+    }
 
-    var fn = function (game) {
-        this.key = "kill_minions";
-
-        App.Mission.call(this, game);
-    };
-
-    fn.prototype = Object.create(App.Mission.prototype);
-    fn.prototype.constructor = fn;
-
-    fn.prototype.setupMission = function () {
+    setupMission () {
         // call parent's function first
-        App.Mission.prototype.setupMission.call(this);
+        super.setupMission();
 
         // now setup success and failure objectives for this mission
         var minions = [];
@@ -24,14 +18,12 @@ App.KillMinionsMission = (function () {
             }
         }).bind(this));
 
-        var kill_minions = new App.KillShipsObjective(this.game, minions);
+        var kill_minions = new KillShipsObjective(this.game, minions);
 
         this.addSuccessObjective('kill_minions', kill_minions);
 
-        var player_killed = new App.KillShipsObjective(this.game, this.sector.getPlayer());
+        var player_killed = new KillShipsObjective(this.game, this.sector.getPlayer());
 
         this.addFailureObjective('player_killed', player_killed);
     }
-
-    return fn;
-})();
+};

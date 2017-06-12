@@ -1,11 +1,8 @@
-// namespace
-var App = App || {};
+import Ship from '../ship';
 
-App.Player = (function () {
-    "use strict";
-
-    var fn = function (game, collision_manager) {
-        App.Ship.call(this, game, 0, 0, null, null, collision_manager);
+export default class Player extends Ship {
+    constructor (game, collision_manager) {
+        super(game, 0, 0, null, null, collision_manager);
 
         // config data
         this.config          = this.config          || {};
@@ -14,53 +11,55 @@ App.Player = (function () {
         this.config.player   = this.config.player   || game.cache.getJSON('playerConfig');
 
         this.taxonomy = 'human.player';
-    };
-
-    fn.prototype = Object.create(App.Ship.prototype);
-    fn.prototype.constructor = fn;
+    }
 
     // player class id
-    fn.prototype.getShipClassId = function () { return this.ship_class_id; };
+    getShipClassId () { return 'player_hull_' + this.ship_class_id; }
 
     // hull
-    fn.prototype.getHullConfig          = function () { return this.config.player.hulls[this.getShipClassId()]; }
-    fn.prototype.getHullName            = function () { return this.getHullConfig().name; };
-    fn.prototype.getHullEnergy          = function () { return this.getHullConfig().energy; };
-    fn.prototype.getHullEnergyRegenRate = function () { return this.getHullConfig().energy_regen_rate; };
-    fn.prototype.getHullHealth          = function () { return this.getHullConfig().health; };
-    fn.prototype.getHullHealthRegenRate = function () { return this.getHullConfig().health_regen_rate; };
-    fn.prototype.getHullThrust          = function () { return this.getHullConfig().thrust; };
-    fn.prototype.getHullRotation        = function () { return this.getHullConfig().rotation; };
-    fn.prototype.getHullSpriteConfig    = function () { return this.getHullConfig().sprite; };
+    getHullConfig          () { return this.config[this.getShipClassId()]; }
+    getHullName            () { return this.getHullConfig().name; }
+    getHullEnergy          () { return this.getHullConfig().energy; }
+    getHullEnergyRegenRate () { return this.getHullConfig().energy_regen_rate; }
+    getHullHealth          () { return this.getHullConfig().health; }
+    getHullHealthRegenRate () { return this.getHullConfig().health_regen_rate; }
+    getHullThrust          () { return this.getHullConfig().thrust; }
+    getHullRotation        () { return this.getHullConfig().rotation; }
+    getHullSpriteConfig    () { return this.getHullConfig().sprite; }
 
     // main gun info
-    fn.prototype.getMainGunBulletType        = function () { return this.config.player.main_gun.bullet_type; };
-    fn.prototype.getMainGunBulletPoolCount   = function () { return this.config.player.main_gun.bullet_pool_count; };
-    fn.prototype.getMainGunBulletAngleOffset = function () { return this.config.player.main_gun.bullet_angle_offset; };
-    fn.prototype.getMainGunBulletFireRate    = function () { return this.config.player.main_gun.bullet_fire_rate; };
-    fn.prototype.getMainGunBulletSpeed       = function () { return this.config.player.main_gun.bullet_speed; };
-    fn.prototype.getMainGunBulletEnergyCost  = function () { return this.config.player.main_gun.bullet_energy_cost; };
+    getMainGunBulletType        () { return this.config.player.main_gun.bullet_type; }
+    getMainGunBulletPoolCount   () { return this.config.player.main_gun.bullet_pool_count; }
+    getMainGunBulletAngleOffset () { return this.config.player.main_gun.bullet_angle_offset; }
+    getMainGunBulletFireRate    () { return this.config.player.main_gun.bullet_fire_rate; }
+    getMainGunBulletSpeed       () { return this.config.player.main_gun.bullet_speed; }
+    getMainGunBulletEnergyCost  () { return this.config.player.main_gun.bullet_energy_cost; }
 
     // health
-    fn.prototype.setHealth = function (health) {
+    setHealth (health) {
         this.attributes.health = health;
 
         // don't exceed maximum
         if (this.attributes.health > this.getHullHealth()) this.attributes.health = this.getHullHealth();
-    };
-    fn.prototype.getHealth = function () { return this.attributes.health; };
+    }
+    getHealth () { return this.attributes.health; }
 
     // energy
-    fn.prototype.setEnergy = function (energy) {
+    setEnergy (energy) {
         this.attributes.energy = energy;
 
         // don't exceed maximum
         if (this.attributes.energy > this.getHullEnergy()) this.attributes.health = this.getHullEnergy();
-    };
-    fn.prototype.getEnergy = function () { return this.attributes.energy; };
+    }
+    getEnergy () { return this.attributes.energy; }
+
+    // sound asset keys
+    thrust_sound_asset_key () { return 'sound_thrust'; }
+    bullet_sound_asset_key () { return 'sound_bullet'; }
+    ship_explosion_sound_asset_key () { return 'sound_ship_explosion'; }
 
     // load assets
-    fn.prototype.loadAssets = function () {
+    loadAssets () {
         _.each(['balanced'], (function (class_id) {
             var player_hull_asset = this.config.assets.player.hulls[class_id];
             if (!player_hull_asset.in_atlas) {
@@ -69,18 +68,18 @@ App.Player = (function () {
         }).bind(this));
 
         // sounds
-        var thrust = this.config.assets.sounds.thrust;
+        var thrust = this.config.assets[this.thrust_sound_asset_key()];
         this.game.load.audio(thrust.key, thrust.file);
 
-        var bullet = this.config.assets.sounds.bullet;
+        var bullet = this.config.assets[this.bullet_sound_asset_key()];
         this.game.load.audio(bullet.key, bullet.file);
 
-        var ship_explosion = this.config.assets.sounds.ship_explosion;
+        var ship_explosion = this.config.assets[this.ship_explosion_sound_asset_key()];
         this.game.load.audio(ship_explosion.key, ship_explosion.file);
-    };
+    }
 
     // setup ship
-    fn.prototype.setupShip = function (x, y) {
+    setupShip (x, y) {
         // default to balanced hull class. TODO: Change me to support player chosen hull classes
         this.ship_class_id = 'balanced';
 
@@ -134,9 +133,9 @@ App.Player = (function () {
 
         // audio
         this.audio = {};
-        this.audio.thrustSound        = this.game.add.audio(this.config.assets.sounds.thrust.key, 1, true);
-        this.audio.bulletSound        = this.game.add.audio(this.config.assets.sounds.bullet.key);
-        this.audio.shipExplosionSound = this.game.add.audio(this.config.assets.sounds.ship_explosion.key);
+        this.audio.thrustSound        = this.game.add.audio(this.config.assets[this.thrust_sound_asset_key()].key, 1, true);
+        this.audio.bulletSound        = this.game.add.audio(this.config.assets[this.bullet_sound_asset_key()].key);
+        this.audio.shipExplosionSound = this.game.add.audio(this.config.assets[this.ship_explosion_sound_asset_key()].key);
 
         // keyboard events
         this.keyboard = this.game.input.keyboard.createCursorKeys();
@@ -173,10 +172,10 @@ App.Player = (function () {
             this.audio.thrustSound.stop();
             this.audio.shipExplosionSound.play();
         }).bind(this));
-    };
+    }
 
     // taking damage
-    fn.prototype.damage = function (amount) {
+    damage (amount) {
         var curEnergy = this.getEnergy();
         var curHealth = this.getHealth();
 
@@ -189,9 +188,9 @@ App.Player = (function () {
         if (this.getHealth() <= 0) {
             this.kill();
         }
-    };
+    }
 
-    fn.prototype.tick = function () {
+    tick () {
         if (this.alive) {
             if (this.keyboard.thrustForward.isDown) {
                 this.body.thrust(this.getHullThrust());
@@ -223,7 +222,7 @@ App.Player = (function () {
         }
     }
 
-    fn.prototype.impactHandler = function (body, shape1, shape2, equation) {
+    impactHandler (body, shape1, shape2, equation) {
         var x = 0;
         var y = 0;
 
@@ -254,6 +253,4 @@ App.Player = (function () {
         this.setEnergy(curEnergy - damage + remaining_damage);
         this.setHealth(curHealth - remaining_damage);
     }
-
-    return fn;
-})();
+};

@@ -1,16 +1,13 @@
-// namespace
-var App = App || {};
+import Projectile from '../projectile';
 
-App.ProjectilePlayerMainGun = (function () {
-    "use strict";
-
-    var fn = function (game, x, y, collision_manager) {
+export default class ProjectilePlayerMainGun extends Projectile {
+    constructor (game, x, y, collision_manager) {
         // config data
         this.config = {};
         this.config.assets = game.cache.getJSON('assetsConfig');
         this.config.player = game.cache.getJSON('playerConfig');
 
-        var key = this.config.assets.bullets.green.key;
+        var key = this.config.assets.bullet_green.key;
 
         // setup this projectiles attributes
         this.attributes = {};
@@ -19,10 +16,10 @@ App.ProjectilePlayerMainGun = (function () {
         this.attributes.mass     = this.config.player.main_gun.bullet_mass;
 
         // call bullet constructor
-        App.Projectile.call(this, game, x, y, key, null, collision_manager);
+        super(game, x, y, key, null, collision_manager);
 
         if (this.config.assets.bullets.green.in_atlas) {
-            this.frameName = this.config.assets.bullets.green.frame;
+            this.frameName = this.config.assets.bullet_green.frame;
         }
 
         // setup collisions
@@ -36,10 +33,5 @@ App.ProjectilePlayerMainGun = (function () {
         this.collision_manager.addCallbackForEnemyProjectilesCG(this, function (my_body, player_body) {
             this.kill();
         }, this);
-    };
-
-    fn.prototype = Object.create(App.Projectile.prototype);
-    fn.prototype.constructor = fn;
-
-    return fn;
-})();
+    }
+};

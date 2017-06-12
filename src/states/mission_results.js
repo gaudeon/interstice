@@ -1,24 +1,14 @@
-// namespace
-var App = App || {};
+export default class MissionResultsState extends Phaser.State {
+    constructor (game) {
+        super(game);
+    }
 
-App.MissionResultsState = (function () {
-    "use strict";
+    init () {
+    }
 
-    var fn = function (game) {
-        Phaser.State.call(this, game);
-    };
+    preload () {
+    }
 
-    fn.prototype = Object.create(Phaser.State.prototype);
-    fn.prototype.constructor = fn;
-
-    fn.prototype.init = function () {
-    };
-
-    fn.prototype.preload = function () {
-    };
-
-    fn.prototype.create = function () {
-    };
-
-    return fn;
-})();
+    create () {
+    }
+};

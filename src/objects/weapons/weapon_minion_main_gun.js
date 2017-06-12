@@ -1,21 +1,18 @@
-// namespace
-var App = App || {};
-
 // Note: Bullets need to be used by a weapon, arcade physics will be applied object instanciated with this clas
+import Weapon from '../weapon';
+import ProjectileMinionMainGun from '../projectiles/projectile_minion_main_gun';
 
-App.WeaponMinionMainGun = (function () {
-    "use strict";
-
-    var fn = function (game, collision_manager) {
+export default class WeaponMinionMainGun extends Weapon {
+    constructor (game, collision_manager) {
         // call bullet constructor
-        App.Weapon.call(this, game, collision_manager);
+        super(game, collision_manager);
 
         // config data
         this.config = {};
         this.config.bots = game.cache.getJSON('botsConfig');
 
         // set our projectile to the main gun projectile
-        this.projectileClass = App.ProjectileMinionMainGun;
+        this.projectileClass = ProjectileMinionMainGun;
 
         // the default amount of projectiles created
         this.projectileCount = this.config.bots.minion.main_gun.bullet_pool_count;
@@ -28,10 +25,5 @@ App.WeaponMinionMainGun = (function () {
 
         // offset angle (in degrees) around the orgin Sprite (in case bullet comes out an an undesired angle from the origin sprite)
         this.projectileAngleOffset = this.config.bots.minion.main_gun.bullet_angle_offset;
-    };
-
-    fn.prototype = Object.create(App.Weapon.prototype);
-    fn.prototype.constructor = fn;
-
-    return fn;
-})();
+    }
+};

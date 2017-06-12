@@ -1,11 +1,7 @@
-var App = App || {};
-
-App.Ship = (function () {
-    "use strict";
-
-    var fn = function (game, x, y, key, frame, collision_manager) {
+export default class Ship extends Phaser.Sprite {
+    constructor (game, x, y, key, frame, collision_manager) {
         // call sprite constructor
-        Phaser.Sprite.call(this, game, x, y, key, frame);
+        super(game, x, y, key, frame);
 
         // config data
         this.config        = this.config        || {};
@@ -29,34 +25,31 @@ App.Ship = (function () {
 
         // default taxonomy
         this.taxonomy = 'ship';
-    };
+    }
 
-    fn.prototype = Object.create(Phaser.Sprite.prototype);
-    fn.prototype.constructor = fn;
+    getCollisionManager () { return this.collision_manager; }
 
-    fn.prototype.getCollisionManager = function () { return this.collision_manager; };
-
-    fn.prototype.getWeapon = function (key) {
+    getWeapon (key) {
         if (!this.weapons[key]) return;
 
         return this.weapons[key];
-    };
+    }
 
-    fn.prototype.addWeapon = function (key, weapon) { this.weapons[key] = weapon; };
+    addWeapon (key, weapon) { this.weapons[key] = weapon; }
 
-    fn.prototype.getAttributes = function () { return this.attributes; };
+    getAttributes () { return this.attributes; }
 
-    fn.prototype.getAttribute = function (key) { return this.attributes[key]; };
+    getAttribute (key) { return this.attributes[key]; }
 
-    fn.prototype.addAttribute = fn.prototype.setAttribute = function (key, value) {
+    setAttribute (key, value) {
         var old_value = this.attributes[key];
 
         this.attributes[key] = value;
 
         this.events.onChangeAttribute.dispatch(key, value, old_value);
-    };
+    }
 
-    fn.prototype.getTaxonomy = function () { return this.taxonomy; };
+    addAttribute (key, value) { this.setAttribute(key, value); }
 
-    return fn;
-})();
+    getTaxonomy () { return this.taxonomy; }
+};

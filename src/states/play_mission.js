@@ -1,43 +1,45 @@
-// namespace
-var App = App || {};
+// missions
+import KillMinionsMission from '../levels/missions/kill_minions';
 
-App.PlayMissionState = (function () {
-    "use strict";
+// HUD
+import HUD from '../ui/hud';
 
-    var fn = function (game) {
-        Phaser.State.call(this, game);
-    };
+const MissionDictionary = {
+    "KillMinions": KillMinionsMission
+};
 
-    fn.prototype = Object.create(Phaser.State.prototype);
-    fn.prototype.constructor = fn;
+export default class PlayMissionState extends Phaser.State {
+    constructor (game) {
+        super(game);
+    }
 
-    fn.prototype.init = function (mission) {
+    init (mission) {
         // for now default mission to KillMinionsMission
         if ("undefined" === typeof mission) {
-            mission = "KillMinionsMission";
+            mission = "KillMinions";
         }
 
         // load mission
-        var mission_object = eval("App." + mission);
+        var mission_object = MissionDictionary[mission];
         if ("undefined" === typeof mission_object) {
-            mission_object = App.KillMinionsMission;
+            mission_object = MissionDictionary["KillMinions"];
         }
 
         this.mission = new mission_object(this.game);
 
         // setup hud
-        this.hud = new App.HUD(this.game, this.mission.getPlayer());
-    };
+        this.hud = new HUD(this.game, this.mission.getPlayer());
+    }
 
-    fn.prototype.preload = function () {
+    preload () {
         // mission assets
         this.mission.loadAssets();
 
         // hud assets
         this.hud.loadAssets();
-    };
+    }
 
-    fn.prototype.create = function () {
+    create () {
         // mission
         this.mission.setupMission();
 
@@ -53,13 +55,11 @@ App.PlayMissionState = (function () {
         this.mission.events.onFailure.add((function () {
             this.state.start('MainMenu');
         }).bind(this));
-    };
+    }
 
-    fn.prototype.update = function () {
+    update () {
         this.mission.tick();
 
         this.hud.tick();
-    };
-
-    return fn;
-})();
+    }
+};

@@ -1,18 +1,12 @@
-var App = App || {};
-
-App.Objective = (function () {
-    "use strict";
-
-    var fn = function (game) {
+export default class Objective {
+    constructor (game) {
         // config data
         this.config = this.config || {};
 
         this._game = game;
-    };
+    }
 
-    fn.prototype.isComplete = function () {
+    isComplete () {
         return true;
-    };
-
-    return fn;
-})();
+    }
+};

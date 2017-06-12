@@ -1,121 +1,101 @@
 {
-    "bots": {
-        "minion": {
-            "in_atlas" : true,
-            "key"      : "game_atlas",
-            "frame"    : "enemyShipG"
-        }
+    "bot_minion": {
+        "in_atlas" : true,
+        "key"      : "game_atlas",
+        "frame"    : "enemyShipG"
     },
-    "player": {
-        "hulls": {
-            "balanced": {
-                "in_atlas" : true,
-                "key"      : "game_atlas",
-                "frame"    : "playerShipO"
-            }
-        }
+    "player_hull_balanced": {
+        "in_atlas" : true,
+        "key"      : "game_atlas",
+        "frame"    : "playerShipO"
     },
-    "bullets": {
-        "green": {
-            "in_atlas" : true,
-            "key"      : "game_atlas",
-            "frame"    : "BulletGreen"
-        },
-        "red": {
-            "in_atlas" : true,
-            "key"      : "game_atlas",
-            "frame"    : "BulletRed"
-        }
+    "bullet_green": {
+        "in_atlas" : true,
+        "key"      : "game_atlas",
+        "frame"    : "BulletGreen"
     },
-    "backgrounds": {
-        "dark_purple": {
-            "in_atlas" : true,
-            "key"      : "game_atlas",
-            "frame"    : "spaceBGDarkPurple"
-        }
+    "bullet_red": {
+        "in_atlas" : true,
+        "key"      : "game_atlas",
+        "frame"    : "BulletRed"
     },
-    "sounds": {
-        "thrust": {
-            "file" : "assets/sounds/thrust.wav",
-            "key"  : "thrust_sound"
-        },
-        "bullet": {
-            "file" : "assets/sounds/bullet.wav",
-            "key"  : "bullet_sound"
-        },
-        "ship_explosion": {
-            "file" : "assets/sounds/ship_explosion.wav",
-            "key"  : "ship_explosion_sound"
-        }
+    "background_dark_purple": {
+        "in_atlas" : true,
+        "key"      : "game_atlas",
+        "frame"    : "spaceBGDarkPurple"
     },
-    "tilemaps": {
-        "sector_1": {
-            "file" : "assets/json/tilemaps/sector_1.json",
-            "key"  : "sector_1"
-        }
+    "sound_thrust": {
+        "file" : "assets/sounds/thrust.wav",
+        "key"  : "thrust_sound"
     },
-    "tilesets": {
-        "scenery_tileset": {
-            "file" : "assets/images/scenery_tileset.png",
-            "key"  : "scenery_tileset"
-        },
-        "sector_tileset": {
-            "file" : "assets/images/sector_tileset.png",
-            "key"  : "sector_tileset"
-        }
+    "sound_bullet": {
+        "file" : "assets/sounds/bullet.wav",
+        "key"  : "bullet_sound"
     },
-    "atlases": {
-        "game_atlas": {
-            "file" : "assets/images/game_atlas.png",
-            "json" : "assets/json/game_atlas.json",
-            "key"  : "game_atlas"
-        }
+    "sound_ship_explosion": {
+        "file" : "assets/sounds/ship_explosion.wav",
+        "key"  : "ship_explosion_sound"
     },
-    "ui": {
-        "bar_bg_left": {
-            "in_atlas" : true,
-            "key"      : "game_atlas",
-            "frame"    : "barHorizontal_shadow_left"
-        },
-        "bar_bg_mid": {
-            "in_atlas" : true,
-            "key"      : "game_atlas",
-            "frame"    : "barHorizontal_shadow_mid"
-        },
-        "bar_bg_right": {
-            "in_atlas" : true,
-            "key"      : "game_atlas",
-            "frame"    : "barHorizontal_shadow_right"
-        },
-        "health_bar_left": {
-            "in_atlas" : true,
-            "key"      : "game_atlas",
-            "frame"    : "barHorizontal_green_left"
-        },
-        "health_bar_mid": {
-            "in_atlas" : true,
-            "key"      : "game_atlas",
-            "frame"    : "barHorizontal_green_mid"
-        },
-        "health_bar_right": {
-            "in_atlas" : true,
-            "key"      : "game_atlas",
-            "frame"    : "barHorizontal_green_right"
-        },
-        "energy_bar_left": {
-            "in_atlas" : true,
-            "key"      : "game_atlas",
-            "frame"    : "barHorizontal_yellow_left"
-        },
-        "energy_bar_mid": {
-            "in_atlas" : true,
-            "key"      : "game_atlas",
-            "frame"    : "barHorizontal_yellow_mid"
-        },
-        "energy_bar_right": {
-            "in_atlas" : true,
-            "key"      : "game_atlas",
-            "frame"    : "barHorizontal_yellow_right"
-        }
+    "tilemap_sector_1": {
+        "file" : "assets/json/tilemaps/sector_1.json",
+        "key"  : "sector_1"
+    },
+    "tileset_scenery": {
+        "file" : "assets/images/scenery_tileset.png",
+        "key"  : "scenery_tileset"
+    },
+    "tileset_sector": {
+        "file" : "assets/images/sector_tileset.png",
+        "key"  : "sector_tileset"
+    },
+    "atlas_game": {
+        "file" : "assets/images/game_atlas.png",
+        "json" : "assets/json/game_atlas.json",
+        "key"  : "game_atlas"
+    },
+    "ui_bar_bg_left": {
+        "in_atlas" : true,
+        "key"      : "game_atlas",
+        "frame"    : "barHorizontal_shadow_left"
+    },
+    "ui_bar_bg_mid": {
+        "in_atlas" : true,
+        "key"      : "game_atlas",
+        "frame"    : "barHorizontal_shadow_mid"
+    },
+    "ui_bar_bg_right": {
+        "in_atlas" : true,
+        "key"      : "game_atlas",
+        "frame"    : "barHorizontal_shadow_right"
+    },
+    "ui_health_bar_left": {
+        "in_atlas" : true,
+        "key"      : "game_atlas",
+        "frame"    : "barHorizontal_green_left"
+    },
+    "ui_health_bar_mid": {
+        "in_atlas" : true,
+        "key"      : "game_atlas",
+        "frame"    : "barHorizontal_green_mid"
+    },
+    "ui_health_bar_right": {
+        "in_atlas" : true,
+        "key"      : "game_atlas",
+        "frame"    : "barHorizontal_green_right"
+    },
+    "ui_energy_bar_left": {
+        "in_atlas" : true,
+        "key"      : "game_atlas",
+        "frame"    : "barHorizontal_yellow_left"
+    },
+    "ui_energy_bar_mid": {
+        "in_atlas" : true,
+        "key"      : "game_atlas",
+        "frame"    : "barHorizontal_yellow_mid"
+    },
+    "ui_energy_bar_right": {
+        "in_atlas" : true,
+        "key"      : "game_atlas",
+        "frame"    : "barHorizontal_yellow_right"
     }
 }

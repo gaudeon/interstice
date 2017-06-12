@@ -1,10 +1,11 @@
-var App = App || {};
+import CollisionManager from '../objects/collision_manager';
+import Player from '../entities/ships/player';
+import Sector from '../map/sector';
 
-App.Mission = (function () {
-    "use strict";
-
-    var fn = function (game) {
+export default class Mission {
+    constructor (game, key) {
         this.game = game;
+        this.key  = key;
 
         // config data
         this.config          = this.config || {};
@@ -20,13 +21,13 @@ App.Mission = (function () {
         this.config.mission = this.config.missions[this.key];
 
         // setup collision manager for p2 physics collisions
-        this.collision_manager = new App.CollisionManager(game);
+        this.collision_manager = new CollisionManager(game);
 
         // setup player object
-        this.player = new App.Player(game, this.collision_manager);
+        this.player = new Player(game, this.collision_manager);
 
         // setup the sector object
-        this.sector = new App.Sector(game, this.player, this.collision_manager, this.config.mission.start_sector);
+        this.sector = new Sector(game, this.player, this.collision_manager, this.config.mission.start_sector);
 
         this.success_objectives = {};
         this.failure_objectives = {};
@@ -35,14 +36,20 @@ App.Mission = (function () {
         this.events = {};
         this.events.onSuccess = new Phaser.Signal();
         this.events.onFailure = new Phaser.Signal();
-    };
+    }
 
-    fn.prototype.loadAssets = function () {
+    loadAssets () {
         // load image atlases so everything else can use them
-        _.each(_.keys(this.config.assets.atlases), (function (key) {
-            var atlas_asset = this.config.assets.atlases[key];
-            this.game.load.atlas(atlas_asset.key, atlas_asset.file, atlas_asset.json, Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
-        }).bind(this));
+        _.each(
+            _.filter(
+                _.keys(this.config.assets),
+                (key) => { return key.match(/^atlas_/); }
+            ),
+            (key) => {
+                var atlas_asset = this.config.assets[key];
+                this.game.load.atlas(atlas_asset.key, atlas_asset.file, atlas_asset.json, Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
+            }
+        );
 
         // sector assets
         this.sector.loadAssets();
@@ -65,14 +72,14 @@ App.Mission = (function () {
                 this.load.image(bot_asset_config.key, bot_asset_config.file);
             }
         }).bind(this));
-    };
+    }
 
-    fn.prototype.setupMission = function () {
+    setupMission () {
         // setup sector
         this.sector.setupSector();
-    };
+    }
 
-    fn.prototype.tick = function () {
+    tick () {
         this.sector.tick();
 
         if (this.isMissionSuccess()) {
@@ -82,39 +89,39 @@ App.Mission = (function () {
         if (this.isMissionFailure()) {
             this.events.onFailure.dispatch();
         }
-    };
+    }
 
-    fn.prototype.getPlayer = function () { return this.player; };
+    getPlayer () { return this.player; }
 
-    fn.prototype.getSector = function () { return this.sector; };
+    getSector () { return this.sector; }
 
-    fn.prototype.getCollisionManager = function () { return this.collision_manager; };
+    getCollisionManager () { return this.collision_manager; }
 
-    fn.prototype.addSuccessObjective = function (key, objective) {
+    addSuccessObjective (key, objective) {
         if ("undefined" === typeof objective || "function" !== typeof objective.isComplete) {
             throw "invalid objectitve";
         }
 
         this.success_objectives[key] = objective;
-    };
+    }
 
-    fn.prototype.addFailureObjective = function (key, objective) {
+    addFailureObjective (key, objective) {
         if ("undefined" === typeof objective || "function" !== typeof objective.isComplete) {
             throw "invalid objectitve";
         }
 
         this.failure_objectives[key] = objective;
-    };
+    }
 
-    fn.prototype.getSuccessObjective = function (key) {
+    getSuccessObjective (key) {
         return this.success_objectives[key];
-    };
+    }
 
-    fn.prototype.getFailureObjective = function (key) {
+    getFailureObjective (key) {
         return this.failure_objectives[key];
-    };
+    }
 
-    fn.prototype.isMissionSuccess = function () {
+    isMissionSuccess () {
         // it's not successful if there are not objectives
         if (Object.keys(this.success_objectives).length < 1) {
             return false;
@@ -130,9 +137,9 @@ App.Mission = (function () {
         }
 
         return all_objectives_successful;
-    };
+    }
 
-    fn.prototype.isMissionFailure = function () {
+    isMissionFailure () {
         // it's not successful if there are not objectives
         if (Object.keys(this.failure_objectives).length < 1) {
             return false;
@@ -148,7 +155,5 @@ App.Mission = (function () {
         }
 
         return all_objectives_failure;
-    };
-
-    return fn;
-})();
+    }
+};

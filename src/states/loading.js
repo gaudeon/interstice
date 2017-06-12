@@ -1,17 +1,35 @@
-// namespace
-var App = App || {};
+// web fonts
+import WebFont from 'webfontloader';
+require('../../assets/css/fonts.css');
+require('../../assets/fonts/Exo2-SemiBold.ttf');
 
-App.LoadingState = (function () {
-    "use strict";
+// json configuration
+import assetsConfig from '../../assets/json/assets.json';
+import controlsConfig from '../../assets/json/controls.json';
+import mainMenuConfig from '../../assets/json/main_menu.json';
+import playerConfig from '../../assets/json/player.json';
+import botsConfig from '../../assets/json/bots.json';
+import hudConfig from '../../assets/json/hud.json';
+import sectorsConfig from '../../assets/json/sectors.json';
+import missionsConfig from '../../assets/json/missions.json';
 
-    var fn = function (game) {
-        Phaser.State.call(this, game);
-    };
+// require assets
+_.each(
+    _.filter(
+        Object.keys(assetsConfig),
+        (key) => { return "undefined" !== typeof(assetsConfig[key]['file']); }
+    ),
+    (key) => {
+        require('../../' + assetsConfig[key]['file']);
+    }
+);
 
-    fn.prototype = Object.create(Phaser.State.prototype);
-    fn.prototype.constructor = fn;
+export default class LoadingState extends Phaser.State {
+    constructor (game) {
+        super(game);
+    }
 
-    fn.prototype.init = function () {
+    init () {
         // font loading
         this.are_fonts_loaded = false;
 
@@ -27,18 +45,18 @@ App.LoadingState = (function () {
         });
 
         text.setTextBounds(0,0,this.world.width,this.world.height);
-    };
+    }
 
-    fn.prototype.preload = function () {
+    preload () {
         // load json configuration files
-        this.load.json('assetsConfig', 'assets/json/assets.json');
-        this.load.json('controlsConfig', 'assets/json/controls.json');
-        this.load.json('mainMenuConfig', 'assets/json/main_menu.json');
-        this.load.json('playerConfig', 'assets/json/player.json');
-        this.load.json('botsConfig', 'assets/json/bots.json');
-        this.load.json('hudConfig', 'assets/json/hud.json');
-        this.load.json('sectorsConfig', 'assets/json/sectors.json');
-        this.load.json('missionsConfig', 'assets/json/missions.json');
+        this.game.cache.addJSON('assetsConfig', null, assetsConfig);
+        this.game.cache.addJSON('controlsConfig', null, controlsConfig);
+        this.game.cache.addJSON('mainMenuConfig', null, mainMenuConfig);
+        this.game.cache.addJSON('playerConfig', null, playerConfig);
+        this.game.cache.addJSON('botsConfig', null, botsConfig);
+        this.game.cache.addJSON('hudConfig', null, hudConfig);
+        this.game.cache.addJSON('sectorsConfig', null, sectorsConfig);
+        this.game.cache.addJSON('missionsConfig', null, missionsConfig);
 
         // load web fonts
         WebFont.load({
@@ -47,12 +65,12 @@ App.LoadingState = (function () {
             }).bind(this),
             custom: {
                 families: ['Exo2 SemiBold'],
-                urls: ['assets/css/fonts.css']
+                urls: ['/assets/fonts.css']
             }
         });
-    };
+    }
 
-    fn.prototype.create = function () {
+    create () {
         // use p2 for ships
         this.game.physics.startSystem(Phaser.Physics.P2JS);
         this.game.physics.p2.setImpactEvents(true);
@@ -60,17 +78,15 @@ App.LoadingState = (function () {
 
         // use arcade physics for weapons
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
-    };
+    }
 
-    fn.prototype.webfontloaded = function () {
+    webfontloaded () {
         this.are_fonts_loaded = true;
-    };
+    }
 
-    fn.prototype.update = function () {
+    update () {
         if (this.are_fonts_loaded) {
             this.state.start('MainMenu');
         }
-    };
-
-    return fn;
-})();
+    }
+};

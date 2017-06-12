@@ -1,10 +1,8 @@
-var App = App || {};
+import Objective from '../objective';
 
-App.KillShipsObjective = (function () {
-    "use strict";
-
-    var fn = function (game, ships) {
-        App.Objective.call(this, game);
+export default class KillShipsObjective extends Objective {
+    constructor (game, ships) {
+        super(game);
 
         if (!Array.isArray(ships)) {
             ships = [ships];
@@ -15,12 +13,9 @@ App.KillShipsObjective = (function () {
         }).bind(this));
 
         this.ships = ships;
-    };
+    }
 
-    fn.prototype = Object.create(App.Objective.prototype);
-    fn.prototype.constructor = fn;
-
-    fn.prototype.isComplete = function () {
+    isComplete () {
         var all_dead = true;
 
         for (var i = 0; i < this.ships.length; i++) {
@@ -31,7 +26,5 @@ App.KillShipsObjective = (function () {
         }
 
         return all_dead;
-    };
-
-    return fn;
-})();
+    }
+};

@@ -1,7 +1,13 @@
-var game = new Phaser.Game(800, 600);
+import LoadingState from './states/loading';
+import MainMenuState from './states/main_menu';
+import MissionResultsState from './states/mission_results';
+import PlayMissionState from './states/play_mission';
+
+let game = new Phaser.Game(800, 600);
+
 Phaser.Device.whenReady(function () {
     // plugins
-    this.game.__plugins = this.game.__plugins || {};
+    game.__plugins = game.__plugins || {};
 
     // add plugins here
     // ...
@@ -10,11 +16,10 @@ Phaser.Device.whenReady(function () {
     game.global = {};
 
     // states
-    game.state.add('Loading', App.LoadingState);
-    game.state.add('MainMenu', App.MainMenuState);
-    game.state.add('Game', App.GameState);
-    game.state.add('PlayMission', App.PlayMissionState);
-    game.state.add('MissionResults', App.MissionResultsState);
+    game.state.add('Loading', LoadingState);
+    game.state.add('MainMenu', MainMenuState);
+    game.state.add('PlayMission', PlayMissionState);
+    game.state.add('MissionResults', MissionResultsState);
 
     game.state.start('Loading');
 });
