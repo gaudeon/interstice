@@ -3,16 +3,13 @@ import Weapon from '../weapon';
 import ProjectileMinionMainGun from '../projectiles/projectile_minion_main_gun';
 
 export default class WeaponMinionMainGun extends Weapon {
-    constructor (game, collision_manager) {
+    constructor (game, collisionManager) {
         // call bullet constructor
-        super(game, collision_manager);
+        super(game, collisionManager);
 
         // config data
         this.config = {};
         this.config.bots = game.cache.getJSON('botsConfig');
-
-        // set our projectile to the main gun projectile
-        this.projectileClass = ProjectileMinionMainGun;
 
         // the default amount of projectiles created
         this.projectileCount = this.config.bots.minion.main_gun.bullet_pool_count;
@@ -26,4 +23,6 @@ export default class WeaponMinionMainGun extends Weapon {
         // offset angle (in degrees) around the orgin Sprite (in case bullet comes out an an undesired angle from the origin sprite)
         this.projectileAngleOffset = this.config.bots.minion.main_gun.bullet_angle_offset;
     }
+
+    projectileClass () { return ProjectileMinionMainGun; }
 };

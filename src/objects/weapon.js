@@ -10,9 +10,6 @@ export default class Weapon {
         // projectile Group
         this.projectilePool = this.game.add.group();
 
-        // the class type of the projectile fired
-        this.ProjectileClass = Projectile;
-
         // the default amount of projectiles created
         this.projectileCount = 20;
 
@@ -33,6 +30,9 @@ export default class Weapon {
         this.events.onFire = new Phaser.Signal();
     }
 
+    // the class type of the projectile fired
+    projectileClass () { return Projectile; }
+
     createProjectiles (quantity) {
         this.projectilePool.removeAll(true); // clear out old list of projectiles
         this.lastProjectileShotAt = null; // reset last time projectile was shot
@@ -44,7 +44,8 @@ export default class Weapon {
         // Create an object pool of bullets
         for (var i = 0; i < this.projectileCount; i++) {
             // Create each bullet and add it to the group.
-            var projectile = new this.ProjectileClass(this.game, 0, 0, this.collisionManager);
+            let ProjectileClass = this.projectileClass();
+            let projectile = new ProjectileClass(this.game, 0, 0, this.collisionManager);
             this.projectilePool.add(projectile);
         }
     }

@@ -47,7 +47,7 @@ export default class Mission {
             ),
             (key) => {
                 var atlasAsset = this.config.assets[key];
-                this.game.load.atlas(atlasAsset.key, atlasAsset.file, atlasAsset.json, Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
+                this.game.load.atlas(atlasAsset.key, atlasAsset.file, null, this.game.cache.getJSON(atlasAsset.jsonKey), Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
             }
         );
 

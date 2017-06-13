@@ -1,39 +1,40 @@
 import Ship from '../ship';
+import WeaponPlayerMainGun from '../../objects/weapons/weapon_player_main_gun';
 
 export default class Player extends Ship {
-    constructor (game, collision_manager) {
-        super(game, 0, 0, null, null, collision_manager);
+    constructor (game, collisionManager) {
+        super(game, 0, 0, null, null, collisionManager);
 
         // config data
-        this.config          = this.config          || {};
-        this.config.assets   = this.config.assets   || game.cache.getJSON('assetsConfig');
+        this.config = this.config || {};
+        this.config.assets = this.config.assets || game.cache.getJSON('assetsConfig');
         this.config.controls = this.config.controls || game.cache.getJSON('controlsConfig');
-        this.config.player   = this.config.player   || game.cache.getJSON('playerConfig');
+        this.config.player = this.config.player || game.cache.getJSON('playerConfig');
 
         this.taxonomy = 'human.player';
     }
 
     // player class id
-    getShipClassId () { return 'player_hull_' + this.ship_class_id; }
+    getShipClassId () { return 'hull_' + this.ship_class_id; }
 
     // hull
-    getHullConfig          () { return this.config[this.getShipClassId()]; }
-    getHullName            () { return this.getHullConfig().name; }
-    getHullEnergy          () { return this.getHullConfig().energy; }
+    getHullConfig () { return this.config.player[this.getShipClassId()]; }
+    getHullName () { return this.getHullConfig().name; }
+    getHullEnergy () { return this.getHullConfig().energy; }
     getHullEnergyRegenRate () { return this.getHullConfig().energy_regen_rate; }
-    getHullHealth          () { return this.getHullConfig().health; }
+    getHullHealth () { return this.getHullConfig().health; }
     getHullHealthRegenRate () { return this.getHullConfig().health_regen_rate; }
-    getHullThrust          () { return this.getHullConfig().thrust; }
-    getHullRotation        () { return this.getHullConfig().rotation; }
-    getHullSpriteConfig    () { return this.getHullConfig().sprite; }
+    getHullThrust () { return this.getHullConfig().thrust; }
+    getHullRotation () { return this.getHullConfig().rotation; }
+    getHullSpriteConfig () { return this.getHullConfig().sprite; }
 
     // main gun info
-    getMainGunBulletType        () { return this.config.player.main_gun.bullet_type; }
-    getMainGunBulletPoolCount   () { return this.config.player.main_gun.bullet_pool_count; }
+    getMainGunBulletType () { return this.config.player.main_gun.bullet_type; }
+    getMainGunBulletPoolCount () { return this.config.player.main_gun.bullet_pool_count; }
     getMainGunBulletAngleOffset () { return this.config.player.main_gun.bullet_angle_offset; }
-    getMainGunBulletFireRate    () { return this.config.player.main_gun.bullet_fire_rate; }
-    getMainGunBulletSpeed       () { return this.config.player.main_gun.bullet_speed; }
-    getMainGunBulletEnergyCost  () { return this.config.player.main_gun.bullet_energy_cost; }
+    getMainGunBulletFireRate () { return this.config.player.main_gun.bullet_fire_rate; }
+    getMainGunBulletSpeed () { return this.config.player.main_gun.bullet_speed; }
+    getMainGunBulletEnergyCost () { return this.config.player.main_gun.bullet_energy_cost; }
 
     // health
     setHealth (health) {
@@ -54,29 +55,29 @@ export default class Player extends Ship {
     getEnergy () { return this.attributes.energy; }
 
     // sound asset keys
-    thrust_sound_asset_key () { return 'sound_thrust'; }
-    bullet_sound_asset_key () { return 'sound_bullet'; }
-    ship_explosion_sound_asset_key () { return 'sound_ship_explosion'; }
+    thrustSoundAssetKey () { return 'sound_thrust'; }
+    bulletSoundAssetKey () { return 'sound_bullet'; }
+    shipExplosionSoundAssetKey () { return 'sound_ship_explosion'; }
 
     // load assets
     loadAssets () {
-        _.each(['balanced'], (class_id) => {
-            const PLAYER_HULL_CLASS_ID = 'player_hull_' + class_id;
-            let player_hull_asset = this.config.assets[PLAYER_HULL_CLASS_ID];
-            if (!player_hull_asset.in_atlas) {
-                this.game.load.image(player_hull_asset.key, player_hull_asset.file);
+        _.each(['balanced'], (classId) => {
+            const PLAYER_HULL_CLASS = 'player_hull_' + classId;
+            let playerHullAsset = this.config.assets[PLAYER_HULL_CLASS];
+            if (!playerHullAsset.in_atlas) {
+                this.game.load.image(playerHullAsset.key, playerHullAsset.file);
             }
         });
 
         // sounds
-        var thrust = this.config.assets[this.thrust_sound_asset_key()];
+        var thrust = this.config.assets[this.thrustSoundAssetKey()];
         this.game.load.audio(thrust.key, thrust.file);
 
-        var bullet = this.config.assets[this.bullet_sound_asset_key()];
+        var bullet = this.config.assets[this.bulletSoundAssetKey()];
         this.game.load.audio(bullet.key, bullet.file);
 
-        var ship_explosion = this.config.assets[this.ship_explosion_sound_asset_key()];
-        this.game.load.audio(ship_explosion.key, ship_explosion.file);
+        var shipExplosion = this.config.assets[this.shipExplosionSoundAssetKey()];
+        this.game.load.audio(shipExplosion.key, shipExplosion.file);
     }
 
     // setup ship
@@ -84,13 +85,13 @@ export default class Player extends Ship {
         // default to balanced hull class. TODO: Change me to support player chosen hull classes
         this.ship_class_id = 'balanced';
 
-        if ('undefined' === typeof x) x = this.game.world.width / 2;
-        if ('undefined' === typeof y) y = this.game.world.height / 2;
+        if (typeof x === 'undefined') x = this.game.world.width / 2;
+        if (typeof y === 'undefined') y = this.game.world.height / 2;
 
-        const PLAYER_HULL_CLASS_ID = 'player_hull_' + this.ship_class_id;
-        this.loadTexture(this.config.assets[PLAYER_HULL_CLASS_ID].key);
-        if (this.config.assets[PLAYER_HULL_CLASS_ID].in_atlas) {
-            this.frameName = this.config.assets[PLAYER_HULL_CLASS_ID].frame;
+        const PLAYER_HULL_CLASS = 'player_hull_' + this.ship_class_id;
+        this.loadTexture(this.config.assets[PLAYER_HULL_CLASS].key);
+        if (this.config.assets[PLAYER_HULL_CLASS].in_atlas) {
+            this.frameName = this.config.assets[PLAYER_HULL_CLASS].frame;
         }
         this.reset(x, y);
 
@@ -128,52 +129,54 @@ export default class Player extends Ship {
         this.body.onBeginContact.add(this.impactHandler, this);
 
         // main gun
-        var main_gun = new App.WeaponPlayerMainGun(this.game, this.collision_manager);
-        main_gun.createProjectiles(this.getMainGunBulletPoolCount());
-        main_gun.trackSprite(this);
-        this.addWeapon('main_gun', main_gun);
+        var mainGun = new WeaponPlayerMainGun(this.game, this.collisionManager);
+        mainGun.createProjectiles(this.getMainGunBulletPoolCount());
+        mainGun.trackSprite(this);
+        this.addWeapon('mainGun', mainGun);
 
         // audio
         this.audio = {};
-        this.audio.thrustSound        = this.game.add.audio(this.config.assets[this.thrust_sound_asset_key()].key, 1, true);
-        this.audio.bulletSound        = this.game.add.audio(this.config.assets[this.bullet_sound_asset_key()].key);
-        this.audio.shipExplosionSound = this.game.add.audio(this.config.assets[this.ship_explosion_sound_asset_key()].key);
+        this.audio.thrustSound = this.game.add.audio(this.config.assets[this.thrustSoundAssetKey()].key, 1, true);
+        this.audio.bulletSound = this.game.add.audio(this.config.assets[this.bulletSoundAssetKey()].key);
+        this.audio.shipExplosionSound = this.game.add.audio(this.config.assets[this.shipExplosionSoundAssetKey()].key);
 
         // keyboard events
         this.keyboard = this.game.input.keyboard.createCursorKeys();
-        _.each(['thrustForward','thrustReverse','rotateLeft','rotateRight','fireBullets'], (control) => {
+        _.each(['thrustForward', 'thrustReverse', 'rotateLeft', 'rotateRight', 'fireBullets'], (control) => {
             var keycode = Phaser.KeyCode[this.config.controls[control]];
             this.keyboard[control] = this.game.input.keyboard.addKey(keycode);
         });
 
         // thruster audio events
-        this.keyboard.thrustForward.onDown.add((function() {
-            if (this.alive)
+        this.keyboard.thrustForward.onDown.add(() => {
+            if (this.alive) {
                 this.audio.thrustSound.play();
-        }).bind(this));
-        this.keyboard.thrustForward.onUp.add((function() {
+            }
+        });
+        this.keyboard.thrustForward.onUp.add(() => {
             this.audio.thrustSound.stop();
-        }).bind(this));
-        this.keyboard.thrustReverse.onDown.add((function() {
-            if (this.alive)
+        });
+        this.keyboard.thrustReverse.onDown.add(() => {
+            if (this.alive) {
                 this.audio.thrustSound.play();
-        }).bind(this));
-        this.keyboard.thrustReverse.onUp.add((function() {
+            }
+        });
+        this.keyboard.thrustReverse.onUp.add(() => {
             this.audio.thrustSound.stop();
-        }).bind(this));
+        });
 
         // weapon audio events
-        this.getWeapon('main_gun').events.onFire.add((function () {
+        this.getWeapon('mainGun').events.onFire.add(() => {
             this.audio.bulletSound.play();
 
-            this.setEnergy( this.getEnergy() - this.getMainGunBulletEnergyCost() );
-        }).bind(this));
+            this.setEnergy(this.getEnergy() - this.getMainGunBulletEnergyCost());
+        });
 
         // death audio events
-        this.events.onKilled.add((function () {
+        this.events.onKilled.add(() => {
             this.audio.thrustSound.stop();
             this.audio.shipExplosionSound.play();
-        }).bind(this));
+        });
     }
 
     // taking damage
@@ -181,11 +184,11 @@ export default class Player extends Ship {
         var curEnergy = this.getEnergy();
         var curHealth = this.getHealth();
 
-        var remaining_amount = curEnergy < amount ? amount - curEnergy : 0;
+        var remainingAmount = curEnergy < amount ? amount - curEnergy : 0;
 
         // damage energy shield first then player health
-        this.setEnergy(curEnergy - amount + remaining_amount);
-        this.setHealth(curHealth - remaining_amount);
+        this.setEnergy(curEnergy - amount + remainingAmount);
+        this.setHealth(curHealth - remainingAmount);
 
         if (this.getHealth() <= 0) {
             this.kill();
@@ -196,30 +199,27 @@ export default class Player extends Ship {
         if (this.alive) {
             if (this.keyboard.thrustForward.isDown) {
                 this.body.thrust(this.getHullThrust());
-            }
-            else if (this.keyboard.thrustReverse.isDown) {
+            } else if (this.keyboard.thrustReverse.isDown) {
                 this.body.reverse(this.getHullThrust());
             }
 
             if (this.keyboard.rotateLeft.isDown) {
                 this.body.rotateLeft(this.getHullRotation());
-            }
-            else if (this.keyboard.rotateRight.isDown) {
+            } else if (this.keyboard.rotateRight.isDown) {
                 this.body.rotateRight(this.getHullRotation());
-            }
-            else {
+            } else {
                 this.body.setZeroRotation();
             }
 
             if (this.keyboard.fireBullets.isDown) {
                 if (this.getEnergy() > 0) {
                     // fire main gun
-                    this.getWeapon('main_gun').fire();
+                    this.getWeapon('mainGun').fire();
                 }
             }
 
             if (this.getHullEnergyRegenRate() > 0 && this.getEnergy() < this.getHullEnergy()) {
-                this.setEnergy( this.getEnergy() + this.getHullEnergyRegenRate() );
+                this.setEnergy(this.getEnergy() + this.getHullEnergyRegenRate());
             }
         }
     }
@@ -240,19 +240,19 @@ export default class Player extends Ship {
         var ydiff = Math.abs(v1.y - v2.y);
 
         var damage = 0;
-        if (xdiff > 500 || ydiff > 500) { //Massive damage!
+        if (xdiff > 500 || ydiff > 500) { // Massive damage!
             damage = 20;
-        } else if (xdiff > 200 || ydiff > 200) { //Slight damage
+        } else if (xdiff > 200 || ydiff > 200) { // Slight damage
             damage = 10;
         }
 
         var curEnergy = this.getEnergy();
         var curHealth = this.getHealth();
 
-        var remaining_damage = curEnergy < damage ? damage - curEnergy : 0;
+        var remainingDamage = curEnergy < damage ? damage - curEnergy : 0;
 
         // damage energy shield first then player health
-        this.setEnergy(curEnergy - damage + remaining_damage);
-        this.setHealth(curHealth - remaining_damage);
+        this.setEnergy(curEnergy - damage + remainingDamage);
+        this.setHealth(curHealth - remainingDamage);
     }
 };

@@ -3,16 +3,13 @@ import Weapon from '../weapon';
 import ProjectilePlayerMainGun from '../projectiles/projectile_player_main_gun';
 
 export default class WeaponPlayerMainGun extends Weapon {
-    constructor (game, collision_manager) {
+    constructor (game, collisionManager) {
         // call bullet constructor
-        super(game, collision_manager);
+        super(game, collisionManager);
 
         // config data
         this.config = {};
         this.config.player = game.cache.getJSON('playerConfig');
-
-        // set our projectile to the main gun projectile
-        this.projectileClass = ProjectilePlayerMainGun;
 
         // the default amount of projectiles created
         this.projectileCount = this.config.player.main_gun.bullet_pool_count;
@@ -26,4 +23,6 @@ export default class WeaponPlayerMainGun extends Weapon {
         // offset angle (in degrees) around the orgin Sprite (in case bullet comes out an an undesired angle from the origin sprite)
         this.projectileAngleOffset = this.config.player.main_gun.bullet_angle_offset;
     }
+
+    projectileClass () { return ProjectilePlayerMainGun; }
 };

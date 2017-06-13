@@ -1,36 +1,37 @@
 import Projectile from '../projectile';
 
 export default class ProjectileMinionMainGun extends Projectile {
-    constructor (game, x, y, collision_manager) {
+    constructor (game, x, y, collisionManager) {
+        let assetsConfig = game.cache.getJSON('assetsConfig');
+        let imageKey = assetsConfig.bullet_red.key;
+
         // call bullet constructor
-        super(game, x, y, key, null, collision_manager);
+        super(game, x, y, imageKey, null, collisionManager);
 
         // config data
         this.config = {};
-        this.config.assets = game.cache.getJSON('assetsConfig');
-        this.config.bots   = game.cache.getJSON('botsConfig');
-
-        var key = this.config.assets.bullet_red.key;
+        this.config.assets = assetsConfig;
+        this.config.bots = game.cache.getJSON('botsConfig');
 
         // setup this projectiles attributes
         this.attributes = this.attributes || {};
-        this.attributes.damage   = this.config.bots.minion.main_gun.bullet_damage;
+        this.attributes.damage = this.config.bots.minion.main_gun.bullet_damage;
         this.attributes.lifespan = this.config.bots.minion.main_gun.bullet_lifespan;
-        this.attributes.mass     = this.config.bots.minion.main_gun.bullet_mass;
+        this.attributes.mass = this.config.bots.minion.main_gun.bullet_mass;
 
-        if (this.config.assets.bullets.red.in_atlas) {
+        if (this.config.assets.bullet_red.in_atlas) {
             this.frameName = this.config.assets.bullet_red.frame;
         }
 
         // setup collisions
-        this.collision_manager.addToEnemyProjectilesCG(this);
-        this.collision_manager.setCollidesWithPlayersCG(this);
-        this.collision_manager.setCollidesWithSectorCG(this);
-        this.collision_manager.addCallbackForPlayersCG(this, function (my_body, player_body) {
-            player_body.sprite.damage(this.attributes.damage);
+        this.collisionManager.addToEnemyProjectilesCG(this);
+        this.collisionManager.setCollidesWithPlayersCG(this);
+        this.collisionManager.setCollidesWithSectorCG(this);
+        this.collisionManager.addCallbackForPlayersCG(this, function (myBody, playerBody) {
+            playerBody.sprite.damage(this.attributes.damage);
             this.kill();
         }, this);
-        this.collision_manager.addCallbackForPlayerProjectilesCG(this, function (my_body, player_body) {
+        this.collisionManager.addCallbackForPlayerProjectilesCG(this, function (myBody, playerBody) {
             this.kill();
         }, this);
     }

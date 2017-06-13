@@ -1,15 +1,15 @@
 import Ship from '../ship';
 
 export default class Bot extends Ship {
-    constructor (game, x, y, player, collision_manager, class_id) {
-        const BOT_ASSET_KEY = 'bot_' + class_id;
-        let assetConfig     = game.cache.getJSON('assetsConfig')[BOT_ASSET_KEY];
+    constructor (game, x, y, player, collisionManager, classId) {
+        const BOT_ASSET_KEY = 'bot_' + classId;
+        let assetConfig = game.cache.getJSON('assetsConfig')[BOT_ASSET_KEY];
 
-        super(game, x, y, assetConfig.key, null, collision_manager);
+        super(game, x, y, assetConfig.key, null, collisionManager);
 
         // config data
-        this.config       = this.config || {};
-        this.config.bots  = game.cache.getJSON('botsConfig');
+        this.config = this.config || {};
+        this.config.bots = game.cache.getJSON('botsConfig');
         this.config.asset = assetConfig;
 
         if (this.config.asset.in_atlas) {
@@ -17,15 +17,15 @@ export default class Bot extends Ship {
         }
 
         // sprite attributes
-        this.anchor.setTo(this.config.bots[class_id].sprite.anchor);
-        this.scale.setTo(this.config.bots[class_id].sprite.scale);
+        this.anchor.setTo(this.config.bots[classId].sprite.anchor);
+        this.scale.setTo(this.config.bots[classId].sprite.scale);
 
         // bot attributes
         this.attributes = this.attributes || {};
 
         // these need to be set for each bot
-        this.attributes.bot_class_id = class_id;
-        this.player                  = player;
+        this.attributes.bot_class_id = classId;
+        this.player = player;
 
         // setup bot attributes
         this.addAttribute('health', this.getMaxHealth());
@@ -44,38 +44,38 @@ export default class Bot extends Ship {
         this.audio.shipExplosionSound = this.game.add.audio(this.config.assets[SHIP_EXPLOSION_SOUND_ASSET_KEY].key);
 
         // explode on death
-        this.events.onKilled.add((function () {
+        this.events.onKilled.add(() => {
             this.audio.shipExplosionSound.play();
-        }).bind(this));
+        });
 
         this.taxonomy = 'bot';
     }
 
-    getBotClassId  () {
-        if ('undefined' === typeof this.attributes.bot_class_id) {
-            throw "Bot Class Id is not defined";
+    getBotClassId () {
+        if (typeof this.attributes.bot_class_id === 'undefined') {
+            throw new Error('Bot Class Id is not defined');
         }
 
         return this.attributes.bot_class_id;
     }
 
-    getBotConfig            () { return this.config.bots[this.getBotClassId()]; }
-    getSpeed                () { return this.getBotConfig().speed; }
-    getCollisionGroup       () { return this.collision_group; }
+    getBotConfig () { return this.config.bots[this.getBotClassId()]; }
+    getSpeed () { return this.getBotConfig().speed; }
+    getCollisionGroup () { return this.collision_group; }
     getTargetingAngleOffset () { return this.getBotConfig().targeting_angle_offset; }
-    getMaxEnergy            () { return this.getBotConfig().energy; }
-    getEnergyRegenRate      () { return this.getBotConfig().energy_regen_rate; }
-    getEnergyIsShield       () { return this.getBotConfig().energy_is_shield; }
-    getMaxHealth            () { return this.getBotConfig().health; }
-    getHealthRegenRate      () { return this.getBotConfig().health_regen_rate; }
+    getMaxEnergy () { return this.getBotConfig().energy; }
+    getEnergyRegenRate () { return this.getBotConfig().energy_regen_rate; }
+    getEnergyIsShield () { return this.getBotConfig().energy_is_shield; }
+    getMaxHealth () { return this.getBotConfig().health; }
+    getHealthRegenRate () { return this.getBotConfig().health_regen_rate; }
 
     // main gun info
-    getMainGunBulletType        () { return this.getBotConfig().main_gun.bullet_type; }
-    getMainGunBulletPoolCount   () { return this.getBotConfig().main_gun.bullet_pool_count; }
+    getMainGunBulletType () { return this.getBotConfig().main_gun.bullet_type; }
+    getMainGunBulletPoolCount () { return this.getBotConfig().main_gun.bullet_pool_count; }
     getMainGunBulletAngleOffset () { return this.getBotConfig().main_gun.bullet_angle_offset; }
-    getMainGunBulletFireRate    () { return this.getBotConfig().main_gun.bullet_fire_rate; }
-    getMainGunBulletSpeed       () { return this.getBotConfig().main_gun.bullet_speed; }
-    getMainGunBulletEnergyCost  () { return this.getBotConfig().main_gun.bullet_energy_cost; }
+    getMainGunBulletFireRate () { return this.getBotConfig().main_gun.bullet_fire_rate; }
+    getMainGunBulletSpeed () { return this.getBotConfig().main_gun.bullet_speed; }
+    getMainGunBulletEnergyCost () { return this.getBotConfig().main_gun.bullet_energy_cost; }
 
     // health
     setHealth (health) {
@@ -97,18 +97,18 @@ export default class Bot extends Ship {
 
     // taking damage
     damage (amount) {
+        let curHealth, curEnergy;
         if (this.getEnergyIsShield()) {
-            var curEnergy = this.getEnergy();
-            var curHealth = this.getHealth();
+            curEnergy = this.getEnergy();
+            curHealth = this.getHealth();
 
-            var remaining_amount = curEnergy < amount ? amount - curEnergy : 0;
+            let remainingAmount = curEnergy < amount ? amount - curEnergy : 0;
 
             // damage energy shield first then player health
-            this.setEnergy(curEnergy - amount + remaining_amount);
-            this.setHealth(curHealth - remaining_amount);
-        }
-        else {
-            var curHealth = this.getHealth();
+            this.setEnergy(curEnergy - amount + remainingAmount);
+            this.setHealth(curHealth - remainingAmount);
+        } else {
+            curHealth = this.getHealth();
             this.setHealth(curHealth - amount);
         }
 
@@ -120,29 +120,29 @@ export default class Bot extends Ship {
     tick () { /* overwrite me to do stuff */ }
 
     accelerateToPoint (x, y, speed) {
-        var speed = speed || this.getBotConfig().speed || 0;
+        speed = speed || this.getBotConfig().speed || 0;
 
-        var angle = Math.atan2(y - this.y, x - this.x);
-        this.body.rotation = angle + game.math.degToRad(90);  // correct angle of angry bullets (depends on the sprite used)
-        this.body.force.x = Math.cos(angle) * speed;    // accelerateToObject
+        let angle = Math.atan2(y - this.y, x - this.x);
+        this.body.rotation = angle + this.game.math.degToRad(90); // correct angle of angry bullets (depends on the sprite used)
+        this.body.force.x = Math.cos(angle) * speed; // accelerateToObject
         this.body.force.y = Math.sin(angle) * speed;
     }
 
     accelerateToObject (dest, speed) {
-        if ('object' !== typeof dest) return;
+        if (typeof dest !== 'object') return;
 
         this.accelerateToPoint(dest.x, dest.y, speed);
     }
 
     hasLOSWithPlayer () {
-        var forward_rotation = this.rotation - this.game.math.degToRad(this.getTargetingAngleOffset() || 0);
-        var forward_ray = new Phaser.Line(this.x, this.y,
-            this.x + Math.cos(forward_rotation) * 1000, this.y + Math.sin(forward_rotation) * 1000);
+        let forwardRotation = this.rotation - this.game.math.degToRad(this.getTargetingAngleOffset() || 0);
+        let forwardRay = new Phaser.Line(this.x, this.y,
+            this.x + Math.cos(forwardRotation) * 1000, this.y + Math.sin(forwardRotation) * 1000);
 
-        var player_ray = new Phaser.Line();
-        player_ray.fromSprite(this,this.player);
+        let playerRay = new Phaser.Line();
+        playerRay.fromSprite(this, this.player);
 
-        return Phaser.Math.fuzzyEqual(forward_ray.normalAngle, player_ray.normalAngle, 0.05);
+        return Phaser.Math.fuzzyEqual(forwardRay.normalAngle, playerRay.normalAngle, 0.05);
     }
 
     // default collisions setup, child bots should overwrite this

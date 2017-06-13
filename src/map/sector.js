@@ -1,10 +1,10 @@
 import MinionBot from '../entities/ships/bots/minion';
 
 export default class Sector {
-    constructor (game, player, collissionManager, key) {
+    constructor (game, player, collisionManager, key) {
         this.game = game;
         this.player = player;
-        this.collissionManager = collissionManager;
+        this.collisionManager = collisionManager;
         this.key = key;
 
         // config data
@@ -20,7 +20,7 @@ export default class Sector {
     tilemapAssetConfig () {
         const TILEMAP_ASSET_KEY = 'tilemap_' + this.sectorConfig().tilemap;
         return this.config.assets[TILEMAP_ASSET_KEY];
-}
+    }
     tilesetList () { return this.sectorConfig().tilesets; }
     tilesetAssetConfig (key) { return this.config.assets[key]; }
     backgroundAssetConfig () {
@@ -35,7 +35,7 @@ export default class Sector {
        }.bind(this));
 
        var tilemap = this.tilemapAssetConfig();
-       this.game.load.tilemap(tilemap.key, tilemap.file, null, Phaser.Tilemap.TILED_JSON);
+       this.game.load.tilemap(tilemap.key, null, this.game.cache.getJSON(tilemap.jsonKey), Phaser.Tilemap.TILED_JSON);
 
        if (this.sectorConfig().background) {
            var bgAsset = this.backgroundAssetConfig();
@@ -79,7 +79,7 @@ export default class Sector {
         }
 
         // setup world boundaries
-        this.collissionManager.setBounds(0, 0, this.widthInPixels(), this.heightInPixels());
+        this.collisionManager.setBounds(0, 0, this.widthInPixels(), this.heightInPixels());
 
         // setup sector collisions
         this.setupSectorCollisions();
@@ -96,11 +96,11 @@ export default class Sector {
                // needed for p2 physics collisions to work
                var bodies = this.game.physics.p2.convertTilemap(this.map, layer.name);
                _.each(bodies, function (body) {
-                   this.collissionManager.addToSectorCG(body);
-                   this.collissionManager.setCollidesWithPlayersCG(body);
-                   this.collissionManager.setCollidesWithPlayerProjectilesCG(body);
-                   this.collissionManager.setCollidesWithEnemiesCG(body);
-                   this.collissionManager.setCollidesWithEnemyProjectilesCG(body);
+                   this.collisionManager.addToSectorCG(body);
+                   this.collisionManager.setCollidesWithPlayersCG(body);
+                   this.collisionManager.setCollidesWithPlayerProjectilesCG(body);
+                   this.collisionManager.setCollidesWithEnemiesCG(body);
+                   this.collisionManager.setCollidesWithEnemyProjectilesCG(body);
                }.bind(this));
            }
         }.bind(this));
@@ -121,7 +121,7 @@ export default class Sector {
 
                     break;
                 case 'bot_minion':
-                    var bot = new MinionBot(this.game, entity.x, entity.y, this.player, this.collissionManager);
+                    var bot = new MinionBot(this.game, entity.x, entity.y, this.player, this.collisionManager);
 
                     this.bots.add(this.game.add.existing(bot));
 

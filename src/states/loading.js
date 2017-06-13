@@ -7,6 +7,8 @@ import botsConfig from '../../assets/json/bots.json';
 import hudConfig from '../../assets/json/hud.json';
 import sectorsConfig from '../../assets/json/sectors.json';
 import missionsConfig from '../../assets/json/missions.json';
+import tilemapSector1 from '../../assets/json/tilemaps/sector_1.json';
+import atlasGame from '../../assets/json/game_atlas.json';
 
 // web fonts
 import WebFont from 'webfontloader';
@@ -51,6 +53,8 @@ export default class LoadingState extends Phaser.State {
         this.game.cache.addJSON('hudConfig', null, hudConfig);
         this.game.cache.addJSON('sectorsConfig', null, sectorsConfig);
         this.game.cache.addJSON('missionsConfig', null, missionsConfig);
+        this.game.cache.addJSON('tilemapSector1', null, tilemapSector1);
+        this.game.cache.addJSON('atlasGame', null, atlasGame);
 
         // load web fonts
         WebFont.load({
