@@ -3,6 +3,8 @@ import MainMenuState from './states/main_menu';
 import MissionResultsState from './states/mission_results';
 import PlayMissionState from './states/play_mission';
 
+require('./index.html');
+
 let game = new Phaser.Game(800, 600);
 
 Phaser.Device.whenReady(function () {

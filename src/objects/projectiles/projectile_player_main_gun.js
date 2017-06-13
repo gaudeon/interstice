@@ -17,7 +17,7 @@ export default class ProjectilePlayerMainGun extends Projectile {
         this.attributes = this.attributes || {};
         this.attributes.damage = this.config.player.main_gun.bullet_damage;
         this.attributes.lifespan = this.config.player.main_gun.bullet_lifespan;
-        this.attributes.mass = this.config.player.main_gun.bullet_mass;
+        this.setMass(this.config.player.main_gun.bullet_mass);
 
         if (this.config.assets.bullet_green.in_atlas) {
             this.frameName = this.config.assets.bullet_green.frame;

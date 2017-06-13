@@ -66,7 +66,17 @@ module.exports = {
                 }],
             },
             {
-                test: /assets\/.*\.(css|jpe?g|gif|png|svg|woff|ttf|wav|mp3)$/,
+                test: /src\/.*\.(html)$/,
+                use: [{
+                    loader: "file-loader",
+                    options: {
+                        name: '[name].[ext]',
+                        outputPath: '../',
+                    }
+                }],
+            },
+            {
+                test: /assets\/.*\.(css|jpe?g|gif|png|svg|woff|ttf|wav|mp3|html)$/,
                 use: [{
                     loader: "file-loader",
                     options: {

@@ -17,7 +17,7 @@ export default class ProjectileMinionMainGun extends Projectile {
         this.attributes = this.attributes || {};
         this.attributes.damage = this.config.bots.minion.main_gun.bullet_damage;
         this.attributes.lifespan = this.config.bots.minion.main_gun.bullet_lifespan;
-        this.attributes.mass = this.config.bots.minion.main_gun.bullet_mass;
+        this.setMass(this.config.bots.minion.main_gun.bullet_mass);
 
         if (this.config.assets.bullet_red.in_atlas) {
             this.frameName = this.config.assets.bullet_red.frame;

@@ -35,4 +35,8 @@ export default class Projectile extends Phaser.Sprite {
         // default bullets as dead
         this.kill();
     }
+
+    setMass (mass) {
+        this.body.mass = this.attributes.mass = mass;
+    }
 };
