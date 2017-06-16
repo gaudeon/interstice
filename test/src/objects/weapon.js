@@ -1,4 +1,4 @@
-import Projectile from '../../../src/objects/projectile';
+import Weapon from '../../../src/objects/weapon';
 
 let env = require('../../env');
 let assets = require('../../assets');
@@ -10,14 +10,14 @@ before(function() {
 
 // reqs
 
-describe("Projectile", function () {
-    let projectile;
+describe("Weapon", function () {
+    let weapon;
 
     describe("constructor()", function() {
         it("generates an object", function () {
-            projectile = new Projectile(game);
+            weapon = new Weapon(game);
 
-            assert.isObject(projectile);
+            assert.isObject(weapon);
         });
     });
 });
