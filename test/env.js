@@ -39,8 +39,6 @@ let gameReadyPromise = new Promise((resolve, reject) => {
     let game = new Phaser.Game(GAME_WIDTH, GAME_HEIGHT, Phaser.HEADLESS);
 
     game.device.whenReady(() => {
-        // game.world = new Phaser.World(game);
-
         game.physics.startSystem(Phaser.Physics.P2JS);
 
         game.cache.addJSON('assetsConfig', null, assetsConfig);

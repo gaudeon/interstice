@@ -5,10 +5,6 @@ import CollisionManager from '../../../src/objects/collision_manager';
 
 const assert = chai.assert;
 
-before(() => {
-    return Promise.all([env.gameReady]);
-});
-
 describe('CollisionManager', () => {
     let collisionManager;
 
