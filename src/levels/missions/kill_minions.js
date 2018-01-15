@@ -12,11 +12,11 @@ export default class KillMinionsMission extends Mission {
 
         // now setup success and failure objectives for this mission
         var minions = [];
-        this.sector.getBots().forEach((function (bot) {
+        this.sector.getBots().forEach(bot => {
             if (bot.isEnemy(this.sector.getPlayer()) && bot.alive) {
                 minions.push(bot);
             }
-        }).bind(this));
+        });
 
         var kill_minions = new KillShipsObjective(this.game, minions);
 

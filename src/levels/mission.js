@@ -58,22 +58,21 @@ export default class Mission {
         this.player.loadAssets();
 
         // bullet assets
-        _.each(_.keys(this.config.assets.bullets), function (bulletType) {
-            const BULLET_ASSET_KEY = 'bullet_' + bulletType;
-            let bulletAsset = this.config.assets[BULLET_ASSET_KEY];
+        _.filter(Object.keys(this.config.assets), key => { return key.match(/^bullet_/); }).forEach(bulletType => {
+            let bulletAsset = this.config.assets[bulletType];
             if (!bulletAsset.in_atlas) {
                 this.load.image(bulletAsset.key, bulletAsset.file);
             }
-        }.bind(this));
+        });
 
         // bot assets TODO: only load bot assets we use on a stage
-        _.each(_.keys(this.config.bots), function (botClassId) {
+        Object.keys(this.config.bots).forEach(botClassId => {
             const BOTS_ASSET_KEY = 'bot_' + botClassId;
             let botAssetConfig = this.config.assets[BOTS_ASSET_KEY];
             if (!botAssetConfig.in_atlas) {
                 this.load.image(botAssetConfig.key, botAssetConfig.file);
             }
-        }.bind(this));
+        });
     }
 
     setupMission () {

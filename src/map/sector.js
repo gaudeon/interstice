@@ -29,10 +29,10 @@ export default class Sector {
     }
 
     loadAssets () {
-        _.each(this.tilesetList(), function (tileset) {
+        this.tilesetList().forEach(tileset => {
             var config = this.tilesetAssetConfig(tileset);
             this.game.load.image(config.key, config.file);
-       }.bind(this));
+       });
 
        var tilemap = this.tilemapAssetConfig();
        this.game.load.tilemap(tilemap.key, null, this.game.cache.getJSON(tilemap.jsonKey), Phaser.Tilemap.TILED_JSON);
@@ -50,18 +50,18 @@ export default class Sector {
         this.map = this.game.add.tilemap(this.tilemapAssetConfig().key);
 
         // add tileset images
-        _.each(this.tilesetList(), function (tileset) {
+        this.tilesetList().forEach(tileset => {
             var config = this.tilesetAssetConfig(tileset);
             this.map.addTilesetImage(tileset, config.key);
-        }.bind(this));
+        });
 
         // setup tile layers
         this.layers = {};
 
-        _.each(this.sectorConfig().layers, function (layer) {
+        this.sectorConfig().layers.forEach(layer => {
            this.layers[layer.name] = this.map.createLayer(layer.name);
            this.layers[layer.name].sendToBack();
-        }.bind(this));
+        });
 
         // TODO: setup  object layers
 
@@ -89,27 +89,27 @@ export default class Sector {
     }
 
     setupSectorCollisions () {
-        _.each(this.sectorConfig().layers, function (layer) {
+        this.sectorConfig().layers.forEach(layer => {
            if (layer.collisionIds) {
                this.map.setCollision(layer.collisionIds, true, layer.name);
 
                // needed for p2 physics collisions to work
                var bodies = this.game.physics.p2.convertTilemap(this.map, layer.name);
-               _.each(bodies, function (body) {
+               bodies.forEach(body => {
                    this.collisionManager.addToSectorCG(body);
                    this.collisionManager.setCollidesWithPlayersCG(body);
                    this.collisionManager.setCollidesWithPlayerProjectilesCG(body);
                    this.collisionManager.setCollidesWithEnemiesCG(body);
                    this.collisionManager.setCollidesWithEnemyProjectilesCG(body);
-               }.bind(this));
+               });
            }
-        }.bind(this));
+       });
     }
 
     setupSectorEntities () {
         var entityLayer = this.sectorConfig().object_layers['entities'];
 
-        this.map.objects[entityLayer].forEach(function (entity) {
+        this.map.objects[entityLayer].forEach(entity => {
             // Phaser uses top left, Tiled bottom left so we have to adjust the y position
             // also keep in mind that the cup images are a bit smaller than the tile which is 16x16
             // so they might not be placed in the exact pixel position as in Tiled
@@ -132,7 +132,7 @@ export default class Sector {
                 default:
                     break;
             }
-        }.bind(this));
+        });
     }
 
     // updates for sector

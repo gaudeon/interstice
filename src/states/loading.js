@@ -58,9 +58,9 @@ export default class LoadingState extends Phaser.State {
 
         // load web fonts
         WebFont.load({
-            active: function () {
+            active: () => {
                 this.webfontloaded();
-            }.bind(this),
+            },
             custom: {
                 families: ['Exo2 SemiBold'],
                 urls: ['/assets/fonts.css']

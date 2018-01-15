@@ -27,7 +27,7 @@ export default class HUD {
         this.hud = this.game.add.group();
         this.hud.fixedToCamera = true;
 
-        _.each(['health_bar', 'energy_bar'], function (bar) {
+        ['health_bar', 'energy_bar'].forEach(bar => {
             //  bar
             this[bar] = {};
 
@@ -71,11 +71,11 @@ export default class HUD {
             this[bar].fg.right = this.game.add.sprite(x, y, this.config.assets['ui_' + bar + '_right'].key, this.config.assets['ui_' + bar + '_right'].frame);
             this[bar].fg.right.alpha = this.config.hud[bar].alpha;
             this.hud.add(this[bar].fg.right);
-        }.bind(this));
+        });
     }
 
     tick () {
-        _.each(['health_bar', 'energy_bar'], function (bar) {
+        ['health_bar', 'energy_bar'].forEach(bar => {
             var amount = bar === 'health_bar' ? this.player.getHealth() : this.player.getEnergy();
             if (amount <= 0) { // hide bar if empty
                 this[bar].fg.left.visible = false;
@@ -92,6 +92,6 @@ export default class HUD {
                 var y = this.config.hud[bar].y;
                 this[bar].fg.right.reset(x, y);
             }
-        }.bind(this));
+        });
     }
 };

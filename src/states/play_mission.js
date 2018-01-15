@@ -43,14 +43,14 @@ export default class PlayMissionState extends Phaser.State {
         this.hud.setupHUD();
 
         // define what happens when player successfully completes mission
-        this.mission.events.onSuccess.add(function () {
+        this.mission.events.onSuccess.add(() => {
             this.state.start('MainMenu');
-        }.bind(this));
+        });
 
         // define what happens when a player fails to complete a mission
-        this.mission.events.onFailure.add(function () {
+        this.mission.events.onFailure.add(() => {
             this.state.start('MainMenu');
-        }.bind(this));
+        });
     }
 
     update () {

@@ -8,9 +8,7 @@ export default class KillShipsObjective extends Objective {
             ships = [ships];
         }
 
-        this.bots = _.filter(ships, (function (o) {
-            return o.alive;
-        }).bind(this));
+        this.bots = _.filter(ships, ship => { return ship.alive; });
 
         this.ships = ships;
     }

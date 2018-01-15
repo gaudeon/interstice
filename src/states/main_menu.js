@@ -6,7 +6,7 @@ export default class MainMenuState extends Phaser.State {
         this.game.world.setBounds(0, 0, 800, 600);
 
         var y = 0;
-        _.each(this.config.items, function (item) {
+        this.config.items.forEach(item => {
             var text = this.add.text(0, y, item.label, this.config.style);
 
             text.setTextBounds(0, 0, this.world.width, this.world.height);
@@ -24,6 +24,6 @@ export default class MainMenuState extends Phaser.State {
             }
 
             y += this.config.style.fontSize;
-        }.bind(this));
+        });
     }
 };
