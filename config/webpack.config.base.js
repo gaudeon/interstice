@@ -1,24 +1,20 @@
 const webpack = require('webpack');
 const path = require('path');
 
-// Phaser webpack config
-const phaserModule = path.join(__dirname, '../node_modules/phaser-ce/');
-const phaser = path.join(phaserModule, 'build/custom/phaser-split.js');
-const pixi = path.join(phaserModule, 'build/custom/pixi.js');
-const p2 = path.join(phaserModule, 'build/custom/p2.js');
-
 const config = {
     context: path.resolve(__dirname, '../src'),
+
     entry: {
-        app: ['./app.js'],
-        vendor: ['lodash', 'pixi', 'p2', 'phaser', 'webfontloader']
+        app: ['./app.js']
     },
+
     output: {
         filename: '[name].bundle.js',
         pathinfo: true,
         path: path.resolve(__dirname, '../dist/assets/'),
         publicPath: 'assets/'
     },
+
     module: {
         rules: [
             {
@@ -30,25 +26,8 @@ const config = {
                 }]
             },
             {
-                test: /pixi\.js/,
-                use: [{
-                    loader: 'expose-loader',
-                    options: 'PIXI'
-                }]
-            },
-            {
-                test: /phaser-split\.js$/,
-                use: [{
-                    loader: 'expose-loader',
-                    options: 'Phaser'
-                }]
-            },
-            {
-                test: /p2\.js/,
-                use: [{
-                    loader: 'expose-loader',
-                    options: 'p2'
-                }]
+                test: [ /\.vert$/, /\.frag$/ ],
+                use: 'raw-loader'
             },
             {
                 test: /src\/.*\.(html)$/,
@@ -72,22 +51,15 @@ const config = {
             }
         ]
     },
+
     plugins: [
-        new webpack.optimize.CommonsChunkPlugin({ name: 'vendor'/* chunkName= */, filename: 'vendor.bundle.js'/* filename= */})
+        new webpack.DefinePlugin({ 'CANVAS_RENDERER': JSON.stringify(true), 'WEBGL_RENDERER': JSON.stringify(true) })
     ],
+
     node: {
         fs: 'empty',
         net: 'empty',
         tls: 'empty'
-    },
-    resolve: {
-        alias: {
-            'phaser': phaser,
-            'Phaser': phaser,
-            'pixi': pixi,
-            'PIXI': pixi,
-            'p2': p2
-        }
     }
 };
 

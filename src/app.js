@@ -1,3 +1,23 @@
+import 'phaser';
+import 'lodash';
+import 'webfontloader';
+
+var config = {
+    type: Phaser.AUTO,
+    width: 800,
+    height: 600,
+    scene: {
+        create: create
+    }
+};
+
+let game = new Phaser.Game(config);
+
+function create () {
+    console.log('started');
+}
+
+/* phaser v2
 import LoadingState from './states/loading';
 import MainMenuState from './states/main_menu';
 import MissionResultsState from './states/mission_results';
@@ -25,3 +45,4 @@ Phaser.Device.whenReady(function () {
 
     game.state.start('Loading');
 });
+*/
