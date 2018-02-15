@@ -3,13 +3,13 @@ import Weapon from '../weapon';
 import ProjectileMinionMainGun from '../projectiles/projectile_minion_main_gun';
 
 export default class WeaponMinionMainGun extends Weapon {
-    constructor (game, collisionManager) {
+    constructor (scene, collisionManager) {
         // call bullet constructor
-        super(game, collisionManager);
+        super(scene, collisionManager);
 
         // config data
         this.config = {};
-        this.config.bots = game.cache.getJSON('botsConfig');
+        this.config.bots = scene.cache.json.get('botsConfig');
 
         // the default amount of projectiles created
         this.projectileCount = this.config.bots.minion.main_gun.bullet_pool_count;

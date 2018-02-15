@@ -2,13 +2,13 @@
 import Projectile from './projectile';
 
 export default class Weapon {
-    constructor (game, collisionManager) {
-        this.game = game;
+    constructor (scene, collisionManager) {
+        this.scene = scene;
 
         this.collisionManager = collisionManager;
 
         // projectile Group
-        this.projectilePool = this.game.add.group();
+        this.projectilePool = this.scene.add.group();
 
         // the default amount of projectiles created
         this.projectileCount = 20;
@@ -45,7 +45,7 @@ export default class Weapon {
         for (var i = 0; i < this.projectileCount; i++) {
             // Create each bullet and add it to the group.
             let ProjectileClass = this.projectileClass();
-            let projectile = new ProjectileClass(this.game, 0, 0, this.collisionManager);
+            let projectile = new ProjectileClass(this.scene, 0, 0, this.collisionManager);
             this.projectilePool.add(projectile);
         }
     }
@@ -62,10 +62,10 @@ export default class Weapon {
         // the amount of time since the last shot is more than
         // the required delay.
         if (this.lastProjectileShotAt === undefined) this.lastProjectileShotAt = 0;
-        if (this.game.time.now - this.lastProjectileShotAt < this.shotDelay) {
+        if (this.scene.time.now - this.lastProjectileShotAt < this.shotDelay) {
             return;
         }
-        this.lastProjectileShotAt = this.game.time.now;
+        this.lastProjectileShotAt = this.scene.time.now;
 
         // Get a dead projectile from the pool
         var projectile = this.projectilePool.getFirstDead();
@@ -79,7 +79,7 @@ export default class Weapon {
         projectile.revive();
 
         // sprites are on top
-        this.game.world.bringToTop(projectile);
+        this.scene.world.bringToTop(projectile);
 
         // set projectile lifespan
         if (projectile.attributes.lifespan) {
@@ -92,7 +92,7 @@ export default class Weapon {
 
             projectile.rotation = this.originSprite.rotation;
 
-            var forwardRotation = this.originSprite.rotation - this.game.math.degToRad(this.projectileAngleOffset);
+            var forwardRotation = this.originSprite.rotation - this.scene.math.degToRad(this.projectileAngleOffset);
 
             // Shoot it in the right direction
             projectile.body.velocity.x = Math.cos(forwardRotation) * speed;

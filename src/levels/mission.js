@@ -3,15 +3,15 @@ import Player from '../entities/ships/player';
 import Sector from '../map/sector';
 
 export default class Mission {
-    constructor (game, key) {
-        this.game = game;
+    constructor (scene, key) {
+        this.scene = scene;
         this.key = key;
 
         // config data
         this.config = this.config || {};
-        this.config.missions = game.cache.getJSON('missionsConfig');
-        this.config.assets = game.cache.getJSON('assetsConfig');
-        this.config.bots = game.cache.getJSON('botsConfig');
+        this.config.missions = scene.cache.json.get('missionsConfig');
+        this.config.assets = scene.cache.json.get('assetsConfig');
+        this.config.bots = scene.cache.json.get('botsConfig');
 
         // mission keys should be defined in any child object inheriting from this object
         if (typeof this.key === 'undefined' || typeof this.config.missions[this.key] === 'undefined') {
@@ -21,21 +21,19 @@ export default class Mission {
         this.config.mission = this.config.missions[this.key];
 
         // setup collision manager for p2 physics collisions
-        this.collision_manager = new CollisionManager(game);
+        this.collision_manager = new CollisionManager(scene);
 
         // setup player object
-        this.player = new Player(game, this.collision_manager);
+        this.player = new Player(scene, this.collision_manager);
 
         // setup the sector object
-        this.sector = new Sector(game, this.player, this.collision_manager, this.config.mission.start_sector);
+        this.sector = new Sector(scene, this.player, this.collision_manager, this.config.mission.start_sector);
 
         this.success_objectives = {};
         this.failure_objectives = {};
 
-        // setup event signals
-        this.events = {};
-        this.events.onSuccess = new Phaser.Signal();
-        this.events.onFailure = new Phaser.Signal();
+        // setup events
+        this.events = new Phaser.EventEmitter();
     }
 
     loadAssets () {
@@ -47,7 +45,7 @@ export default class Mission {
             ),
             (key) => {
                 var atlasAsset = this.config.assets[key];
-                this.game.load.atlas(atlasAsset.key, atlasAsset.file, null, this.game.cache.getJSON(atlasAsset.jsonKey), Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
+                this.scene.load.atlas(atlasAsset.key, atlasAsset.file, null, this.scene.cache.json.get(atlasAsset.jsonKey), Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
             }
         );
 
@@ -84,11 +82,11 @@ export default class Mission {
         this.sector.tick();
 
         if (this.isMissionSuccess()) {
-            this.events.onSuccess.dispatch();
+            this.events.emit('MissionSuccess');
         }
 
         if (this.isMissionFailure()) {
-            this.events.onFailure.dispatch();
+            this.events.emit('MissionFailure');
         }
     }
 

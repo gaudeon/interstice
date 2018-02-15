@@ -1,7 +1,7 @@
-export default class Projectile extends Phaser.Sprite {
-    constructor (game, x, y, key, frame, collisionManager) {
+export default class Projectile extends Phaser.GameObjects.Sprite {
+    constructor (scene, x, y, key, frame, collisionManager) {
         // call bullet constructor
-        super(game, x, y, key, frame);
+        super(scene, x, y, key, frame);
 
         // the collision manager
         this.collisionManager = collisionManager;
@@ -11,7 +11,7 @@ export default class Projectile extends Phaser.Sprite {
         this.attributes.mass = this.attributes.mass || 1; // get project mass from children or default to 1
 
         // enable physics
-        game.physics.p2.enable(this, false);
+        scene.physics.p2.enable(this, false);
 
         // physics settings
         this.body.fixedRotation = true;

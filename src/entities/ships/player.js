@@ -2,14 +2,14 @@ import Ship from '../ship';
 import WeaponPlayerMainGun from '../../objects/weapons/weapon_player_main_gun';
 
 export default class Player extends Ship {
-    constructor (game, collisionManager) {
-        super(game, 0, 0, null, null, collisionManager);
+    constructor (scene, collisionManager) {
+        super(scene, 0, 0, null, null, collisionManager);
 
         // config data
         this.config = this.config || {};
-        this.config.assets = this.config.assets || game.cache.getJSON('assetsConfig');
-        this.config.controls = this.config.controls || game.cache.getJSON('controlsConfig');
-        this.config.player = this.config.player || game.cache.getJSON('playerConfig');
+        this.config.assets = this.config.assets || this.scene.cache.json.get('assetsConfig');
+        this.config.controls = this.config.controls || this.scene.cache.json.get('controlsConfig');
+        this.config.player = this.config.player || this.scene.cache.json.get('playerConfig');
 
         this.taxonomy = 'human.player';
     }
@@ -65,19 +65,19 @@ export default class Player extends Ship {
             const PLAYER_HULL_CLASS = 'player_hull_' + classId;
             let playerHullAsset = this.config.assets[PLAYER_HULL_CLASS];
             if (!playerHullAsset.in_atlas) {
-                this.game.load.image(playerHullAsset.key, playerHullAsset.file);
+                this.scene.load.image(playerHullAsset.key, playerHullAsset.file);
             }
         });
 
         // sounds
         var thrust = this.config.assets[this.thrustSoundAssetKey()];
-        this.game.load.audio(thrust.key, thrust.file);
+        this.scene.load.audio(thrust.key, thrust.file);
 
         var bullet = this.config.assets[this.bulletSoundAssetKey()];
-        this.game.load.audio(bullet.key, bullet.file);
+        this.scene.load.audio(bullet.key, bullet.file);
 
         var shipExplosion = this.config.assets[this.shipExplosionSoundAssetKey()];
-        this.game.load.audio(shipExplosion.key, shipExplosion.file);
+        this.scene.load.audio(shipExplosion.key, shipExplosion.file);
     }
 
     // setup ship
@@ -85,8 +85,8 @@ export default class Player extends Ship {
         // default to balanced hull class. TODO: Change me to support player chosen hull classes
         this.ship_class_id = 'balanced';
 
-        if (typeof x === 'undefined') x = this.game.world.width / 2;
-        if (typeof y === 'undefined') y = this.game.world.height / 2;
+        if (typeof x === 'undefined') x = this.scene.sys.game.config.width / 2;
+        if (typeof y === 'undefined') y = this.scene.sys.game.config.height / 2;
 
         const PLAYER_HULL_CLASS = 'player_hull_' + this.ship_class_id;
         this.loadTexture(this.config.assets[PLAYER_HULL_CLASS].key);
@@ -101,19 +101,19 @@ export default class Player extends Ship {
 
         // physics related
         this.body.setRectangle(40, 40);
-        this.body.rotation = this.game.math.PI2 / 4;
+        this.body.rotation = Phaser.Math.PI2 / 4;
 
         // add ship to the game
-        this.game.add.existing(this);
+        //this.game.add.existing(this);
 
         // entities are on top
-        this.game.world.bringToTop(this);
+        //teis.game.world.bringToTop(this);
 
         //  Notice that the sprite doesn't have any momentum at all,
         //  it's all just set by the camera follow type.
         //  0.1 is the amount of linear interpolation to use.
         //  The smaller the value, the smooth the camera (and the longer it takes to catch up)
-        this.game.camera.follow(this, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
+        this.scene.cameras[0].startFollow(this);
 
         // setup player attributes
         this.addAttribute('health', this.getHullHealth());
@@ -129,19 +129,19 @@ export default class Player extends Ship {
         this.body.onBeginContact.add(this.impactHandler, this);
 
         // main gun
-        var mainGun = new WeaponPlayerMainGun(this.game, this.collisionManager);
+        var mainGun = new WeaponPlayerMainGun(this.scene, this.collisionManager);
         mainGun.createProjectiles(this.getMainGunBulletPoolCount());
         mainGun.trackSprite(this);
         this.addWeapon('mainGun', mainGun);
 
         // audio
         this.audio = {};
-        this.audio.thrustSound = this.game.add.audio(this.config.assets[this.thrustSoundAssetKey()].key, 1, true);
-        this.audio.bulletSound = this.game.add.audio(this.config.assets[this.bulletSoundAssetKey()].key);
-        this.audio.shipExplosionSound = this.game.add.audio(this.config.assets[this.shipExplosionSoundAssetKey()].key);
+        this.audio.thrustSound = this.scene.add.audio(this.config.assets[this.thrustSoundAssetKey()].key, 1, true);
+        this.audio.bulletSound = this.scene.add.audio(this.config.assets[this.bulletSoundAssetKey()].key);
+        this.audio.shipExplosionSound = this.scene.add.audio(this.config.assets[this.shipExplosionSoundAssetKey()].key);
 
         // keyboard events
-        this.keyboard = this.game.input.keyboard.createCursorKeys();
+        this.keyboard = this.scene.input.keyboard.createCursorKeys();
         _.each(['thrustForward', 'thrustReverse', 'rotateLeft', 'rotateRight', 'fireBullets'], (control) => {
             var keycode = Phaser.KeyCode[this.config.controls[control]];
             this.keyboard[control] = this.game.input.keyboard.addKey(keycode);

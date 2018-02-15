@@ -1,14 +1,14 @@
-export default class Ship extends Phaser.Sprite {
-    constructor (game, x, y, key, frame, collisionManager) {
+export default class Ship extends Phaser.Physics.Matter.Sprite {
+    constructor (scene, x, y, key, frame, collisionManager) {
         // call sprite constructor
-        super(game, x, y, key, frame);
+        super(scene.matter.world, x, y, key, frame);
 
         // config data
         this.config = this.config || {};
-        this.config.assets = this.game.cache.getJSON('assetsConfig');
+        this.config.assets = this.scene.cache.json.get('assetsConfig');
 
-        // enable p2 physics
-        this.game.physics.p2.enable(this, false);
+        // add this object to scene's matter physics
+        this.scene.matterAddExisting(this);
 
         // ship attributes
         this.attributes = this.attributes || {};
@@ -16,9 +16,9 @@ export default class Ship extends Phaser.Sprite {
         // add alias to the collisionManager
         this.collisionManager = collisionManager;
 
+        console.log(this);
         // addition event signals this.events is a Phaser.Events object
-        this.events = this.events || {};
-        this.events.onChangeAttribute = new Phaser.Signal();
+        this.events = this.events || new Phaser.EventEmitter();
 
         // track ship weapons
         this.weapons = this.weapons || {};
@@ -46,7 +46,7 @@ export default class Ship extends Phaser.Sprite {
 
         this.attributes[key] = value;
 
-        this.events.onChangeAttribute.dispatch(key, value, oldValue);
+        this.events.emit('ChangeAttribute');
     }
 
     addAttribute (key, value) { this.setAttribute(key, value); }

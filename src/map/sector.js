@@ -1,19 +1,19 @@
 import MinionBot from '../entities/ships/bots/minion';
 
 export default class Sector {
-    constructor (game, player, collisionManager, key) {
-        this.game = game;
+    constructor (scene, player, collisionManager, key) {
+        this.scene = scene;
         this.player = player;
         this.collisionManager = collisionManager;
         this.key = key;
 
         // config data
         this.config = this.config || {};
-        this.config.assets = this.config.assets || game.cache.getJSON('assetsConfig');
-        this.config.sectors = this.config.sectors || game.cache.getJSON('sectorsConfig');
+        this.config.assets = this.config.assets || this.scene.cache.json.get('assetsConfig');
+        this.config.sectors = this.config.sectors || this.scene.cache.json.get('sectorsConfig');
 
         // area to hold bots
-        this.bots = new Phaser.Group(this.game);
+        this.bots = new Phaser.GameObjects.Group(this.scene);
     }
 
     sectorConfig () { return this.config.sectors[this.key]; }
@@ -31,23 +31,24 @@ export default class Sector {
     loadAssets () {
         this.tilesetList().forEach(tileset => {
             var config = this.tilesetAssetConfig(tileset);
-            this.game.load.image(config.key, config.file);
+            this.scene.load.image(config.key, config.file);
        });
 
        var tilemap = this.tilemapAssetConfig();
-       this.game.load.tilemap(tilemap.key, null, this.game.cache.getJSON(tilemap.jsonKey), Phaser.Tilemap.TILED_JSON);
+       this.scene.cache.tilemap.add(tilemap.key, { format: Phaser.Tilemaps.Formats.TILED_JSON, data: this.scene.cache.json.get(tilemap.jsonKey) });
 
        if (this.sectorConfig().background) {
            var bgAsset = this.backgroundAssetConfig();
+
            if (!bgAsset.in_atlas) {
-               this.game.load.image(bgAsset.key, bgAsset.file);
+               this.scene.load.image(bgAsset.key, bgAsset.file);
            }
        }
     }
 
     setupSector () {
         // init map
-        this.map = this.game.add.tilemap(this.tilemapAssetConfig().key);
+        this.map = this.scene.add.tilemap(this.tilemapAssetConfig().key);
 
         // add tileset images
         this.tilesetList().forEach(tileset => {
@@ -70,12 +71,12 @@ export default class Sector {
 
         // apply background
         if (this.sectorConfig().background) {
-            this.background = this.game.add.tileSprite(0, 0, this.widthInPixels(), this.heightInPixels(), this.backgroundAssetConfig().key);
+            this.background = this.scene.add.tileSprite(0, 0, this.widthInPixels(), this.heightInPixels(), this.backgroundAssetConfig().key);
             if (this.backgroundAssetConfig().in_atlas) {
                 this.background.frameName = this.backgroundAssetConfig().frame;
             }
 
-            this.game.world.sendToBack(this.background);
+            //this.game.world.sendToBack(this.background);
         }
 
         // setup world boundaries
@@ -94,7 +95,7 @@ export default class Sector {
                this.map.setCollision(layer.collisionIds, true, layer.name);
 
                // needed for p2 physics collisions to work
-               var bodies = this.game.physics.p2.convertTilemap(this.map, layer.name);
+               var bodies = this.scene.physics.matter.convertTilemap(this.map, layer.name);
                bodies.forEach(body => {
                    this.collisionManager.addToSectorCG(body);
                    this.collisionManager.setCollidesWithPlayersCG(body);
@@ -121,12 +122,12 @@ export default class Sector {
 
                     break;
                 case 'bot_minion':
-                    var bot = new MinionBot(this.game, entity.x, entity.y, this.player, this.collisionManager);
+                    var bot = new MinionBot(this.scene, entity.x, entity.y, this.player, this.collisionManager);
 
-                    this.bots.add(this.game.add.existing(bot));
+                    this.bots.add(this.scene.add.existing(bot));
 
                     // entities are on top
-                    this.game.world.bringToTop(bot);
+                    //this.game.world.bringToTop(bot);
 
                     break;
                 default:

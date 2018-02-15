@@ -3,13 +3,13 @@ import Weapon from '../weapon';
 import ProjectilePlayerMainGun from '../projectiles/projectile_player_main_gun';
 
 export default class WeaponPlayerMainGun extends Weapon {
-    constructor (game, collisionManager) {
+    constructor (scene, collisionManager) {
         // call bullet constructor
-        super(game, collisionManager);
+        super(scene, collisionManager);
 
         // config data
         this.config = {};
-        this.config.player = game.cache.getJSON('playerConfig');
+        this.config.player = scene.cache.json.get('playerConfig');
 
         // the default amount of projectiles created
         this.projectileCount = this.config.player.main_gun.bullet_pool_count;

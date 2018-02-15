@@ -2,8 +2,8 @@
 // add sprites to the various groups or setup collisions with the various groups
 
 export default class CollisionManager {
-    constructor (game) {
-        this.game = game;
+    constructor (scene) {
+        this.scene = scene;
     }
 
     // player_cg

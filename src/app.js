@@ -2,20 +2,26 @@ import 'phaser';
 import 'lodash';
 import 'webfontloader';
 
-var config = {
+import LoadingScene from './scenes/loading';
+import MainMenuScene from './scenes/main_menu';
+import PlayMissionScene from './scenes/play_mission';
+
+var gameConfig = {
     type: Phaser.AUTO,
     width: 800,
     height: 600,
-    scene: {
-        create: create
-    }
+    backgroundColor: '#000000',
+    physics: {
+        default: 'matter',
+        matter: {
+            debug: true,
+            debugBodyColor: 0xffffff
+        }
+    }, 
+    scene: [LoadingScene, MainMenuScene, PlayMissionScene]
 };
 
-let game = new Phaser.Game(config);
-
-function create () {
-    console.log('started');
-}
+let game = new Phaser.Game(gameConfig);
 
 /* phaser v2
 import LoadingState from './states/loading';
