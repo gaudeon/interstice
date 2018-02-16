@@ -1,4 +1,3 @@
-import CollisionManager from '../objects/collision_manager';
 import Player from '../entities/ships/player';
 import Sector from '../map/sector';
 
@@ -20,14 +19,11 @@ export default class Mission {
 
         this.config.mission = this.config.missions[this.key];
 
-        // setup collision manager for p2 physics collisions
-        this.collision_manager = new CollisionManager(scene);
-
         // setup player object
-        this.player = new Player(scene, this.collision_manager);
+        this.player = new Player(scene);
 
         // setup the sector object
-        this.sector = new Sector(scene, this.player, this.collision_manager, this.config.mission.start_sector);
+        this.sector = new Sector(scene, this.player, this.config.mission.start_sector);
 
         this.success_objectives = {};
         this.failure_objectives = {};
@@ -45,7 +41,7 @@ export default class Mission {
             ),
             (key) => {
                 var atlasAsset = this.config.assets[key];
-                this.scene.load.atlas(atlasAsset.key, atlasAsset.file, null, this.scene.cache.json.get(atlasAsset.jsonKey), Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
+                this.scene.load.atlas(atlasAsset.key, atlasAsset.imageFile, atlasAsset.jsonFile);
             }
         );
 
@@ -93,8 +89,6 @@ export default class Mission {
     getPlayer () { return this.player; }
 
     getSector () { return this.sector; }
-
-    getCollisionManager () { return this.collision_manager; }
 
     addSuccessObjective (key, objective) {
         if (typeof objective === 'undefined' || typeof objective.isComplete !== 'function') {

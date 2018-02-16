@@ -31,7 +31,7 @@ export default class MainMenuScene extends Phaser.Scene {
                 this.input.on('gameobjectdown', (ev, obj) => {
                     if (obj === text) {
                         this.input.stopPropagation();
-                        this.scene.switch(nextScene);
+                        this.scene.start(nextScene);
                     }
                 });
             } else {

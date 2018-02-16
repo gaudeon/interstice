@@ -45,25 +45,27 @@ export default class PlayMissionScene extends Phaser.Scene {
         this.mission.setupMission();
 
         // hud
-        this.hud.setupHUD();
+        //this.hud.setupHUD();
 
         // define what happens when player successfully completes mission
-        this.mission.events.onSuccess.add(() => {
+        /*this.mission.events.onSuccess.add(() => {
             console.log('success');
-//            this.scene.switch('MainMenu');
-        });
+            this.input.stopPropagation();
+//            this.scene.start('MainMenu');
+        });*/
 
         // define what happens when a player fails to complete a mission
-        this.mission.events.onFailure.add(() => {
-//            this.scene.switch('MainMenu');
+        /*this.mission.events.onFailure.add(() => {
+            this.input.stopPropagation();
+//            this.scene.start('MainMenu');
             console.log('failure');
-        });
+        });*/
     }
 
     update () {
-        this.mission.tick();
+        //this.mission.tick();
 
-        this.hud.tick();
+        //this.hud.tick();
     }
 
     matterAddExisting (object) {

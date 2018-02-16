@@ -37,7 +37,7 @@
         "key"  : "ship_explosion_sound"
     },
     "tilemap_sector_1": {
-        "jsonKey" : "tilemapSector1",
+        "jsonFile" : "/assets/sector_1.json",
         "key"  : "sector_1"
     },
     "scenery_tileset": {
@@ -49,8 +49,8 @@
         "key"  : "sector_tileset"
     },
     "atlas_game": {
-        "file" : "/assets/game_atlas.png",
-        "jsonKey" : "atlasGame",
+        "imageFile" : "/assets/game_atlas.png",
+        "jsonFile" : "/assets/game_atlas.json",
         "key"  : "game_atlas"
     },
     "ui_bar_bg_left": {

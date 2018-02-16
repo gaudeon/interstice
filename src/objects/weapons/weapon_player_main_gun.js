@@ -3,9 +3,9 @@ import Weapon from '../weapon';
 import ProjectilePlayerMainGun from '../projectiles/projectile_player_main_gun';
 
 export default class WeaponPlayerMainGun extends Weapon {
-    constructor (scene, collisionManager) {
+    constructor (scene) {
         // call bullet constructor
-        super(scene, collisionManager);
+        super(scene);
 
         // config data
         this.config = {};

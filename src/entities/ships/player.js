@@ -2,8 +2,8 @@ import Ship from '../ship';
 import WeaponPlayerMainGun from '../../objects/weapons/weapon_player_main_gun';
 
 export default class Player extends Ship {
-    constructor (scene, collisionManager) {
-        super(scene, 0, 0, null, null, collisionManager);
+    constructor (scene) {
+        super(scene, 0, 0, null, null);
 
         // config data
         this.config = this.config || {};
@@ -96,8 +96,8 @@ export default class Player extends Ship {
         this.reset(x, y);
 
         // set how the graphic is displayed for the sprite
-        this.anchor.setTo(this.getHullSpriteConfig().anchor);
-        this.scale.setTo(this.getHullSpriteConfig().scale);
+        this.setOrigin(this.getHullSpriteConfig().anchor);
+        this.setScale(this.getHullSpriteConfig().scale);
 
         // physics related
         this.body.setRectangle(40, 40);
@@ -113,23 +113,17 @@ export default class Player extends Ship {
         //  it's all just set by the camera follow type.
         //  0.1 is the amount of linear interpolation to use.
         //  The smaller the value, the smooth the camera (and the longer it takes to catch up)
-        this.scene.cameras[0].startFollow(this);
+        this.scene.cameras.main.startFollow(this);
 
         // setup player attributes
         this.addAttribute('health', this.getHullHealth());
         this.addAttribute('energy', this.getHullEnergy());
 
-        // setup collisions
-        this.getCollisionManager().addToPlayersCG(this);
-        this.getCollisionManager().setCollidesWithEnemiesCG(this);
-        this.getCollisionManager().setCollidesWithEnemyProjectilesCG(this);
-        this.getCollisionManager().setCollidesWithSectorCG(this);
-
         // ship impact
         this.body.onBeginContact.add(this.impactHandler, this);
 
         // main gun
-        var mainGun = new WeaponPlayerMainGun(this.scene, this.collisionManager);
+        var mainGun = new WeaponPlayerMainGun(this.scene);
         mainGun.createProjectiles(this.getMainGunBulletPoolCount());
         mainGun.trackSprite(this);
         this.addWeapon('mainGun', mainGun);

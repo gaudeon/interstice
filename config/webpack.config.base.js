@@ -26,7 +26,12 @@ const config = {
                 }]
             },
             {
-                test: [ /\.vert$/, /\.frag$/ ],
+                test: /\.json$/,
+                exclude: [/node_modules/, /assets/],
+                use: 'json-loader'
+            },
+            {
+                test: [/\.vert$/, /\.frag$/],
                 use: 'raw-loader'
             },
             {
@@ -41,7 +46,7 @@ const config = {
                 }]
             },
             {
-                test: /assets\/.*\.(css|CSS|jpe?g|JPE?G|gif|GIF|png|PNG|svg|SVG|woff|WOFF|ttf|TTF|wav|WAV|mp3|MP3|html|HTML|ico|ICO|txt|TXT)$/,
+                test: /assets\/.*\.(css|CSS|jpe?g|JPE?G|gif|GIF|png|PNG|svg|SVG|woff|WOFF|ttf|TTF|wav|WAV|mp3|MP3|html|HTML|ico|ICO|txt|TXT|json|JSON)$/,
                 use: [{
                     loader: "file-loader",
                     options: {

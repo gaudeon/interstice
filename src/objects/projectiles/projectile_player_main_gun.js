@@ -1,12 +1,12 @@
 import Projectile from '../projectile';
 
 export default class ProjectilePlayerMainGun extends Projectile {
-    constructor (scene, x, y, collisionManager) {
+    constructor (scene, x, y) {
         let assetsConfig = scene.cache.getJSON('assetsConfig');
         let imageKey = assetsConfig.bullet_green.key;
 
         // call bullet constructor
-        super(scene, x, y, imageKey, null, collisionManager);
+        super(scene, x, y, imageKey, null);
 
         // config data
         this.config = {};
@@ -22,17 +22,5 @@ export default class ProjectilePlayerMainGun extends Projectile {
         if (this.config.assets.bullet_green.in_atlas) {
             this.frameName = this.config.assets.bullet_green.frame;
         }
-
-        // setup collisions
-        this.collisionManager.addToPlayerProjectilesCG(this);
-        this.collisionManager.setCollidesWithEnemiesCG(this);
-        this.collisionManager.setCollidesWithSectorCG(this);
-        this.collisionManager.addCallbackForEnemiesCG(this, function (myBody, enemyBody) {
-            enemyBody.sprite.damage(this.attributes.damage);
-            this.kill();
-        }, this);
-        this.collisionManager.addCallbackForEnemyProjectilesCG(this, function (myBody, playerBody) {
-            this.kill();
-        }, this);
     }
 };

@@ -2,13 +2,11 @@
 import Projectile from './projectile';
 
 export default class Weapon {
-    constructor (scene, collisionManager) {
+    constructor (scene) {
         this.scene = scene;
 
-        this.collisionManager = collisionManager;
-
         // projectile Group
-        this.projectilePool = this.scene.add.group();
+        this.projectilePool = new Phaser.GameObjects.Group(this.scene);
 
         // the default amount of projectiles created
         this.projectileCount = 20;
@@ -26,15 +24,14 @@ export default class Weapon {
         this.projectileAngleOffset = 0;
 
         // setup event signals
-        this.events = {};
-        this.events.onFire = new Phaser.Signal();
+        this.events = this.events || new Phaser.EventEmitter();
     }
 
     // the class type of the projectile fired
     projectileClass () { return Projectile; }
 
     createProjectiles (quantity) {
-        this.projectilePool.removeAll(true); // clear out old list of projectiles
+        this.projectilePool.clear(true); // clear out old list of projectiles
         this.lastProjectileShotAt = null; // reset last time projectile was shot
 
         quantity = quantity || this.projectCount; // default quantity if not supplied
@@ -45,7 +42,7 @@ export default class Weapon {
         for (var i = 0; i < this.projectileCount; i++) {
             // Create each bullet and add it to the group.
             let ProjectileClass = this.projectileClass();
-            let projectile = new ProjectileClass(this.scene, 0, 0, this.collisionManager);
+            let projectile = new ProjectileClass(this.scene, 0, 0);
             this.projectilePool.add(projectile);
         }
     }
@@ -103,6 +100,6 @@ export default class Weapon {
             console.log('firing without a originSprite is not yet implemented.');
         }
 
-        this.events.onFire.dispatch(true);
+        this.events.emit('fire');
     }
 };

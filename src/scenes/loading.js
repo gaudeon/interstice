@@ -1,28 +1,27 @@
 // json configuration
-import assetsConfig from '../../assets/json/assets.json';
-import controlsConfig from '../../assets/json/controls.json';
-import mainMenuConfig from '../../assets/json/main_menu.json';
-import playerConfig from '../../assets/json/player.json';
-import botsConfig from '../../assets/json/bots.json';
-import hudConfig from '../../assets/json/hud.json';
-import sectorsConfig from '../../assets/json/sectors.json';
-import missionsConfig from '../../assets/json/missions.json';
-import tilemapSector1 from '../../assets/json/tilemaps/sector_1.json';
-import atlasGame from '../../assets/json/game_atlas.json';
+import assetsConfig from '../config/assets.json';
+import controlsConfig from '../config/controls.json';
+import mainMenuConfig from '../config/main_menu.json';
+import playerConfig from '../config/player.json';
+import botsConfig from '../config/bots.json';
+import hudConfig from '../config/hud.json';
+import sectorsConfig from '../config/sectors.json';
+import missionsConfig from '../config/missions.json';
 
 // web fonts
 import WebFont from 'webfontloader';
 require('../../assets/css/fonts.css');
 require('../../assets/fonts/Exo2-SemiBold.ttf');
 
-// require asset files so webpack pulls them into dist
+// require external asset files so webpack pulls them into dist
 require('../../assets/sounds/thrust.wav');
 require('../../assets/sounds/bullet.wav');
 require('../../assets/sounds/ship_explosion.wav');
-require('../../assets/json/tilemaps/sector_1.json');
 require('../../assets/images/scenery_tileset.png');
 require('../../assets/images/sector_tileset.png');
 require('../../assets/images/game_atlas.png');
+require('../../assets/json/game_atlas.json');
+require('../../assets/json/sector_1.json')
 
 export default class LoadingScene extends Phaser.Scene {
     constructor (config, key = 'Loading') {
@@ -44,8 +43,6 @@ export default class LoadingScene extends Phaser.Scene {
         this.cache.json.add('hudConfig', hudConfig);
         this.cache.json.add('sectorsConfig', sectorsConfig);
         this.cache.json.add('missionsConfig', missionsConfig);
-        this.cache.json.add('tilemapSector1', tilemapSector1);
-        this.cache.json.add('atlasGame', atlasGame);
 
         // load web fonts
         WebFont.load({
@@ -66,7 +63,7 @@ export default class LoadingScene extends Phaser.Scene {
     update () {
         if (this.are_fonts_loaded) {
             this.input.stopPropagation();
-            this.scene.switch('MainMenu');
+            this.scene.start('MainMenu');
         }
     }
 };

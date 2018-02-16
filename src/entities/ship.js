@@ -1,7 +1,9 @@
 export default class Ship extends Phaser.Physics.Matter.Sprite {
-    constructor (scene, x, y, key, frame, collisionManager) {
+    constructor (scene, x, y, key, frame) {
         // call sprite constructor
         super(scene.matter.world, x, y, key, frame);
+
+        this.scene = scene;
 
         // config data
         this.config = this.config || {};
@@ -13,10 +15,6 @@ export default class Ship extends Phaser.Physics.Matter.Sprite {
         // ship attributes
         this.attributes = this.attributes || {};
 
-        // add alias to the collisionManager
-        this.collisionManager = collisionManager;
-
-        console.log(this);
         // addition event signals this.events is a Phaser.Events object
         this.events = this.events || new Phaser.EventEmitter();
 
@@ -26,8 +24,6 @@ export default class Ship extends Phaser.Physics.Matter.Sprite {
         // default taxonomy
         this.taxonomy = 'ship';
     }
-
-    getCollisionManager () { return this.collisionManager; }
 
     getWeapon (key) {
         if (!this.weapons[key]) return;
