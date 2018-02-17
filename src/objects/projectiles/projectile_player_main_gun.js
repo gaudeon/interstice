@@ -2,7 +2,7 @@ import Projectile from '../projectile';
 
 export default class ProjectilePlayerMainGun extends Projectile {
     constructor (scene, x, y) {
-        let assetsConfig = scene.cache.getJSON('assetsConfig');
+        let assetsConfig = scene.cache.json.get('assetsConfig');
         let imageKey = assetsConfig.bullet_green.key;
 
         // call bullet constructor
@@ -11,7 +11,7 @@ export default class ProjectilePlayerMainGun extends Projectile {
         // config data
         this.config = {};
         this.config.assets = assetsConfig;
-        this.config.player = scene.cache.getJSON('playerConfig');
+        this.config.player = scene.cache.json.get('playerConfig');
 
         // setup this projectiles attributes
         this.attributes = this.attributes || {};

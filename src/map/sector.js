@@ -61,10 +61,14 @@ export default class Sector {
 
         // setup tile layers
         this.layers = {};
+        let layerDepth = -1 * this.sectorConfig().layers.length; 
 
         this.sectorConfig().layers.forEach(layer => {
             this.layers[layer.name] = this.map.createDynamicLayer(layer.tilemapIndex, this.mapTilesets[layer.tileset], 0, 0);
-            //this.layers[layer.name].sendToBack(); V# REPLACEMENT?
+
+            // reverse depth, first layer is deepest depth
+            this.layers[layer.name].setDepth(layerDepth);
+            layerDepth++;
 
             // Set colliding tiles before converting the layer to Matter bodies!
             this.layers[layer.name].setCollisionByProperty({ collides: true });
@@ -75,20 +79,20 @@ export default class Sector {
             this.scene.matter.world.convertTilemapLayer(this.layers[layer.name]);
         });
 
-        // TODO: setup  object layers?
-
         // resize world to match the the tilemap
         this.scene.matter.world.setBounds(this.map.widthInPixels, this.map.heightInPixels);
         this.scene.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
 
         // apply background
         if (this.sectorConfig().background) {
-            this.background = this.scene.add.tileSprite(0, 0, this.widthInPixels(), this.heightInPixels(), this.backgroundAssetConfig().key);
-            if (this.backgroundAssetConfig().in_atlas) {
-                this.background.frameName = this.backgroundAssetConfig().frame;
-            }
+            this.background = this.scene.add.tileSprite(
+                0, 0, this.widthInPixels(), this.heightInPixels(), 
+                this.backgroundAssetConfig().key, 
+                this.backgroundAssetConfig().in_atlas ? this.backgroundAssetConfig().frame : null 
+            );
 
-            //this.game.world.sendToBack(this.background);
+            // set background as deepest layer
+            this.background.setDepth(-1 * (this.sectorConfig().layers.length + 1));
         }
 
         // setup sector entities (has be be after world boundaries and collisions because of custom collision groups)
@@ -112,10 +116,7 @@ export default class Sector {
                 case 'bot_minion':
                     var bot = new MinionBot(this.scene, entity.x, entity.y, this.player);
 
-                    this.bots.add(this.scene.add.existing(bot));
-
-                    // entities are on top
-                    //this.game.world.bringToTop(bot);
+                    this.bots.add(bot, true); // add to group and scene
 
                     break;
                 default:
@@ -128,9 +129,9 @@ export default class Sector {
     tick () {
         this.player.tick();
 
-        this.bots.forEach(function (bot) {
+        /*this.getBots().forEach(bot => {
             bot.tick(bot);
-        }, this);
+        }, this);*/
     }
 
     widthInPixels () { return this.map.widthInPixels; }
@@ -142,6 +143,6 @@ export default class Sector {
     tileWidth () { return this.map.tileWidth; }
     tileHeight () { return this.map.tileHeight; }
 
-    getBots () { return this.bots; }
+    getBots () { return this.bots.getChildren(); }
     getPlayer () { return this.player; }
 };

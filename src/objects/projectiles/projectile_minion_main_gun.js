@@ -6,7 +6,7 @@ export default class ProjectileMinionMainGun extends Projectile {
         let imageKey = assetsConfig.bullet_red.key;
 
         // call bullet constructor
-        super(scene, x, y, imageKey, null);
+        super(scene, x, y, imageKey, assetsConfig.bullet_red.in_atlas ? assetsConfig.bullet_red.frame : null);
 
         // config data
         this.config = {};
@@ -18,9 +18,5 @@ export default class ProjectileMinionMainGun extends Projectile {
         this.attributes.damage = this.config.bots.minion.main_gun.bullet_damage;
         this.attributes.lifespan = this.config.bots.minion.main_gun.bullet_lifespan;
         this.setMass(this.config.bots.minion.main_gun.bullet_mass);
-
-        if (this.config.assets.bullet_red.in_atlas) {
-            this.frameName = this.config.assets.bullet_red.frame;
-        }
     }
 };

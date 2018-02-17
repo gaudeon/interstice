@@ -31,7 +31,6 @@ export default class Bot extends Ship {
         this.addAttribute('health', this.getMaxHealth());
         this.addAttribute('energy', this.getMaxEnergy());
 
-        console.log(this);
         // audio
         const SHIP_EXPLOSION_SOUND_ASSET_KEY = 'sound_ship_explosion';
         this.audio = {};

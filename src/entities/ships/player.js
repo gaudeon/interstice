@@ -89,10 +89,7 @@ export default class Player extends Ship {
         if (typeof y === 'undefined') y = this.scene.sys.game.config.height / 2;
 
         const PLAYER_HULL_CLASS = 'player_hull_' + this.ship_class_id;
-        this.loadTexture(this.config.assets[PLAYER_HULL_CLASS].key);
-        if (this.config.assets[PLAYER_HULL_CLASS].in_atlas) {
-            this.frameName = this.config.assets[PLAYER_HULL_CLASS].frame;
-        }
+        this.setTexture(this.config.assets[PLAYER_HULL_CLASS].key, this.config.assets[PLAYER_HULL_CLASS].in_atlas ? this.frameName = this.config.assets[PLAYER_HULL_CLASS].frame : null) 
         this.reset(x, y);
 
         // set how the graphic is displayed for the sprite
@@ -100,14 +97,7 @@ export default class Player extends Ship {
         this.setScale(this.getHullSpriteConfig().scale);
 
         // physics related
-        this.body.setRectangle(40, 40);
         this.body.rotation = Phaser.Math.PI2 / 4;
-
-        // add ship to the game
-        //this.game.add.existing(this);
-
-        // entities are on top
-        //teis.game.world.bringToTop(this);
 
         //  Notice that the sprite doesn't have any momentum at all,
         //  it's all just set by the camera follow type.
@@ -120,7 +110,13 @@ export default class Player extends Ship {
         this.addAttribute('energy', this.getHullEnergy());
 
         // ship impact
-        this.body.onBeginContact.add(this.impactHandler, this);
+        this.scene.matter.world.on('collisionstart', (event, bodyA, bodyB) => {
+            if (bodyA != this && bodyB != this) { // ignore events unrelated to this
+                return;
+            }
+
+            this.impactHandler(event, bodyA == this ? bodyB : bodyA); // pass in the other body we are colliding with
+        });
 
         // main gun
         var mainGun = new WeaponPlayerMainGun(this.scene);
@@ -130,44 +126,26 @@ export default class Player extends Ship {
 
         // audio
         this.audio = {};
-        this.audio.thrustSound = this.scene.add.audio(this.config.assets[this.thrustSoundAssetKey()].key, 1, true);
-        this.audio.bulletSound = this.scene.add.audio(this.config.assets[this.bulletSoundAssetKey()].key);
-        this.audio.shipExplosionSound = this.scene.add.audio(this.config.assets[this.shipExplosionSoundAssetKey()].key);
+        this.audio.thrustSound = this.scene.sound.add(this.config.assets[this.thrustSoundAssetKey()].key, 1, true);
+        this.audio.bulletSound = this.scene.sound.add(this.config.assets[this.bulletSoundAssetKey()].key);
+        this.audio.shipExplosionSound = this.scene.sound.add(this.config.assets[this.shipExplosionSoundAssetKey()].key);
 
         // keyboard events
         this.keyboard = this.scene.input.keyboard.createCursorKeys();
         _.each(['thrustForward', 'thrustReverse', 'rotateLeft', 'rotateRight', 'fireBullets'], (control) => {
-            var keycode = Phaser.KeyCode[this.config.controls[control]];
-            this.keyboard[control] = this.game.input.keyboard.addKey(keycode);
+            var keycode = Phaser.Input.Keyboard.KeyCodes[this.config.controls[control]];
+            this.keyboard[control] = this.scene.input.keyboard.addKey(keycode);
         });
 
-        // thruster audio events
-        this.keyboard.thrustForward.onDown.add(() => {
-            if (this.alive) {
-                this.audio.thrustSound.play();
-            }
-        });
-        this.keyboard.thrustForward.onUp.add(() => {
-            this.audio.thrustSound.stop();
-        });
-        this.keyboard.thrustReverse.onDown.add(() => {
-            if (this.alive) {
-                this.audio.thrustSound.play();
-            }
-        });
-        this.keyboard.thrustReverse.onUp.add(() => {
-            this.audio.thrustSound.stop();
-        });
-
-        // weapon audio events
-        this.getWeapon('mainGun').events.onFire.add(() => {
+        // weapon events
+        this.getWeapon('mainGun').events.on('fire', () => {
             this.audio.bulletSound.play();
 
             this.setEnergy(this.getEnergy() - this.getMainGunBulletEnergyCost());
         });
 
         // death audio events
-        this.events.onKilled.add(() => {
+        this.events.on('killed', () => {
             this.audio.thrustSound.stop();
             this.audio.shipExplosionSound.play();
         });
@@ -191,20 +169,24 @@ export default class Player extends Ship {
 
     tick () {
         if (this.alive) {
+            // acceleration
             if (this.keyboard.thrustForward.isDown) {
-                this.body.thrust(this.getHullThrust());
+                this.thrust(this.getHullThrust());
             } else if (this.keyboard.thrustReverse.isDown) {
-                this.body.reverse(this.getHullThrust());
+                this.thrustBack(this.getHullThrust());
             }
 
+            // rotation
             if (this.keyboard.rotateLeft.isDown) {
-                this.body.rotateLeft(this.getHullRotation());
+                console.log('left');
+                this.setAngularVelocity(-0.1);
             } else if (this.keyboard.rotateRight.isDown) {
-                this.body.rotateRight(this.getHullRotation());
+                this.setAngularVelocity(0.1);
             } else {
-                this.body.setZeroRotation();
+                this.setAngularVelocity(0);
             }
 
+            // weapons
             if (this.keyboard.fireBullets.isDown) {
                 if (this.getEnergy() > 0) {
                     // fire main gun
@@ -212,22 +194,30 @@ export default class Player extends Ship {
                 }
             }
 
+            // hull energy regeneration
             if (this.getHullEnergyRegenRate() > 0 && this.getEnergy() < this.getHullEnergy()) {
                 this.setEnergy(this.getEnergy() + this.getHullEnergyRegenRate());
+            }
+
+            // sound
+            if (this.keyboard.thrustForward.isDown || this.keyboard.thrustReverse.isDown) {
+                this.audio.thrustSound.play();
+            } else if (this.keyboard.thrustForward.isUp && this.keyboard.thrustReverse.isUp) {
+                this.audio.thrustSound.stop();
             }
         }
     }
 
-    impactHandler (body, shape1, shape2, equation) {
+    impactHandler (event, otherBody) {
         var x = 0;
         var y = 0;
 
         if (body && body !== 'null' && body !== 'undefined') {
-            x = body.velocity.x;
-            y = body.velocity.y;
+            x = otherBody.velocity.x;
+            y = otherBody.velocity.y;
         }
 
-        var v1 = new Phaser.Point(this.body.velocity.x, this.body.velocity.y);
+        var v1 = new Phaser.Point(this.otherBody.velocity.x, this.otherBody.velocity.y);
         var v2 = new Phaser.Point(x, y);
 
         var xdiff = Math.abs(v1.x - v2.x);

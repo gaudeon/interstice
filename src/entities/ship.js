@@ -25,6 +25,25 @@ export default class Ship extends Phaser.Physics.Matter.Sprite {
         this.taxonomy = 'ship';
     }
 
+    get alive () { return this.active; }
+
+    set alive (isAlive) { this.active = !!isAlive; }
+
+    kill () {
+        this.setActive(false);
+
+        this.events.emit('killed');
+    }
+
+    revive () {
+        this.setActive(true);
+    }
+
+    reset (x, y) {
+        this.setPosition(x, y);
+        this.revive();
+    }
+
     getWeapon (key) {
         if (!this.weapons[key]) return;
 

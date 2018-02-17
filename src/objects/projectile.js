@@ -1,7 +1,7 @@
 export default class Projectile extends Phaser.Physics.Matter.Sprite {
     constructor (scene, x, y, key, frame) {
         // call bullet constructor
-        super(scene, x, y, key, frame);
+        super(scene.matter.world, x, y, key, frame);
 
         // project attributes
         this.attributes = this.attributes || {};
@@ -12,6 +12,7 @@ export default class Projectile extends Phaser.Physics.Matter.Sprite {
 
         // physics settings
         this.setFixedRotation();
+
         //this.body._collideWorldBounds = false; // project bodies die when they go out of bounds
         this.setMass(this.attributes.mass);
 
@@ -36,5 +37,13 @@ export default class Projectile extends Phaser.Physics.Matter.Sprite {
     setMass (mass) {
         this.attributes.mass = mass;
         super.setMass(mass);
+    }
+
+    kill () {
+        this.setActive(false);
+    }
+
+    revive () {
+        this.setActive(true);
     }
 };
