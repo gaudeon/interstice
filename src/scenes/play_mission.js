@@ -1,5 +1,5 @@
 // missions
-import KillMinionsMission from '../levels/missions/kill_minions';
+import KillMinionsMission from '../stage/missions/kill_minions';
 
 // HUD
 import HUD from '../ui/hud';

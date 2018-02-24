@@ -1,5 +1,5 @@
 import Bot from '../bot';
-import WeaponMinionMainGun from '../../../objects/weapons/weapon_minion_main_gun';
+import WeaponMinionMainGun from '../../../combat/weapons/weapon_minion_main_gun';
 
 export default class MinionBot extends Bot {
     constructor (scene, x, y, player) {

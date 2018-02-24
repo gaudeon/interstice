@@ -1,5 +1,5 @@
 import Player from '../entities/ships/player';
-import Sector from '../map/sector';
+import Sector from './sector';
 
 export default class Mission {
     constructor (scene, key) {

@@ -5,6 +5,7 @@ import 'webfontloader';
 import LoadingScene from './scenes/loading';
 import MainMenuScene from './scenes/main_menu';
 import PlayMissionScene from './scenes/play_mission';
+import MissionResultsScene from './scenes/mission_results';
 
 var gameConfig = {
     type: Phaser.AUTO,
@@ -18,7 +19,7 @@ var gameConfig = {
             debugBodyColor: 0xffffff
         }
     }, 
-    scene: [LoadingScene, MainMenuScene, PlayMissionScene]
+    scene: [LoadingScene, MainMenuScene, PlayMissionScene, MissionResultsScene]
 };
 
 let game = new Phaser.Game(gameConfig);

@@ -1,5 +1,5 @@
 import Ship from '../ship';
-import WeaponPlayerMainGun from '../../objects/weapons/weapon_player_main_gun';
+import WeaponPlayerMainGun from '../../combat/weapons/weapon_player_main_gun';
 
 export default class Player extends Ship {
     constructor (scene) {
