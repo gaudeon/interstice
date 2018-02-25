@@ -1,9 +1,9 @@
 // Note: Bullets need to be used by a weapon, arcade physics will be applied object instanciated with this clas
 import Projectile from './projectile';
 
-export default class Weapon extends Phaser.GameObjects.Group {
+export default class Weapon extends Phaser.Physics.Arcade.Group {
     constructor (scene) {
-        super(scene, [], {
+        super(scene.physics.world, scene, [], {
             runChildUpdate: true
         });
 
@@ -21,6 +21,9 @@ export default class Weapon extends Phaser.GameObjects.Group {
 
         // offset angle (in degrees) around the orgin Sprite (in case bullet comes out an an undesired angle from the origin sprite)
         this.projectileAngleOffset = 0;
+
+        // list of colliders that tracks the objects that can collide with the projectiles from this weapon
+        this.colliders = [];
 
         this.events = new Phaser.EventEmitter();
     }
@@ -112,5 +115,9 @@ export default class Weapon extends Phaser.GameObjects.Group {
 
     getOldestAlive () {
         return _.reduce(this.getChildren(), (oldest, current) => { return oldest === undefined || (current.alive && current.age > oldest.age) ? current : oldest; });
+    }
+
+    addCollider (target) {
+        this.colliders.push(this.scene.physics.add.collider(this, target));
     }
 };

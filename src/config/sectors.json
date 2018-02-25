@@ -5,14 +5,12 @@
         "tilesets": ["scenery_tileset", "sector_tileset"],
         "layers": [
             {
-                "tilemapIndex": 0,
-                "name": "sector",
-                "tileset": "sector_tileset"
-            },
-            {
-                "tilemapIndex": 1,
                 "name": "scenery",
                 "tileset": "scenery_tileset"
+            },
+            {
+                "name": "sector",
+                "tileset": "sector_tileset"
             }
         ],
         "object_layers": {

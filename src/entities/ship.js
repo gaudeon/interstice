@@ -16,6 +16,16 @@ export default class Ship extends Phaser.Physics.Arcade.Sprite {
         // restrict ships to world bounds
         this.setCollideWorldBounds(true);
 
+        // add a collider with any tilemap layers that allow collisions. Note: property is set on the layer in Tiled
+        // meaning we should make sure to let sectors create the ships, since the tilemap loading comes first
+        this.colliders = [];
+        for (let layer in this.sector.getLayers()) {
+            let dynLayer = this.sector.getLayers()[layer];
+            if (dynLayer.layer.properties.allowCollisions) {
+                this.addCollider(dynLayer);
+            }
+        }
+
         // ship attributes
         this.attributes = this.attributes || {};
 
@@ -54,7 +64,18 @@ export default class Ship extends Phaser.Physics.Arcade.Sprite {
         return this.weapons[key];
     }
 
-    addWeapon (key, weapon) { this.scene.add.existing(weapon); this.weapons[key] = weapon; }
+    addWeapon (key, weapon) { 
+        this.scene.add.existing(weapon); 
+        this.weapons[key] = weapon;
+
+        // add sector layers with collision to all weapons by default
+        for (let layer in this.sector.getLayers()) {
+            let dynLayer = this.sector.getLayers()[layer];
+            if (dynLayer.layer.properties.allowCollisions) {
+                this.weapons[key].addCollider(dynLayer);
+            }
+        }
+    }
 
     getAttributes () { return this.attributes; }
 
@@ -80,4 +101,14 @@ export default class Ship extends Phaser.Physics.Arcade.Sprite {
     }
 
     update (time, delta) { /* overrite me */ }
+
+    addCollider (target) {
+        this.colliders.push(this.scene.physics.add.collider(this, target));
+    }
+
+    addWeaponCollider (target) {
+        for (let weapon in this.weapons) {
+            this.weapons[weapon].addCollider(target);
+        }
+    }
 };

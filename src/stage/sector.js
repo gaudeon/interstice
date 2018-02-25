@@ -12,7 +12,7 @@ export default class Sector {
         this.config.sectors = this.config.sectors || this.scene.cache.json.get('sectorsConfig');
 
         // area to hold bots
-        this.bots = new Phaser.GameObjects.Group(scene);
+        this.bots = new Phaser.Physics.Arcade.Group(scene.physics.world, scene);
     }
 
     sectorConfig () { return this.config.sectors[this.key]; }
@@ -64,10 +64,9 @@ export default class Sector {
         let layerDepth = -1 * this.sectorConfig().layers.length; 
 
         this.sectorConfig().layers.forEach(layer => {
-            this.layers[layer.name] = this.map.createDynamicLayer(layer.tilemapIndex, this.mapTilesets[layer.tileset], 0, 0);
+            this.layers[layer.name] = this.map.createDynamicLayer(layer.name, this.mapTilesets[layer.tileset], 0, 0);
 
-            // reverse depth, first layer is deepest depth
-            this.layers[layer.name].setDepth(layerDepth);
+            // track layer depth
             layerDepth++;
 
             // Set colliding tiles 
@@ -81,7 +80,7 @@ export default class Sector {
         // apply background
         if (this.sectorConfig().background) {
             this.background = this.scene.add.tileSprite(
-                0, 0, this.widthInPixels(), this.heightInPixels(), 
+                0, 0, this.map.widthInPixels, this.map.heightInPixels, 
                 this.backgroundAssetConfig().key, 
                 this.backgroundAssetConfig().in_atlas ? this.backgroundAssetConfig().frame : null 
             );
@@ -118,17 +117,28 @@ export default class Sector {
                     break;
             }
         });
+
+        // setup collisions between player and bots
+        this.player.addCollider(this.bots); // since we add the bots group to the player as a collider we don't need to add a collider to each bot for the player
+        this.player.addWeaponCollider(this.bots);
+        this.bots.getChildren().forEach(bot => {
+            bot.addWeaponCollider(this.player);
+        });
     }
 
-    widthInPixels () { return this.map.widthInPixels; }
-    heightInPixels () { return this.map.heightInPixels; }
+    get widthInPixels () { return this.map.widthInPixels; }
+    get heightInPixels () { return this.map.heightInPixels; }
 
-    widthInTiles () { return this.map.width; }
-    heightInTiles () { return this.map.height; }
+    get widthInTiles () { return this.map.width; }
+    get heightInTiles () { return this.map.height; }
 
-    tileWidth () { return this.map.tileWidth; }
-    tileHeight () { return this.map.tileHeight; }
+    get tileWidth () { return this.map.tileWidth; }
+    get tileHeight () { return this.map.tileHeight; }
 
     getBots () { return this.bots.getChildren(); }
     getPlayer () { return this.player; }
+
+    getMap () { return this.map; }
+    getMapTilesets () { return this.mapTilesets; }
+    getLayers () { return this.layers; }
 };

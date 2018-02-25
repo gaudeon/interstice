@@ -16,12 +16,6 @@ export default class Projectile extends Phaser.Physics.Arcade.Sprite {
         this.setMass(this.attributes.mass);
         this.setCollideWorldBounds(true); // project bodies die when they go out of bounds
 
-        // Bullets should kill themselves when they leave the world.
-        // Phaser takes care of this for me by setting this flag
-        // but you can do it yourself by killing the bullet if
-        // its x,y coordinates are outside of the world.
-        
-
         // Set its pivot point to the center of the bullet
         this.setOrigin(0.5, 0.5);
 
