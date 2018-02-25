@@ -1,12 +1,11 @@
 // Note: Bullets need to be used by a weapon, arcade physics will be applied object instanciated with this clas
 import Projectile from './projectile';
 
-export default class Weapon {
+export default class Weapon extends Phaser.GameObjects.Group {
     constructor (scene) {
-        this.scene = scene;
-
-        // projectile Group
-        this.projectilePool = new Phaser.GameObjects.Group(this.scene);
+        super(scene, [], {
+            runChildUpdate: true
+        });
 
         // the default amount of projectiles created
         this.projectileCount = 20;
@@ -23,15 +22,22 @@ export default class Weapon {
         // offset angle (in degrees) around the orgin Sprite (in case bullet comes out an an undesired angle from the origin sprite)
         this.projectileAngleOffset = 0;
 
-        // setup event signals
-        this.events = this.events || new Phaser.EventEmitter();
+        this.events = new Phaser.EventEmitter();
+    }
+
+    on (...args) {
+        return this.events.on.apply(this.events, args);
+    }
+
+    emit (...args) {
+        return this.events.emit.apply(this.events, args);
     }
 
     // the class type of the projectile fired
     projectileClass () { return Projectile; }
 
     createProjectiles (quantity) {
-        this.projectilePool.clear(true); // clear out old list of projectiles
+        this.clear(true); // clear out old list of projectiles
         this.lastProjectileShotAt = null; // reset last time projectile was shot
 
         quantity = quantity || this.projectCount; // default quantity if not supplied
@@ -43,7 +49,7 @@ export default class Weapon {
             // Create each bullet and add it to the group.
             let ProjectileClass = this.projectileClass();
             let projectile = new ProjectileClass(this.scene, 0, 0);
-            this.projectilePool.add(projectile);
+            this.add(projectile, true); // add projectile and add to scene
         }
     }
 
@@ -65,18 +71,19 @@ export default class Weapon {
         this.lastProjectileShotAt = this.scene.time.now;
 
         // Get a dead projectile from the pool
-        var projectile = this.projectilePool.getFirstDead();
+        var projectile = this.getFirstDead();
 
         // If there aren't any projectiles available then don't shoot
         if (projectile === null || projectile === undefined) {
+            projectile = this.getOldestAlive();
+
+            if (projectile === null || projectile === undefined) {
                 return;
+            }
         }
 
         // Revive the projectile
         projectile.revive();
-
-        // sprites are on top
-        this.scene.world.bringToTop(projectile);
 
         // set projectile lifespan
         if (projectile.attributes.lifespan) {
@@ -89,7 +96,7 @@ export default class Weapon {
 
             projectile.rotation = this.originSprite.rotation;
 
-            var forwardRotation = this.originSprite.rotation - this.scene.math.degToRad(this.projectileAngleOffset);
+            var forwardRotation = this.originSprite.rotation - Phaser.Math.DegToRad(this.projectileAngleOffset);
 
             // Shoot it in the right direction
             projectile.body.velocity.x = Math.cos(forwardRotation) * speed;
@@ -100,6 +107,10 @@ export default class Weapon {
             console.log('firing without a originSprite is not yet implemented.');
         }
 
-        this.events.emit('fire');
+        this.emit('fire');
+    }
+
+    getOldestAlive () {
+        return _.reduce(this.getChildren(), (oldest, current) => { return oldest === undefined || (current.alive && current.age > oldest.age) ? current : oldest; });
     }
 };

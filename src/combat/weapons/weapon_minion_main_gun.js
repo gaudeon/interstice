@@ -19,9 +19,6 @@ export default class WeaponMinionMainGun extends Weapon {
 
         // how fast does a projectile travel in pixles per second
         this.projectileSpeed = this.config.bots.minion.main_gun.bullet_speed;
-
-        // offset angle (in degrees) around the orgin Sprite (in case bullet comes out an an undesired angle from the origin sprite)
-        this.projectileAngleOffset = this.config.bots.minion.main_gun.bullet_angle_offset;
     }
 
     projectileClass () { return ProjectileMinionMainGun; }

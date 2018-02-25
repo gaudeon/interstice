@@ -6,7 +6,7 @@ export default class ProjectilePlayerMainGun extends Projectile {
         let imageKey = assetsConfig.bullet_green.key;
 
         // call bullet constructor
-        super(scene, x, y, imageKey, null);
+        super(scene, x, y, imageKey, assetsConfig.bullet_green.in_atlas ? assetsConfig.bullet_green.frame : null);
 
         // config data
         this.config = {};
@@ -18,9 +18,6 @@ export default class ProjectilePlayerMainGun extends Projectile {
         this.attributes.damage = this.config.player.main_gun.bullet_damage;
         this.attributes.lifespan = this.config.player.main_gun.bullet_lifespan;
         this.setMass(this.config.player.main_gun.bullet_mass);
-
-        if (this.config.assets.bullet_green.in_atlas) {
-            this.frameName = this.config.assets.bullet_green.frame;
-        }
+        this.setBounce(this.config.player.main_gun.bullet_bounce);
     }
 };

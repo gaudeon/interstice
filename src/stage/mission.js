@@ -1,8 +1,9 @@
 import Sector from './sector';
 
-export default class Mission {
+export default class Mission extends Phaser.GameObjects.Group {
     constructor (scene, key) {
-        this.scene = scene;
+        super(scene);
+
         this.key = key;
 
         // config data
@@ -26,6 +27,8 @@ export default class Mission {
 
         // setup events
         this.events = new Phaser.EventEmitter();
+
+        this.scene.add.existing(this); // add ourself to the scene updateList
     }
 
     loadAssets () {
@@ -84,8 +87,11 @@ export default class Mission {
         this.sector.setupSector();
     }
 
-    tick () {
-        this.sector.tick();
+    // we want to be updated since we added ourselves into the updateList...
+    preUpdate (time, delta) {
+        if (super.preUpdate !== undefined) {
+            super.preUpdate(time, delta);
+        }
 
         if (this.isMissionSuccess()) {
             this.events.emit('MissionSuccess');

@@ -120,15 +120,6 @@ export default class Sector {
         });
     }
 
-    // updates for sector
-    tick () {
-        this.player.tick();
-
-        this.getBots().forEach(bot => {
-            bot.tick(bot);
-        }, this);
-    }
-
     widthInPixels () { return this.map.widthInPixels; }
     heightInPixels () { return this.map.heightInPixels; }
 

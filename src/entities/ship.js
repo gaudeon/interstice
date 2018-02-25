@@ -54,7 +54,7 @@ export default class Ship extends Phaser.Physics.Arcade.Sprite {
         return this.weapons[key];
     }
 
-    addWeapon (key, weapon) { this.weapons[key] = weapon; }
+    addWeapon (key, weapon) { this.scene.add.existing(weapon); this.weapons[key] = weapon; }
 
     getAttributes () { return this.attributes; }
 
@@ -71,4 +71,13 @@ export default class Ship extends Phaser.Physics.Arcade.Sprite {
     addAttribute (key, value) { this.setAttribute(key, value); }
 
     getTaxonomy () { return this.taxonomy; }
+
+    // since normally the only way to get game objects to 'update' is by adding them into a pool this is necessary ship we want ships to update when in the updateList
+    preUpdate (time, delta) {
+        super.preUpdate(time, delta);
+
+        this.update(time, delta);
+    }
+
+    update (time, delta) { /* overrite me */ }
 };

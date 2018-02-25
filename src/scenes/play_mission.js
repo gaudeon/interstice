@@ -61,8 +61,6 @@ export default class PlayMissionScene extends Phaser.Scene {
     }
 
     update () {
-        this.mission.tick();
-
         this.hud.tick();
     }
 };

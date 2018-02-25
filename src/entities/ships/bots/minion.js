@@ -33,9 +33,9 @@ export default class MinionBot extends Bot {
         return false;
     }
 
-    tick () {
-        let player = this.sector.getPlayer();
-        if (this.active) {
+    update () {
+        if (this.alive) {
+            let player = this.sector.getPlayer();
             if (player && player.alive) {
                 if (Math.abs(player.body.x - this.body.x) < 200 && Math.abs(player.body.y - this.body.y) < 200) {
                     this.followingPlayer = true;

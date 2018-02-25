@@ -49,7 +49,6 @@ export default class Bot extends Ship {
 
     getBotConfig () { return this.config.bots[this.getBotClassId()]; }
     getSpeed () { return this.getBotConfig().speed; }
-    getTargetingAngleOffset () { return this.getBotConfig().targeting_angle_offset; }
     getMaxEnergy () { return this.getBotConfig().energy; }
     getEnergyRegenRate () { return this.getBotConfig().energy_regen_rate; }
     getEnergyIsShield () { return this.getBotConfig().energy_is_shield; }
@@ -104,8 +103,6 @@ export default class Bot extends Ship {
         }
     }
 
-    tick () { /* overwrite me to do stuff */ }
-
     accelerateToPoint (x, y, speed) {
         speed = speed || this.getBotConfig().speed || 0;
 
@@ -121,9 +118,8 @@ export default class Bot extends Ship {
     }
 
     hasLOSWithPlayer () {
-        let forwardRotation = this.rotation - Phaser.Math.DegToRad(this.getTargetingAngleOffset() || 0);
         let forwardRay = new Phaser.Geom.Line(this.x, this.y,
-            this.x + Math.cos(forwardRotation) * 1000, this.y + Math.sin(forwardRotation) * 1000);
+            this.x + Math.cos(this.rotation) * 1000, this.y + Math.sin(this.rotation) * 1000);
 
         let player = this.sector.getPlayer();
         let playerRay = new Phaser.Geom.Line(this.x, this.y, player.x, player.y);

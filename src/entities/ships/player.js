@@ -55,7 +55,7 @@ export default class Player extends Ship {
         });
 
         // weapon events
-        this.getWeapon('mainGun').events.on('fire', () => {
+        this.getWeapon('mainGun').on('fire', () => {
             this.audio.bulletSound.play();
 
             this.setEnergy(this.getEnergy() - this.getMainGunBulletEnergyCost());
@@ -129,8 +129,8 @@ export default class Player extends Ship {
         }
     }
 
-    tick () {
-        if (this.active) {
+    update (time, delta) {
+        if (this.alive) {
             // acceleration
             if (this.keyboard.thrustForward.isDown) {
                 this.scene.physics.velocityFromRotation(this.rotation, this.getChasisThrustSpeed(), this.body.acceleration);
