@@ -2,8 +2,8 @@ import Bot from '../bot';
 import WeaponMinionMainGun from '../../../combat/weapons/weapon_minion_main_gun';
 
 export default class MinionBot extends Bot {
-    constructor (scene, x, y, player) {
-        super(scene, x, y, player, 'minion');
+    constructor (sector, x, y) {
+        super(sector, x, y, 'minion');
 
         this.followingPlayer = false;
         this.followX = Phaser.Math.Between(0, this.scene.sys.game.config.width);
@@ -21,6 +21,7 @@ export default class MinionBot extends Bot {
             this.setEnergy(this.getEnergy() - this.getMainGunBulletEnergyCost());
         });
 
+        // the ship classification for grouping purposes
         this.taxonomy = 'bot.enemy.minion';
     }
 

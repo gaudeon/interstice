@@ -10,7 +10,7 @@
 },
 {
 	"filename": "barHorizontal_green_mid",
-	"frame": {"x":6,"y":0,"w":16,"h":26},
+	"frame": {"x":38,"y":0,"w":16,"h":26},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":26},
@@ -18,7 +18,7 @@
 },
 {
 	"filename": "barHorizontal_green_right",
-	"frame": {"x":22,"y":0,"w":6,"h":26},
+	"frame": {"x":86,"y":0,"w":6,"h":26},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":6,"h":26},
@@ -26,7 +26,7 @@
 },
 {
 	"filename": "barHorizontal_shadow_left",
-	"frame": {"x":28,"y":0,"w":6,"h":26},
+	"frame": {"x":124,"y":0,"w":6,"h":26},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":6,"h":26},
@@ -34,7 +34,7 @@
 },
 {
 	"filename": "barHorizontal_shadow_mid",
-	"frame": {"x":34,"y":0,"w":16,"h":26},
+	"frame": {"x":162,"y":0,"w":16,"h":26},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":26},
@@ -42,7 +42,7 @@
 },
 {
 	"filename": "barHorizontal_shadow_right",
-	"frame": {"x":50,"y":0,"w":6,"h":26},
+	"frame": {"x":210,"y":0,"w":6,"h":26},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":6,"h":26},
@@ -50,7 +50,7 @@
 },
 {
 	"filename": "barHorizontal_yellow_left",
-	"frame": {"x":56,"y":0,"w":6,"h":26},
+	"frame": {"x":248,"y":0,"w":6,"h":26},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":6,"h":26},
@@ -58,7 +58,7 @@
 },
 {
 	"filename": "barHorizontal_yellow_mid",
-	"frame": {"x":62,"y":0,"w":16,"h":26},
+	"frame": {"x":286,"y":0,"w":16,"h":26},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":26},
@@ -66,7 +66,7 @@
 },
 {
 	"filename": "barHorizontal_yellow_right",
-	"frame": {"x":78,"y":0,"w":6,"h":26},
+	"frame": {"x":334,"y":0,"w":6,"h":26},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":6,"h":26},
@@ -74,7 +74,7 @@
 },
 {
 	"filename": "BulletGreen",
-	"frame": {"x":84,"y":0,"w":9,"h":9},
+	"frame": {"x":372,"y":0,"w":9,"h":9},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":9,"h":9},
@@ -82,7 +82,7 @@
 },
 {
 	"filename": "BulletRed",
-	"frame": {"x":93,"y":0,"w":9,"h":9},
+	"frame": {"x":413,"y":0,"w":9,"h":9},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":9,"h":9},
@@ -90,7 +90,7 @@
 },
 {
 	"filename": "enemyShipG",
-	"frame": {"x":102,"y":0,"w":48,"h":48},
+	"frame": {"x":454,"y":0,"w":48,"h":48},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":48,"h":48},
@@ -98,7 +98,7 @@
 },
 {
 	"filename": "playerShipO",
-	"frame": {"x":150,"y":0,"w":48,"h":48},
+	"frame": {"x":0,"y":80,"w":48,"h":48},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":48,"h":48},
@@ -106,7 +106,7 @@
 },
 {
 	"filename": "spaceBGDarkPurple",
-	"frame": {"x":198,"y":0,"w":256,"h":256},
+	"frame": {"x":80,"y":80,"w":256,"h":256},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":256,"h":256},
@@ -117,8 +117,8 @@
 	"version": "1.0",
 	"image": "game_atlas.png",
 	"format": "RGBA8888",
-	"size": {"w":2048,"h":2048},
+	"size": {"w":512,"h":512},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:42f0cf84395d5780a78736994b408e11:3dc668bbe3e2cd9baa6dd5baf9710076:94741eb2b4e0477148894ee6eeb29053$"
+	"smartupdate": "$TexturePacker:SmartUpdate:42b955e7b58a5c2e3d53195028b32036:da48e9ce4a981a045c369e28b8a73f54:94741eb2b4e0477148894ee6eeb29053$"
 }
 }

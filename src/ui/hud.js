@@ -1,7 +1,7 @@
 export default class HUD {
-    constructor (scene, player) {
+    constructor (scene, mission) {
         this.scene = scene;
-        this.player = player;
+        this.mission = mission;
 
         // config data
         this.config = {};
@@ -43,7 +43,7 @@ export default class HUD {
 
             x += this[bar].bg.left.width;
             this[bar].bg.mid = this.scene.add.sprite(x, y, this.config.assets.ui_bar_bg_mid.key, this.config.assets.ui_bar_bg_mid.frame);
-            this[bar].bg.mid.width = bar === 'health_bar' ? this.player.getHullHealth() : this.player.getHullEnergy();
+            this[bar].bg.mid.width = bar === 'health_bar' ? this.mission.getPlayer().getChasisHealth() : this.mission.getPlayer().getChasisEnergy();
             this[bar].bg.mid.alpha = this.config.hud.bar_bg.alpha;
             this.hud.add(this[bar].bg.mid);
 
@@ -63,7 +63,7 @@ export default class HUD {
 
             x += this[bar].fg.left.width;
             this[bar].fg.mid = this.scene.add.sprite(x, y, this.config.assets['ui_' + bar + '_mid'].key, this.config.assets['ui_' + bar + '_mid'].frame);
-            this[bar].fg.mid.width = bar === 'health_bar' ? this.player.getHullHealth() : this.player.getHullEnergy();
+            this[bar].fg.mid.width = bar === 'health_bar' ? this.mission.getPlayer().getChasisHealth() : this.mission.getPlayer().getChasisEnergy();
             this[bar].fg.mid.alpha = this.config.hud[bar].alpha;
             this.hud.add(this[bar].fg.mid);
 
@@ -76,7 +76,7 @@ export default class HUD {
 
     tick () {
         ['health_bar', 'energy_bar'].forEach(bar => {
-            var amount = bar === 'health_bar' ? this.player.getHealth() : this.player.getEnergy();
+            var amount = bar === 'health_bar' ? this.mission.getPlayer().getHealth() : this.mission.getPlayer().getEnergy();
             if (amount <= 0) { // hide bar if empty
                 this[bar].fg.left.visible = false;
                 this[bar].fg.mid.visible = false;

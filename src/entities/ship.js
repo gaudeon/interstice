@@ -1,16 +1,20 @@
-export default class Ship extends Phaser.Physics.Matter.Sprite {
-    constructor (scene, x, y, key, frame) {
+export default class Ship extends Phaser.Physics.Arcade.Sprite {
+    constructor (sector, x, y, key, frame) {
         // call sprite constructor
-        super(scene.matter.world, x, y, key, frame);
+        super(sector.scene, x, y, key, frame);
 
-        this.scene = scene;
+        this.sector = sector;
 
         // config data
         this.config = this.config || {};
         this.config.assets = this.scene.cache.json.get('assetsConfig');
 
-        // add this object to scene's matter physics
-        this.scene.matterAddExisting(this);
+        // add this object to physics engine and scene
+        this.scene.physics.add.existing(this);
+        this.scene.add.existing(this);
+
+        // restrict ships to world bounds
+        this.setCollideWorldBounds(true);
 
         // ship attributes
         this.attributes = this.attributes || {};

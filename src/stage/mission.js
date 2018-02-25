@@ -1,4 +1,3 @@
-import Player from '../entities/ships/player';
 import Sector from './sector';
 
 export default class Mission {
@@ -19,11 +18,8 @@ export default class Mission {
 
         this.config.mission = this.config.missions[this.key];
 
-        // setup player object
-        this.player = new Player(scene);
-
         // setup the sector object
-        this.sector = new Sector(scene, this.player, this.config.mission.start_sector);
+        this.sector = new Sector(scene, this.config.mission.start_sector);
 
         this.success_objectives = {};
         this.failure_objectives = {};
@@ -45,17 +41,28 @@ export default class Mission {
             }
         );
 
-        // sector assets
-        this.sector.loadAssets();
-
-        // player assets
-        this.player.loadAssets();
-
         // bullet assets
         _.filter(Object.keys(this.config.assets), key => { return key.match(/^bullet_/); }).forEach(bulletType => {
             let bulletAsset = this.config.assets[bulletType];
             if (!bulletAsset.in_atlas) {
-                this.load.image(bulletAsset.key, bulletAsset.file);
+                this.scene.load.image(bulletAsset.key, bulletAsset.file);
+            }
+        });
+
+        // sound assets
+        _.filter(Object.keys(this.config.assets), key => { return key.match(/^sound_/); }).forEach(sound => {
+            let soundAsset = this.config.assets[sound];
+            if (!soundAsset.in_atlas) {
+                this.scene.load.audio(soundAsset.key, soundAsset.file);
+            }
+        });
+
+        // player assets
+        _.each(['balanced'], (classId) => {
+            const PLAYER_CHASIS_CLASS = 'player_chasis_' + classId;
+            let playerChasisAsset = this.config.assets[PLAYER_CHASIS_CLASS];
+            if (!playerChasisAsset.in_atlas) {
+                this.scene.load.image(playerChasisAsset.key, playerChasisAsset.file);
             }
         });
 
@@ -64,9 +71,12 @@ export default class Mission {
             const BOTS_ASSET_KEY = 'bot_' + botClassId;
             let botAssetConfig = this.config.assets[BOTS_ASSET_KEY];
             if (!botAssetConfig.in_atlas) {
-                this.load.image(botAssetConfig.key, botAssetConfig.file);
+                this.scene.load.image(botAssetConfig.key, botAssetConfig.file);
             }
         });
+
+        // sector assets
+        this.sector.loadAssets();
     }
 
     setupMission () {
@@ -86,7 +96,7 @@ export default class Mission {
         }
     }
 
-    getPlayer () { return this.player; }
+    getPlayer () { return this.sector.getPlayer(); }
 
     getSector () { return this.sector; }
 

@@ -1,17 +1,15 @@
-export default class Projectile extends Phaser.Physics.Matter.Sprite {
+export default class Projectile extends Phaser.Physics.Arcade.Sprite {
     constructor (scene, x, y, key, frame) {
         // call bullet constructor
-        super(scene.matter.world, x, y, key, frame);
+        super(scene, x, y, key, frame);
 
         // project attributes
         this.attributes = this.attributes || {};
         this.attributes.mass = this.attributes.mass || 1; // get project mass from children or default to 1
 
-        // enable physics
-        this.scene.matterAddExisting(this);
-
-        // physics settings
-        this.setFixedRotation();
+        // add to physics engine and scene
+        this.scene.physics.add.existing(this);
+        this.scene.add.existing(this);
 
         //this.body._collideWorldBounds = false; // project bodies die when they go out of bounds
         this.setMass(this.attributes.mass);

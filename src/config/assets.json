@@ -4,7 +4,7 @@
         "key"      : "game_atlas",
         "frame"    : "enemyShipG"
     },
-    "player_hull_balanced": {
+    "player_chasis_balanced": {
         "in_atlas" : true,
         "key"      : "game_atlas",
         "frame"    : "playerShipO"

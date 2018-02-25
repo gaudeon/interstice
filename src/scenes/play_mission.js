@@ -29,7 +29,7 @@ export default class PlayMissionScene extends Phaser.Scene {
         this.mission = new MissionClass(this);
 
         // setup hud
-        this.hud = new HUD(this, this.mission.getPlayer());
+        this.hud = new HUD(this, this.mission);
     }
 
     preload () {
@@ -64,12 +64,5 @@ export default class PlayMissionScene extends Phaser.Scene {
         this.mission.tick();
 
         //this.hud.tick();
-    }
-
-    matterAddExisting (object) {
-        if (object instanceof Phaser.Physics.Matter.Sprite) {
-            this.sys.displayList.add(object);
-            this.sys.updateList.add(object);
-        }
     }
 };

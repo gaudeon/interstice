@@ -1,9 +1,9 @@
+import Player from '../entities/ships/player';
 import MinionBot from '../entities/ships/bots/minion';
 
 export default class Sector {
-    constructor (scene, player, key) {
+    constructor (scene, key) {
         this.scene = scene;
-        this.player = player;
         this.key = key;
 
         // config data
@@ -70,17 +70,12 @@ export default class Sector {
             this.layers[layer.name].setDepth(layerDepth);
             layerDepth++;
 
-            // Set colliding tiles before converting the layer to Matter bodies!
+            // Set colliding tiles 
             this.layers[layer.name].setCollisionByProperty({ collides: true });
-
-            // Convert the layer. Any colliding tiles will be given a Matter body. If a tile has collision
-            // shapes from Tiled, these will be loaded. If not, a default rectangle body will be used. The
-            // body will be accessible via tile.physics.matterBody.
-            this.scene.matter.world.convertTilemapLayer(this.layers[layer.name]);
         });
 
         // resize world to match the the tilemap
-        this.scene.matter.world.setBounds(this.map.widthInPixels, this.map.heightInPixels);
+        this.scene.physics.world.setBounds(this.map.widthInPixels, this.map.heightInPixels);
         this.scene.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
 
         // apply background
@@ -110,11 +105,11 @@ export default class Sector {
 
             switch (entity.type) {
                 case 'player':
-                    this.player.setupShip(entity.x, entity.y);
+                    this.player = new Player(this, entity.x, entity.y);
 
                     break;
                 case 'bot_minion':
-                    var bot = new MinionBot(this.scene, entity.x, entity.y, this.player);
+                    var bot = new MinionBot(this, entity.x, entity.y);
 
                     this.bots.add(bot, true); // add to group and scene
 

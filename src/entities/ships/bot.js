@@ -1,20 +1,16 @@
 import Ship from '../ship';
 
 export default class Bot extends Ship {
-    constructor (scene, x, y, player, classId) {
+    constructor (sector, x, y, classId) {
         const BOT_ASSET_KEY = 'bot_' + classId;
-        let assetConfig = scene.cache.json.get('assetsConfig')[BOT_ASSET_KEY];
+        let assetConfig = sector.scene.cache.json.get('assetsConfig')[BOT_ASSET_KEY];
 
-        super(scene, x, y, assetConfig.key, null);
+        super(sector, x, y, assetConfig.key, assetConfig.frame);
 
         // config data
         this.config = this.config || {};
-        this.config.bots = scene.cache.json.get('botsConfig');
+        this.config.bots = this.scene.cache.json.get('botsConfig');
         this.config.asset = assetConfig;
-
-        if (this.config.asset.in_atlas) {
-            this.frameName = this.config.asset.frame;
-        }
 
         // sprite attributes
         this.setOrigin(this.config.bots[classId].sprite.anchor);
@@ -25,7 +21,6 @@ export default class Bot extends Ship {
 
         // these need to be set for each bot
         this.attributes.bot_class_id = classId;
-        this.player = player;
 
         // setup bot attributes
         this.addAttribute('health', this.getMaxHealth());
@@ -132,7 +127,7 @@ export default class Bot extends Ship {
             this.x + Math.cos(forwardRotation) * 1000, this.y + Math.sin(forwardRotation) * 1000);
 
         let playerRay = new Phaser.Line();
-        playerRay.fromSprite(this, this.player);
+        playerRay.fromSprite(this, this.sector.getPlayer());
 
         return Phaser.Math.fuzzyEqual(forwardRay.normalAngle, playerRay.normalAngle, 0.05);
     }
