@@ -34,18 +34,19 @@ export default class MinionBot extends Bot {
     }
 
     tick () {
-        if (this.alive) {
-            if (this.player.alive) {
-                if (Math.abs(this.player.body.x - this.body.x) < 200 && Math.abs(this.player.body.y - this.body.y) < 200) {
+        let player = this.sector.getPlayer();
+        if (this.active) {
+            if (player && player.alive) {
+                if (Math.abs(player.body.x - this.body.x) < 200 && Math.abs(player.body.y - this.body.y) < 200) {
                     this.followingPlayer = true;
-                } else if (Math.abs(this.player.body.x - this.body.x) > 450 && Math.abs(this.player.body.y - this.body.y) > 450) {
+                } else if (Math.abs(player.body.x - this.body.x) > 450 && Math.abs(player.body.y - this.body.y) > 450) {
                     this.followingPlayer = false;
                     this.followX = Phaser.Math.Between(0, this.scene.sys.game.config.width);
                     this.followY = Phaser.Math.Between(0, this.scene.sys.game.config.height);
                 }
 
                 if (this.followingPlayer) {
-                    this.accelerateToObject(this.player, this.getSpeed()); // start accelerateToObject on every bullet
+                    this.accelerateToObject(player, this.getSpeed()); // start accelerateToObject on every bullet
                 } else {
                     if (Math.abs(this.followX - this.x) < 75 && Math.abs(this.followY - this.y) < 75) {
                         this.followX = (((Math.random() * (0.8 - 0.2) + 0.2) * this.scene.sys.game.config.width) + this.x) % this.scene.sys.game.config.width;

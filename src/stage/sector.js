@@ -75,7 +75,7 @@ export default class Sector {
         });
 
         // resize world to match the the tilemap
-        this.scene.physics.world.setBounds(this.map.widthInPixels, this.map.heightInPixels);
+        this.scene.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
         this.scene.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
 
         // apply background
@@ -124,9 +124,9 @@ export default class Sector {
     tick () {
         this.player.tick();
 
-        /*this.getBots().forEach(bot => {
+        this.getBots().forEach(bot => {
             bot.tick(bot);
-        }, this);*/
+        }, this);
     }
 
     widthInPixels () { return this.map.widthInPixels; }

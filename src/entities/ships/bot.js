@@ -110,9 +110,8 @@ export default class Bot extends Ship {
         speed = speed || this.getBotConfig().speed || 0;
 
         let angle = Math.atan2(y - this.y, x - this.x);
-        this.body.rotation = angle + Phaser.Math.DegToRad(90); // correct angle of angry bullets (depends on the sprite used)
-        this.body.force.x = Math.cos(angle) * speed; // accelerateToObject
-        this.body.force.y = Math.sin(angle) * speed;
+        this.setRotation(angle); 
+        this.scene.physics.velocityFromRotation(this.rotation, speed, this.body.acceleration);
     }
 
     accelerateToObject (dest, speed) {
@@ -123,13 +122,13 @@ export default class Bot extends Ship {
 
     hasLOSWithPlayer () {
         let forwardRotation = this.rotation - Phaser.Math.DegToRad(this.getTargetingAngleOffset() || 0);
-        let forwardRay = new Phaser.Line(this.x, this.y,
+        let forwardRay = new Phaser.Geom.Line(this.x, this.y,
             this.x + Math.cos(forwardRotation) * 1000, this.y + Math.sin(forwardRotation) * 1000);
 
-        let playerRay = new Phaser.Line();
-        playerRay.fromSprite(this, this.sector.getPlayer());
+        let player = this.sector.getPlayer();
+        let playerRay = new Phaser.Geom.Line(this.x, this.y, player.x, player.y);
 
-        return Phaser.Math.fuzzyEqual(forwardRay.normalAngle, playerRay.normalAngle, 0.05);
+        return Phaser.Math.Fuzzy.Equal(Phaser.Geom.Line.NormalAngle(forwardRay), Phaser.Geom.Line.NormalAngle(playerRay), 0.05);
     }
 
     // default is enemy test, child bots should overwrite this

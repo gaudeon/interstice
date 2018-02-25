@@ -1,7 +1,7 @@
 export default class HUD {
-    constructor (scene, mission) {
+    constructor (scene) {
         this.scene = scene;
-        this.mission = mission;
+        this.mission = scene.mission;
 
         // config data
         this.config = {};
@@ -90,7 +90,7 @@ export default class HUD {
 
                 var x = this[bar].fg.left.x + this[bar].fg.left.width + this[bar].fg.mid.width;
                 var y = this.config.hud[bar].y;
-                this[bar].fg.right.reset(x, y);
+                this[bar].fg.right.setPosition(x, y);
             }
         });
     }

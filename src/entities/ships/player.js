@@ -8,8 +8,6 @@ export default class Player extends Ship {
         const PLAYER_CHASIS_CLASS = 'player_chasis_' + PLAYER_CLASS_ID;
         let assetConfig = sector.scene.cache.json.get('assetsConfig');
 
-        console.log(sector);
-
         super(sector, x, y, assetConfig[PLAYER_CHASIS_CLASS].key, assetConfig[PLAYER_CHASIS_CLASS].in_atlas ? assetConfig[PLAYER_CHASIS_CLASS].frame : null);
 
         this.ship_class_id = PLAYER_CLASS_ID;
@@ -68,8 +66,6 @@ export default class Player extends Ship {
             this.audio.thrustSound.stop();
             this.audio.shipExplosionSound.play();
         });
-
-        console.log(this);
     }
 
     // player class id
@@ -134,7 +130,7 @@ export default class Player extends Ship {
     }
 
     tick () {
-        if (this.alive) {
+        if (this.active) {
             // acceleration
             if (this.keyboard.thrustForward.isDown) {
                 this.scene.physics.velocityFromRotation(this.rotation, this.getChasisThrustSpeed(), this.body.acceleration);
