@@ -87,6 +87,7 @@ export default class Sector {
 
             // set background as deepest layer
             this.background.setDepth(-1 * (this.sectorConfig().layers.length + 1));
+            this.background.setOrigin(0);
         }
 
         // setup sector entities (has be be after world boundaries and collisions because of custom collision groups)
