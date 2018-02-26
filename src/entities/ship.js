@@ -100,6 +100,8 @@ export default class Ship extends Phaser.Physics.Arcade.Sprite {
         this.update(time, delta);
     }
 
+    takeDamage (amount) { /* overrite me */ }
+
     update (time, delta) { /* overrite me */ }
 
     addCollider (target) {

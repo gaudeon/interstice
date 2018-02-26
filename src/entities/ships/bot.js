@@ -82,7 +82,7 @@ export default class Bot extends Ship {
     getEnergy () { return this.attributes.energy; }
 
     // taking damage
-    damage (amount) {
+    takeDamage (amount) {
         let curHealth, curEnergy;
         if (this.getEnergyIsShield()) {
             curEnergy = this.getEnergy();

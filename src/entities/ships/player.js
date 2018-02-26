@@ -114,7 +114,7 @@ export default class Player extends Ship {
     shipExplosionSoundAssetKey () { return 'sound_ship_explosion'; }
 
     // taking damage
-    damage (amount) {
+    takeDamage (amount) {
         var curEnergy = this.getEnergy();
         var curHealth = this.getHealth();
 
