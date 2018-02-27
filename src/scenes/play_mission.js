@@ -1,9 +1,6 @@
 // missions
 import KillMinionsMission from '../stage/missions/kill_minions';
 
-// HUD
-import HUD from '../ui/hud';
-
 const MissionDictionary = {
     'KillMinions': KillMinionsMission
 };
@@ -15,6 +12,9 @@ export default class PlayMissionScene extends Phaser.Scene {
 
     init (mission) {
         console.log(this);
+
+        this.hudScene = this.scene.get('PlayMissionHud'); // save player hud scene for later use
+
         // for now default mission to KillMinionsMission
         if (typeof mission === 'undefined') {
             mission = 'KillMinions';
@@ -27,25 +27,16 @@ export default class PlayMissionScene extends Phaser.Scene {
         }
 
         this.mission = new MissionClass(this);
-
-        // setup hud
-        this.hud = new HUD(this);
     }
 
     preload () {
         // mission assets
         this.mission.loadAssets();
-
-        // hud assets
-        this.hud.loadAssets();
     }
 
     create () {
         // mission
         this.mission.setupMission();
-
-        // hud
-        this.hud.setupHUD();
 
         // define what happens when player successfully completes mission
         this.mission.events.on('MissionSuccess', () => {
@@ -58,9 +49,15 @@ export default class PlayMissionScene extends Phaser.Scene {
             this.input.stopPropagation();
             this.scene.start('MainMenu');
         });
+
+        // TODO uncomment this when scene launch bug for non-running scenes is fixed
+        //this.scene.launch('PlayMissionHud', this); // Load the HUD which is a scene layered on top of this scene
     }
 
     update () {
-        this.hud.tick();
+        // TODO remove the below if block when scene launch bug for non-running scenes is fixed
+        if (!this.hudScene.scene.isActive()) {
+            this.scene.launch('PlayMissionHud', this);
+        }
     }
 };

@@ -1,7 +1,8 @@
 export default class HUD {
-    constructor (scene) {
+    constructor (scene, mission) {
         this.scene = scene;
-        this.mission = scene.mission;
+        this.mission = mission;
+        console.log(scene, mission);
 
         // config data
         this.config = {};
@@ -25,7 +26,6 @@ export default class HUD {
 
     setupHUD () {
         this.hud = this.scene.add.group();
-        this.hud.fixedToCamera = true;
 
         ['health_bar', 'energy_bar'].forEach(bar => {
             //  bar
@@ -38,18 +38,18 @@ export default class HUD {
             var y = this.config.hud[bar].y;
 
             this[bar].bg.left = this.scene.add.sprite(x, y, this.config.assets.ui_bar_bg_left.key, this.config.assets.ui_bar_bg_left.frame);
-            this[bar].bg.left.alpha = this.config.hud.bar_bg.alpha;
+            this[bar].bg.left.setAlpha(this.config.hud.bar_bg.alpha);
             this.hud.add(this[bar].bg.left);
 
             x += this[bar].bg.left.width;
             this[bar].bg.mid = this.scene.add.sprite(x, y, this.config.assets.ui_bar_bg_mid.key, this.config.assets.ui_bar_bg_mid.frame);
             this[bar].bg.mid.width = bar === 'health_bar' ? this.mission.getPlayer().getChasisHealth() : this.mission.getPlayer().getChasisEnergy();
-            this[bar].bg.mid.alpha = this.config.hud.bar_bg.alpha;
+            this[bar].bg.mid.setAlpha(this.config.hud.bar_bg.alpha);
             this.hud.add(this[bar].bg.mid);
 
             x += this[bar].bg.mid.width;
             this[bar].bg.right = this.scene.add.sprite(x, y, this.config.assets.ui_bar_bg_right.key, this.config.assets.ui_bar_bg_right.frame);
-            this[bar].bg.right.alpha = this.config.hud.bar_bg.alpha;
+            this[bar].bg.right.setAlpha(this.config.hud.bar_bg.alpha);
             this.hud.add(this[bar].bg.right);
 
             // bar foreground
@@ -58,23 +58,23 @@ export default class HUD {
             x = this.config.hud[bar].x;
             y = this.config.hud[bar].y;
             this[bar].fg.left = this.scene.add.sprite(x, y, this.config.assets['ui_' + bar + '_left'].key, this.config.assets['ui_' + bar + '_left'].frame);
-            this[bar].fg.left.alpha = this.config.hud[bar].alpha;
+            this[bar].fg.left.setAlpha(this.config.hud[bar].alpha);
             this.hud.add(this[bar].fg.left);
 
             x += this[bar].fg.left.width;
             this[bar].fg.mid = this.scene.add.sprite(x, y, this.config.assets['ui_' + bar + '_mid'].key, this.config.assets['ui_' + bar + '_mid'].frame);
             this[bar].fg.mid.width = bar === 'health_bar' ? this.mission.getPlayer().getChasisHealth() : this.mission.getPlayer().getChasisEnergy();
-            this[bar].fg.mid.alpha = this.config.hud[bar].alpha;
+            this[bar].fg.mid.setAlpha(this.config.hud[bar].alpha);
             this.hud.add(this[bar].fg.mid);
 
             x += this[bar].fg.mid.width;
             this[bar].fg.right = this.scene.add.sprite(x, y, this.config.assets['ui_' + bar + '_right'].key, this.config.assets['ui_' + bar + '_right'].frame);
-            this[bar].fg.right.alpha = this.config.hud[bar].alpha;
+            this[bar].fg.right.setAlpha(this.config.hud[bar].alpha);
             this.hud.add(this[bar].fg.right);
         });
     }
 
-    tick () {
+    update () {
         ['health_bar', 'energy_bar'].forEach(bar => {
             var amount = bar === 'health_bar' ? this.mission.getPlayer().getHealth() : this.mission.getPlayer().getEnergy();
             if (amount <= 0) { // hide bar if empty

@@ -5,6 +5,7 @@ import 'webfontloader';
 import LoadingScene from './scenes/loading';
 import MainMenuScene from './scenes/main_menu';
 import PlayMissionScene from './scenes/play_mission';
+import PlayMissionHudScene from './scenes/play_mission/hud';
 import MissionResultsScene from './scenes/mission_results';
 
 var gameConfig = {
@@ -18,7 +19,7 @@ var gameConfig = {
             debug: true,
         }
     }, 
-    scene: [LoadingScene, MainMenuScene, PlayMissionScene, MissionResultsScene]
+    scene: [LoadingScene, MainMenuScene, PlayMissionScene, PlayMissionHudScene, MissionResultsScene]
 };
 
 let game = new Phaser.Game(gameConfig);
