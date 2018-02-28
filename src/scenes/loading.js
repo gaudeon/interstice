@@ -4,7 +4,6 @@ import controlsConfig from '../config/controls.json';
 import mainMenuConfig from '../config/main_menu.json';
 import playerConfig from '../config/player.json';
 import botsConfig from '../config/bots.json';
-import hudConfig from '../config/hud.json';
 import sectorsConfig from '../config/sectors.json';
 import missionsConfig from '../config/missions.json';
 
@@ -40,7 +39,6 @@ export default class LoadingScene extends Phaser.Scene {
         this.cache.json.add('mainMenuConfig', mainMenuConfig);
         this.cache.json.add('playerConfig', playerConfig);
         this.cache.json.add('botsConfig', botsConfig);
-        this.cache.json.add('hudConfig', hudConfig);
         this.cache.json.add('sectorsConfig', sectorsConfig);
         this.cache.json.add('missionsConfig', missionsConfig);
 
