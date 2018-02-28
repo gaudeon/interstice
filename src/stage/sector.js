@@ -122,9 +122,9 @@ export default class Sector {
         // setup collisions between player and bots
         this.player.addCollider(this.bots); // since we add the bots group to the player as a collider we don't need to add a collider to each bot for the player
         this.player.addWeaponCollider(this.bots);
-        //this.bots.getChildren().forEach(bot => {
-        //    bot.addWeaponCollider(this.player);
-        //});
+        this.bots.getChildren().forEach(bot => {
+            bot.addWeaponCollider(this.player);
+        });
     }
 
     get widthInPixels () { return this.map.widthInPixels; }

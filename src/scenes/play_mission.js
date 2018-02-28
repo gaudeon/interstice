@@ -56,7 +56,7 @@ export default class PlayMissionScene extends Phaser.Scene {
 
     update () {
         // TODO remove the below if block when scene launch bug for non-running scenes is fixed
-        if (!this.hudScene.scene.isActive()) {
+        if (this.sys.settings.active && !this.hudScene.scene.isActive()) {
             this.scene.launch('PlayMissionHud', this);
         }
     }

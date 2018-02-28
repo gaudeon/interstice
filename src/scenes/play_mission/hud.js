@@ -7,8 +7,6 @@ export default class PlayMissionHudScene extends Phaser.Scene {
     }
 
     init (parentScene) {
-        console.log(this);
-
         this.parentScene = parentScene;
 
         // setup hud
@@ -23,9 +21,25 @@ export default class PlayMissionHudScene extends Phaser.Scene {
     create () {
         // hud
         this.hud.setupHUD();
+
+        // define what happens when player successfully completes mission
+        this.parentScene.mission.events.on('MissionSuccess', () => {
+            this.input.stopPropagation();
+            this.scene.setVisible(false);
+            this.scene.stop();
+        });
+
+        // define what happens when a player fails to complete a mission
+        this.parentScene.mission.events.on('MissionFailure', () => {
+            this.input.stopPropagation();
+            this.scene.setVisible(false);
+            this.scene.stop();
+        });
     }
 
     update () {
-        this.hud.update(); // since the hud isn't a part of this scenes update list... yet
+        if (this.scene.isVisible()) {
+            this.hud.update(); // since the hud isn't a part of this scenes update list... yet
+        }
     }
 };

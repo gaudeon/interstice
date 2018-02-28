@@ -16,7 +16,7 @@ var gameConfig = {
     physics: {
         default: 'arcade',
         arcade: {
-            debug: true,
+            //debug: true, // enable to see physics bodies outlined
         }
     }, 
     scene: [LoadingScene, MainMenuScene, PlayMissionScene, PlayMissionHudScene, MissionResultsScene]

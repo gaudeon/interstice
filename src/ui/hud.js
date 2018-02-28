@@ -83,11 +83,11 @@ export default class HUD {
                 this[bar].fg.mid.setDisplaySize(barAmount * 2, this[bar].fg.mid.displayHeight);
 
                 // left cap x pos based on bar amount
-                x = this[bar].fg.mid.x - barAmount + (this[bar].fg.left.displayWidth);
+                x = this[bar].fg.mid.x - barAmount + (barAmount > this[bar].fg.left.displayWidth ? this[bar].fg.left.displayWidth : 0);
                 this[bar].fg.left.setPosition(x, this[bar].fg.right.y);
 
                 // right cap x pos based on bar amount
-                let x = this[bar].fg.mid.x + barAmount - (this[bar].fg.right.displayWidth);
+                let x = this[bar].fg.mid.x + barAmount - (barAmount > this[bar].fg.right.displayWidth ? this[bar].fg.right.displayWidth : 0);
                 this[bar].fg.right.setPosition(x, this[bar].fg.right.y);
             }
         });
