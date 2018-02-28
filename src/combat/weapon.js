@@ -120,14 +120,29 @@ export default class Weapon extends Phaser.Physics.Arcade.Group {
     addCollider (target) {
         let colliderCallback = () => {};
 
-        if (typeof target.takeDamage === 'function') { // this target can take damage
-            colliderCallback = (obj1, obj2) => {
-                let projectile = obj1 == target ? obj2 : obj1;
-                target.takeDamage(projectile.attributes.damage);
-                projectile.kill();
-            }
-        }
+        if (target.getChildren) { // process all children in a group as separate colliders
+            target.getChildren().forEach(child => {
+                if (typeof child.takeDamage === 'function') { // this child of the group can take damage
+                    colliderCallback = (obj1, obj2) => {
+                        let projectile = obj1 == child ? obj2 : obj1;
+                        child.takeDamage(projectile.attributes.damage);
+                        projectile.kill();
+                    }
+                }
 
-        this.colliders.push(this.scene.physics.add.collider(this, target, colliderCallback));
+                this.colliders.push(this.scene.physics.add.collider(this, child, colliderCallback));
+            });
+        }
+        else {
+            if (typeof target.takeDamage === 'function') { // this target can take damage
+                colliderCallback = (obj1, obj2) => {
+                    let projectile = obj1 == target ? obj2 : obj1;
+                    target.takeDamage(projectile.attributes.damage);
+                    projectile.kill();
+                }
+            }
+
+            this.colliders.push(this.scene.physics.add.collider(this, target, colliderCallback));
+        }
     }
 };
