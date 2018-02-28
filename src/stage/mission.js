@@ -1,17 +1,16 @@
-import CollisionManager from '../objects/collision_manager';
-import Player from '../entities/ships/player';
-import Sector from '../map/sector';
+import Sector from './sector';
 
-export default class Mission {
-    constructor (game, key) {
-        this.game = game;
+export default class Mission extends Phaser.GameObjects.Group {
+    constructor (scene, key) {
+        super(scene);
+
         this.key = key;
 
         // config data
         this.config = this.config || {};
-        this.config.missions = game.cache.getJSON('missionsConfig');
-        this.config.assets = game.cache.getJSON('assetsConfig');
-        this.config.bots = game.cache.getJSON('botsConfig');
+        this.config.missions = scene.cache.json.get('missionsConfig');
+        this.config.assets = scene.cache.json.get('assetsConfig');
+        this.config.bots = scene.cache.json.get('botsConfig');
 
         // mission keys should be defined in any child object inheriting from this object
         if (typeof this.key === 'undefined' || typeof this.config.missions[this.key] === 'undefined') {
@@ -20,22 +19,16 @@ export default class Mission {
 
         this.config.mission = this.config.missions[this.key];
 
-        // setup collision manager for p2 physics collisions
-        this.collision_manager = new CollisionManager(game);
-
-        // setup player object
-        this.player = new Player(game, this.collision_manager);
-
         // setup the sector object
-        this.sector = new Sector(game, this.player, this.collision_manager, this.config.mission.start_sector);
+        this.sector = new Sector(scene, this.config.mission.start_sector);
 
         this.success_objectives = {};
         this.failure_objectives = {};
 
-        // setup event signals
-        this.events = {};
-        this.events.onSuccess = new Phaser.Signal();
-        this.events.onFailure = new Phaser.Signal();
+        // setup events
+        this.events = new Phaser.EventEmitter();
+
+        this.scene.add.existing(this); // add ourself to the scene updateList
     }
 
     loadAssets () {
@@ -47,21 +40,32 @@ export default class Mission {
             ),
             (key) => {
                 var atlasAsset = this.config.assets[key];
-                this.game.load.atlas(atlasAsset.key, atlasAsset.file, null, this.game.cache.getJSON(atlasAsset.jsonKey), Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
+                this.scene.load.atlas(atlasAsset.key, atlasAsset.imageFile, atlasAsset.jsonFile);
             }
         );
-
-        // sector assets
-        this.sector.loadAssets();
-
-        // player assets
-        this.player.loadAssets();
 
         // bullet assets
         _.filter(Object.keys(this.config.assets), key => { return key.match(/^bullet_/); }).forEach(bulletType => {
             let bulletAsset = this.config.assets[bulletType];
             if (!bulletAsset.in_atlas) {
-                this.load.image(bulletAsset.key, bulletAsset.file);
+                this.scene.load.image(bulletAsset.key, bulletAsset.file);
+            }
+        });
+
+        // sound assets
+        _.filter(Object.keys(this.config.assets), key => { return key.match(/^sound_/); }).forEach(sound => {
+            let soundAsset = this.config.assets[sound];
+            if (!soundAsset.in_atlas) {
+                this.scene.load.audio(soundAsset.key, soundAsset.file);
+            }
+        });
+
+        // player assets
+        _.each(['balanced'], (classId) => {
+            const PLAYER_CHASIS_CLASS = 'player_chasis_' + classId;
+            let playerChasisAsset = this.config.assets[PLAYER_CHASIS_CLASS];
+            if (!playerChasisAsset.in_atlas) {
+                this.scene.load.image(playerChasisAsset.key, playerChasisAsset.file);
             }
         });
 
@@ -70,9 +74,12 @@ export default class Mission {
             const BOTS_ASSET_KEY = 'bot_' + botClassId;
             let botAssetConfig = this.config.assets[BOTS_ASSET_KEY];
             if (!botAssetConfig.in_atlas) {
-                this.load.image(botAssetConfig.key, botAssetConfig.file);
+                this.scene.load.image(botAssetConfig.key, botAssetConfig.file);
             }
         });
+
+        // sector assets
+        this.sector.loadAssets();
     }
 
     setupMission () {
@@ -80,23 +87,24 @@ export default class Mission {
         this.sector.setupSector();
     }
 
-    tick () {
-        this.sector.tick();
+    // we want to be updated since we added ourselves into the updateList...
+    preUpdate (time, delta) {
+        if (super.preUpdate !== undefined) {
+            super.preUpdate(time, delta);
+        }
 
         if (this.isMissionSuccess()) {
-            this.events.onSuccess.dispatch();
+            this.events.emit('MissionSuccess');
         }
 
         if (this.isMissionFailure()) {
-            this.events.onFailure.dispatch();
+            this.events.emit('MissionFailure');
         }
     }
 
-    getPlayer () { return this.player; }
+    getPlayer () { return this.sector.getPlayer(); }
 
     getSector () { return this.sector; }
-
-    getCollisionManager () { return this.collision_manager; }
 
     addSuccessObjective (key, objective) {
         if (typeof objective === 'undefined' || typeof objective.isComplete !== 'function') {

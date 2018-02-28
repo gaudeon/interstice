@@ -2,7 +2,7 @@
     "style": {
                 "font": "48px Exo2 SemiBold",
                 "fill": "#ffffff",
-                "fontSize": 48,
+                "fontSize": "48px",
                 "boundsAlignH": "center",
                 "boundsAlignV": "middle"
     },
@@ -15,11 +15,11 @@
     "items": [
         {
             "label": "... interstice ...",
-            "state": false
+            "nextScene": false
         },
         {
             "label": "Play",
-            "state": "PlayMission"
+            "nextScene": "PlayMission"
         }
     ]
 }

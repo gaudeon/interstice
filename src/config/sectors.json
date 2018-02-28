@@ -5,15 +5,16 @@
         "tilesets": ["scenery_tileset", "sector_tileset"],
         "layers": [
             {
-                "name": "sector",
-                "collisionIds": [4097,4098,4099,4100,4101,4102,4103,4104,4105,4106,4107,4108,4109,4110]
+                "name": "scenery",
+                "tileset": "scenery_tileset"
             },
             {
-                "name": "scenery"
+                "name": "sector",
+                "tileset": "sector_tileset"
             }
         ],
         "object_layers": {
-            "entities": "entities"
+            "entities": 0
         }
     }
 }

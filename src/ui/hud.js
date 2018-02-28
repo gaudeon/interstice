@@ -1,12 +1,15 @@
+const BARS = ['health_bar', 'energy_bar'];
+const BAR_SPACING = 35;
+const BAR_START_Y = 20;
+
 export default class HUD {
-    constructor (game, player) {
-        this.game = game;
-        this.player = player;
+    constructor (scene, mission) {
+        this.scene = scene;
+        this.mission = mission;
 
         // config data
         this.config = {};
-        this.config.assets = this.game.cache.getJSON('assetsConfig');
-        this.config.hud = this.game.cache.getJSON('hudConfig');
+        this.config.assets = this.scene.cache.json.get('assetsConfig');
     }
 
     loadAssets () {
@@ -17,80 +20,76 @@ export default class HUD {
             ),
             (el) => {
                 if (!this.config.assets[el].in_atlas) {
-                    this.game.load.image(this.config.assets[el].key, this.config.assets[el].file);
+                    this.scene.load.image(this.config.assets[el].key, this.config.assets[el].file);
                 }
             }
         );
     }
 
     setupHUD () {
-        this.hud = this.game.add.group();
-        this.hud.fixedToCamera = true;
-
-        ['health_bar', 'energy_bar'].forEach(bar => {
-            //  bar
+        BARS.forEach((bar, index) => {
             this[bar] = {};
 
-            // health bar background
+            // bar position
+            let x = this.scene.sys.game.config.width / 2; // center of screen
+            let y = BAR_SPACING * index + BAR_START_Y; // near the top but spaced based on which bar it is
+
+            // size of center
+            let barAmount = bar === 'health_bar' ? this.mission.getPlayer().getChasisHealth() : this.mission.getPlayer().getChasisEnergy();
+
+            // bar background
             this[bar].bg = {};
 
-            var x = this.config.hud[bar].x;
-            var y = this.config.hud[bar].y;
+            this[bar].bg.left = this.scene.add.sprite(x, y, this.config.assets.ui_bar_bg_left.key, this.config.assets.ui_bar_bg_left.frame);
+            this[bar].bg.left.setOrigin(0, 0.5);
+            this[bar].bg.left.setPosition(x - barAmount, y); // fix position after origin
 
-            this[bar].bg.left = this.game.add.sprite(x, y, this.config.assets.ui_bar_bg_left.key, this.config.assets.ui_bar_bg_left.frame);
-            this[bar].bg.left.alpha = this.config.hud.bar_bg.alpha;
-            this.hud.add(this[bar].bg.left);
+            this[bar].bg.right = this.scene.add.sprite(x, y, this.config.assets.ui_bar_bg_right.key, this.config.assets.ui_bar_bg_right.frame);
+            this[bar].bg.right.setOrigin(1, 0.5);
+            this[bar].bg.right.setPosition(x + barAmount, y);
 
-            x += this[bar].bg.left.width;
-            this[bar].bg.mid = this.game.add.sprite(x, y, this.config.assets.ui_bar_bg_mid.key, this.config.assets.ui_bar_bg_mid.frame);
-            this[bar].bg.mid.width = bar === 'health_bar' ? this.player.getHullHealth() : this.player.getHullEnergy();
-            this[bar].bg.mid.alpha = this.config.hud.bar_bg.alpha;
-            this.hud.add(this[bar].bg.mid);
-
-            x += this[bar].bg.mid.width;
-            this[bar].bg.right = this.game.add.sprite(x, y, this.config.assets.ui_bar_bg_right.key, this.config.assets.ui_bar_bg_right.frame);
-            this[bar].bg.right.alpha = this.config.hud.bar_bg.alpha;
-            this.hud.add(this[bar].bg.right);
+            this[bar].bg.mid = this.scene.add.sprite(x, y, this.config.assets.ui_bar_bg_mid.key, this.config.assets.ui_bar_bg_mid.frame);
+            this[bar].bg.mid.setDisplaySize(barAmount * 2, this[bar].bg.mid.height);
 
             // bar foreground
             this[bar].fg = {};
 
-            x = this.config.hud[bar].x;
-            y = this.config.hud[bar].y;
-            this[bar].fg.left = this.game.add.sprite(x, y, this.config.assets['ui_' + bar + '_left'].key, this.config.assets['ui_' + bar + '_left'].frame);
-            this[bar].fg.left.alpha = this.config.hud[bar].alpha;
-            this.hud.add(this[bar].fg.left);
+            this[bar].fg.left = this.scene.add.sprite(x, y, this.config.assets['ui_' + bar + '_left'].key, this.config.assets['ui_' + bar + '_left'].frame);
+            this[bar].fg.left.setOrigin(1, 0.5);
+            this[bar].fg.left.setPosition(x - barAmount, y); // fix position after origin
 
-            x += this[bar].fg.left.width;
-            this[bar].fg.mid = this.game.add.sprite(x, y, this.config.assets['ui_' + bar + '_mid'].key, this.config.assets['ui_' + bar + '_mid'].frame);
-            this[bar].fg.mid.width = bar === 'health_bar' ? this.player.getHullHealth() : this.player.getHullEnergy();
-            this[bar].fg.mid.alpha = this.config.hud[bar].alpha;
-            this.hud.add(this[bar].fg.mid);
+            this[bar].fg.right = this.scene.add.sprite(x, y, this.config.assets['ui_' + bar + '_right'].key, this.config.assets['ui_' + bar + '_right'].frame);
+            this[bar].fg.right.setOrigin(0, 0.5);
+            this[bar].fg.right.setPosition(x + barAmount, y);
 
-            x += this[bar].fg.mid.width;
-            this[bar].fg.right = this.game.add.sprite(x, y, this.config.assets['ui_' + bar + '_right'].key, this.config.assets['ui_' + bar + '_right'].frame);
-            this[bar].fg.right.alpha = this.config.hud[bar].alpha;
-            this.hud.add(this[bar].fg.right);
+            this[bar].fg.mid = this.scene.add.sprite(x, y, this.config.assets['ui_' + bar + '_mid'].key, this.config.assets['ui_' + bar + '_mid'].frame);
+            this[bar].fg.mid.setDisplaySize(barAmount * 2, this[bar].fg.mid.height);
         });
     }
 
-    tick () {
-        ['health_bar', 'energy_bar'].forEach(bar => {
-            var amount = bar === 'health_bar' ? this.player.getHealth() : this.player.getEnergy();
-            if (amount <= 0) { // hide bar if empty
-                this[bar].fg.left.visible = false;
-                this[bar].fg.mid.visible = false;
-                this[bar].fg.right.visible = false;
+    update () {
+        BARS.forEach(bar => {
+            let barAmount = (bar === 'health_bar') ? this.mission.getPlayer().getHealth() : this.mission.getPlayer().getEnergy();
+
+            if (barAmount <= 0) { // hide bar if empty
+                this[bar].fg.left.setVisible(false);
+                this[bar].fg.mid.setVisible(false);
+                this[bar].fg.right.setVisible(false);
             } else {
-                this[bar].fg.left.visible = true;
-                this[bar].fg.mid.visible = true;
-                this[bar].fg.right.visible = true;
+                this[bar].fg.left.setVisible(true);
+                this[bar].fg.mid.setVisible(true);
+                this[bar].fg.right.setVisible(true);
 
-                this[bar].fg.mid.width = amount;
+                // since origin is centered we double it
+                this[bar].fg.mid.setDisplaySize(barAmount * 2 + 8, this[bar].fg.mid.displayHeight);
 
-                var x = this[bar].fg.left.x + this[bar].fg.left.width + this[bar].fg.mid.width;
-                var y = this.config.hud[bar].y;
-                this[bar].fg.right.reset(x, y);
+                // left cap x pos based on bar amount
+                x = this[bar].fg.mid.x - barAmount;
+                this[bar].fg.left.setPosition(x, this[bar].fg.left.y);
+
+                // right cap x pos based on bar amount
+                let x = this[bar].fg.mid.x + barAmount;
+                this[bar].fg.right.setPosition(x, this[bar].fg.right.y);
             }
         });
     }

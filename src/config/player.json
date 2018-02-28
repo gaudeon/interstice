@@ -2,22 +2,22 @@
     "main_gun": {
         "bullet_type"         : "green",
         "bullet_pool_count"   : 30,
-        "bullet_angle_offset" : 90,
         "bullet_shot_delay"   : 275,
         "bullet_speed"        : 200,
         "bullet_damage"       : 10,
         "bullet_energy_cost"  : 5,
         "bullet_lifespan"     : 5000,
-        "bullet_mass"         : 0.01
+        "bullet_mass"         : 0.01,
+        "bullet_bounce"       : 1
     },
-    "hull_balanced": {
+    "chasis_balanced": {
         "name"              : "Balanced",
         "energy"            : 100,
         "energy_regen_rate" : 0.15,
         "health"            : 100,
         "health_regen_rate" : 0,
-        "thrust"            : 300,
-        "rotation"          : 100,
+        "thrustSpeed"       : 300,
+        "rotationSpeed"     : 100,
         "sprite": {
             "scale": 1,
             "anchor": 0.5

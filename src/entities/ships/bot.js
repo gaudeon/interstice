@@ -1,50 +1,38 @@
 import Ship from '../ship';
 
 export default class Bot extends Ship {
-    constructor (game, x, y, player, collisionManager, classId) {
+    constructor (sector, x, y, classId) {
         const BOT_ASSET_KEY = 'bot_' + classId;
-        let assetConfig = game.cache.getJSON('assetsConfig')[BOT_ASSET_KEY];
+        let assetConfig = sector.scene.cache.json.get('assetsConfig')[BOT_ASSET_KEY];
 
-        super(game, x, y, assetConfig.key, null, collisionManager);
+        super(sector, x, y, assetConfig.key, assetConfig.frame);
 
         // config data
         this.config = this.config || {};
-        this.config.bots = game.cache.getJSON('botsConfig');
+        this.config.bots = this.scene.cache.json.get('botsConfig');
         this.config.asset = assetConfig;
 
-        if (this.config.asset.in_atlas) {
-            this.frameName = this.config.asset.frame;
-        }
-
         // sprite attributes
-        this.anchor.setTo(this.config.bots[classId].sprite.anchor);
-        this.scale.setTo(this.config.bots[classId].sprite.scale);
+        this.setOrigin(this.config.bots[classId].sprite.anchor);
+        this.setScale(this.config.bots[classId].sprite.scale);
 
         // bot attributes
         this.attributes = this.attributes || {};
 
         // these need to be set for each bot
         this.attributes.bot_class_id = classId;
-        this.player = player;
 
         // setup bot attributes
         this.addAttribute('health', this.getMaxHealth());
         this.addAttribute('energy', this.getMaxEnergy());
 
-        // setup physics body for this sprite
-        this.game.physics.p2.enable(this, false);
-        this.body.setRectangle(40, 40);
-
-        // setup collision_group globallly if not there
-        this.setupCollisions();
-
         // audio
         const SHIP_EXPLOSION_SOUND_ASSET_KEY = 'sound_ship_explosion';
         this.audio = {};
-        this.audio.shipExplosionSound = this.game.add.audio(this.config.assets[SHIP_EXPLOSION_SOUND_ASSET_KEY].key);
+        this.audio.shipExplosionSound = this.scene.sound.add(this.config.assets[SHIP_EXPLOSION_SOUND_ASSET_KEY].key);
 
         // explode on death
-        this.events.onKilled.add(() => {
+        this.events.once('killed', () => {
             this.audio.shipExplosionSound.play();
         });
 
@@ -61,8 +49,6 @@ export default class Bot extends Ship {
 
     getBotConfig () { return this.config.bots[this.getBotClassId()]; }
     getSpeed () { return this.getBotConfig().speed; }
-    getCollisionGroup () { return this.collision_group; }
-    getTargetingAngleOffset () { return this.getBotConfig().targeting_angle_offset; }
     getMaxEnergy () { return this.getBotConfig().energy; }
     getEnergyRegenRate () { return this.getBotConfig().energy_regen_rate; }
     getEnergyIsShield () { return this.getBotConfig().energy_is_shield; }
@@ -96,7 +82,7 @@ export default class Bot extends Ship {
     getEnergy () { return this.attributes.energy; }
 
     // taking damage
-    damage (amount) {
+    takeDamage (amount) {
         let curHealth, curEnergy;
         if (this.getEnergyIsShield()) {
             curEnergy = this.getEnergy();
@@ -117,15 +103,12 @@ export default class Bot extends Ship {
         }
     }
 
-    tick () { /* overwrite me to do stuff */ }
-
     accelerateToPoint (x, y, speed) {
         speed = speed || this.getBotConfig().speed || 0;
 
         let angle = Math.atan2(y - this.y, x - this.x);
-        this.body.rotation = angle + this.game.math.degToRad(90); // correct angle of angry bullets (depends on the sprite used)
-        this.body.force.x = Math.cos(angle) * speed; // accelerateToObject
-        this.body.force.y = Math.sin(angle) * speed;
+        this.setRotation(angle); 
+        this.scene.physics.velocityFromRotation(this.rotation, speed, this.body.acceleration);
     }
 
     accelerateToObject (dest, speed) {
@@ -135,18 +118,14 @@ export default class Bot extends Ship {
     }
 
     hasLOSWithPlayer () {
-        let forwardRotation = this.rotation - this.game.math.degToRad(this.getTargetingAngleOffset() || 0);
-        let forwardRay = new Phaser.Line(this.x, this.y,
-            this.x + Math.cos(forwardRotation) * 1000, this.y + Math.sin(forwardRotation) * 1000);
+        let forwardRay = new Phaser.Geom.Line(this.x, this.y,
+            this.x + Math.cos(this.rotation) * 1000, this.y + Math.sin(this.rotation) * 1000);
 
-        let playerRay = new Phaser.Line();
-        playerRay.fromSprite(this, this.player);
+        let player = this.sector.getPlayer();
+        let playerRay = new Phaser.Geom.Line(this.x, this.y, player.x, player.y);
 
-        return Phaser.Math.fuzzyEqual(forwardRay.normalAngle, playerRay.normalAngle, 0.05);
+        return Phaser.Math.Fuzzy.Equal(Phaser.Geom.Line.NormalAngle(forwardRay), Phaser.Geom.Line.NormalAngle(playerRay), 0.05);
     }
-
-    // default collisions setup, child bots should overwrite this
-    setupCollisions () { }
 
     // default is enemy test, child bots should overwrite this
     isEnemy (ship) {

@@ -1,32 +1,86 @@
 import Ship from '../ship';
-import WeaponPlayerMainGun from '../../objects/weapons/weapon_player_main_gun';
+import WeaponPlayerMainGun from '../../combat/weapons/weapon_player_main_gun';
 
 export default class Player extends Ship {
-    constructor (game, collisionManager) {
-        super(game, 0, 0, null, null, collisionManager);
+    constructor (sector, x, y) {
+        // default to balanced chasis class. TODO: Change me to support player chosen chasis classes
+        const PLAYER_CLASS_ID = 'balanced';
+        const PLAYER_CHASIS_CLASS = 'player_chasis_' + PLAYER_CLASS_ID;
+        let assetConfig = sector.scene.cache.json.get('assetsConfig');
+
+        super(sector, x, y, assetConfig[PLAYER_CHASIS_CLASS].key, assetConfig[PLAYER_CHASIS_CLASS].in_atlas ? assetConfig[PLAYER_CHASIS_CLASS].frame : null);
+
+        this.ship_class_id = PLAYER_CLASS_ID;
 
         // config data
         this.config = this.config || {};
-        this.config.assets = this.config.assets || game.cache.getJSON('assetsConfig');
-        this.config.controls = this.config.controls || game.cache.getJSON('controlsConfig');
-        this.config.player = this.config.player || game.cache.getJSON('playerConfig');
+        this.config.assets = this.config.assets || this.scene.cache.json.get('assetsConfig');
+        this.config.controls = this.config.controls || this.scene.cache.json.get('controlsConfig');
+        this.config.player = this.config.player || this.scene.cache.json.get('playerConfig');
 
+        // the ship classification for grouping purposes
         this.taxonomy = 'human.player';
+
+        // set how the graphic is displayed for the sprite
+        this.setOrigin(this.getChasisSpriteConfig().anchor);
+        this.setScale(this.getChasisSpriteConfig().scale);
+
+        //  Notice that the sprite doesn't have any momentum at all,
+        //  it's all just set by the camera follow type.
+        //  0.1 is the amount of linear interpolation to use.
+        //  The smaller the value, the smooth the camera (and the longer it takes to catch up)
+        this.scene.cameras.main.startFollow(this);
+
+        // setup player attributes
+        this.addAttribute('health', this.getChasisHealth());
+        this.addAttribute('energy', this.getChasisEnergy());
+
+        // main gun
+        var mainGun = new WeaponPlayerMainGun(this.scene);
+        mainGun.createProjectiles(this.getMainGunBulletPoolCount());
+        mainGun.trackSprite(this);
+        this.addWeapon('mainGun', mainGun);
+
+        // audio
+        this.audio = {};
+        this.audio.thrustSound = this.scene.sound.add(this.config.assets[this.thrustSoundAssetKey()].key, 1, true);
+        this.audio.bulletSound = this.scene.sound.add(this.config.assets[this.bulletSoundAssetKey()].key);
+        this.audio.shipExplosionSound = this.scene.sound.add(this.config.assets[this.shipExplosionSoundAssetKey()].key);
+
+        // keyboard events
+        this.keyboard = this.scene.input.keyboard.createCursorKeys();
+        _.each(['thrustForward', 'thrustReverse', 'rotateLeft', 'rotateRight', 'fireBullets'], (control) => {
+            var keycode = Phaser.Input.Keyboard.KeyCodes[this.config.controls[control]];
+            this.keyboard[control] = this.scene.input.keyboard.addKey(keycode);
+        });
+
+        // weapon events
+        this.getWeapon('mainGun').on('fire', () => {
+            this.audio.bulletSound.play();
+
+            this.setEnergy(this.getEnergy() - this.getMainGunBulletEnergyCost());
+        });
+
+        // death audio events
+        this.events.on('killed', () => {
+            this.audio.thrustSound.stop();
+            this.audio.shipExplosionSound.play();
+        });
     }
 
     // player class id
-    getShipClassId () { return 'hull_' + this.ship_class_id; }
+    getShipClassId () { return 'chasis_' + this.ship_class_id; }
 
-    // hull
-    getHullConfig () { return this.config.player[this.getShipClassId()]; }
-    getHullName () { return this.getHullConfig().name; }
-    getHullEnergy () { return this.getHullConfig().energy; }
-    getHullEnergyRegenRate () { return this.getHullConfig().energy_regen_rate; }
-    getHullHealth () { return this.getHullConfig().health; }
-    getHullHealthRegenRate () { return this.getHullConfig().health_regen_rate; }
-    getHullThrust () { return this.getHullConfig().thrust; }
-    getHullRotation () { return this.getHullConfig().rotation; }
-    getHullSpriteConfig () { return this.getHullConfig().sprite; }
+    // chasis 
+    getChasisConfig () { return this.config.player[this.getShipClassId()]; }
+    getChasisName () { return this.getChasisConfig().name; }
+    getChasisEnergy () { return this.getChasisConfig().energy; }
+    getChasisEnergyRegenRate () { return this.getChasisConfig().energy_regen_rate; }
+    getChasisHealth () { return this.getChasisConfig().health; }
+    getChasisHealthRegenRate () { return this.getChasisConfig().health_regen_rate; }
+    getChasisThrustSpeed () { return this.getChasisConfig().thrustSpeed; }
+    getChasisRotationSpeed () { return this.getChasisConfig().rotationSpeed; }
+    getChasisSpriteConfig () { return this.getChasisConfig().sprite; }
 
     // main gun info
     getMainGunBulletType () { return this.config.player.main_gun.bullet_type; }
@@ -41,7 +95,7 @@ export default class Player extends Ship {
         this.attributes.health = health;
 
         // don't exceed maximum
-        if (this.attributes.health > this.getHullHealth()) this.attributes.health = this.getHullHealth();
+        if (this.attributes.health > this.getChasisHealth()) this.attributes.health = this.getChasisHealth();
     }
     getHealth () { return this.attributes.health; }
 
@@ -50,7 +104,7 @@ export default class Player extends Ship {
         this.attributes.energy = energy;
 
         // don't exceed maximum
-        if (this.attributes.energy > this.getHullEnergy()) this.attributes.health = this.getHullEnergy();
+        if (this.attributes.energy > this.getChasisEnergy()) this.attributes.health = this.getChasisEnergy();
     }
     getEnergy () { return this.attributes.energy; }
 
@@ -59,128 +113,8 @@ export default class Player extends Ship {
     bulletSoundAssetKey () { return 'sound_bullet'; }
     shipExplosionSoundAssetKey () { return 'sound_ship_explosion'; }
 
-    // load assets
-    loadAssets () {
-        _.each(['balanced'], (classId) => {
-            const PLAYER_HULL_CLASS = 'player_hull_' + classId;
-            let playerHullAsset = this.config.assets[PLAYER_HULL_CLASS];
-            if (!playerHullAsset.in_atlas) {
-                this.game.load.image(playerHullAsset.key, playerHullAsset.file);
-            }
-        });
-
-        // sounds
-        var thrust = this.config.assets[this.thrustSoundAssetKey()];
-        this.game.load.audio(thrust.key, thrust.file);
-
-        var bullet = this.config.assets[this.bulletSoundAssetKey()];
-        this.game.load.audio(bullet.key, bullet.file);
-
-        var shipExplosion = this.config.assets[this.shipExplosionSoundAssetKey()];
-        this.game.load.audio(shipExplosion.key, shipExplosion.file);
-    }
-
-    // setup ship
-    setupShip (x, y) {
-        // default to balanced hull class. TODO: Change me to support player chosen hull classes
-        this.ship_class_id = 'balanced';
-
-        if (typeof x === 'undefined') x = this.game.world.width / 2;
-        if (typeof y === 'undefined') y = this.game.world.height / 2;
-
-        const PLAYER_HULL_CLASS = 'player_hull_' + this.ship_class_id;
-        this.loadTexture(this.config.assets[PLAYER_HULL_CLASS].key);
-        if (this.config.assets[PLAYER_HULL_CLASS].in_atlas) {
-            this.frameName = this.config.assets[PLAYER_HULL_CLASS].frame;
-        }
-        this.reset(x, y);
-
-        // set how the graphic is displayed for the sprite
-        this.anchor.setTo(this.getHullSpriteConfig().anchor);
-        this.scale.setTo(this.getHullSpriteConfig().scale);
-
-        // physics related
-        this.body.setRectangle(40, 40);
-        this.body.rotation = this.game.math.PI2 / 4;
-
-        // add ship to the game
-        this.game.add.existing(this);
-
-        // entities are on top
-        this.game.world.bringToTop(this);
-
-        //  Notice that the sprite doesn't have any momentum at all,
-        //  it's all just set by the camera follow type.
-        //  0.1 is the amount of linear interpolation to use.
-        //  The smaller the value, the smooth the camera (and the longer it takes to catch up)
-        this.game.camera.follow(this, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
-
-        // setup player attributes
-        this.addAttribute('health', this.getHullHealth());
-        this.addAttribute('energy', this.getHullEnergy());
-
-        // setup collisions
-        this.getCollisionManager().addToPlayersCG(this);
-        this.getCollisionManager().setCollidesWithEnemiesCG(this);
-        this.getCollisionManager().setCollidesWithEnemyProjectilesCG(this);
-        this.getCollisionManager().setCollidesWithSectorCG(this);
-
-        // ship impact
-        this.body.onBeginContact.add(this.impactHandler, this);
-
-        // main gun
-        var mainGun = new WeaponPlayerMainGun(this.game, this.collisionManager);
-        mainGun.createProjectiles(this.getMainGunBulletPoolCount());
-        mainGun.trackSprite(this);
-        this.addWeapon('mainGun', mainGun);
-
-        // audio
-        this.audio = {};
-        this.audio.thrustSound = this.game.add.audio(this.config.assets[this.thrustSoundAssetKey()].key, 1, true);
-        this.audio.bulletSound = this.game.add.audio(this.config.assets[this.bulletSoundAssetKey()].key);
-        this.audio.shipExplosionSound = this.game.add.audio(this.config.assets[this.shipExplosionSoundAssetKey()].key);
-
-        // keyboard events
-        this.keyboard = this.game.input.keyboard.createCursorKeys();
-        _.each(['thrustForward', 'thrustReverse', 'rotateLeft', 'rotateRight', 'fireBullets'], (control) => {
-            var keycode = Phaser.KeyCode[this.config.controls[control]];
-            this.keyboard[control] = this.game.input.keyboard.addKey(keycode);
-        });
-
-        // thruster audio events
-        this.keyboard.thrustForward.onDown.add(() => {
-            if (this.alive) {
-                this.audio.thrustSound.play();
-            }
-        });
-        this.keyboard.thrustForward.onUp.add(() => {
-            this.audio.thrustSound.stop();
-        });
-        this.keyboard.thrustReverse.onDown.add(() => {
-            if (this.alive) {
-                this.audio.thrustSound.play();
-            }
-        });
-        this.keyboard.thrustReverse.onUp.add(() => {
-            this.audio.thrustSound.stop();
-        });
-
-        // weapon audio events
-        this.getWeapon('mainGun').events.onFire.add(() => {
-            this.audio.bulletSound.play();
-
-            this.setEnergy(this.getEnergy() - this.getMainGunBulletEnergyCost());
-        });
-
-        // death audio events
-        this.events.onKilled.add(() => {
-            this.audio.thrustSound.stop();
-            this.audio.shipExplosionSound.play();
-        });
-    }
-
     // taking damage
-    damage (amount) {
+    takeDamage (amount) {
         var curEnergy = this.getEnergy();
         var curHealth = this.getHealth();
 
@@ -195,22 +129,27 @@ export default class Player extends Ship {
         }
     }
 
-    tick () {
+    update (time, delta) {
         if (this.alive) {
+            // acceleration
             if (this.keyboard.thrustForward.isDown) {
-                this.body.thrust(this.getHullThrust());
+                this.scene.physics.velocityFromRotation(this.rotation, this.getChasisThrustSpeed(), this.body.acceleration);
             } else if (this.keyboard.thrustReverse.isDown) {
-                this.body.reverse(this.getHullThrust());
-            }
-
-            if (this.keyboard.rotateLeft.isDown) {
-                this.body.rotateLeft(this.getHullRotation());
-            } else if (this.keyboard.rotateRight.isDown) {
-                this.body.rotateRight(this.getHullRotation());
+                this.scene.physics.velocityFromRotation(this.rotation, -this.getChasisThrustSpeed(), this.body.acceleration);
             } else {
-                this.body.setZeroRotation();
+                this.setAcceleration(0);
             }
 
+            // rotation
+            if (this.keyboard.rotateLeft.isDown) {
+                this.setAngularVelocity(-this.getChasisRotationSpeed());
+            } else if (this.keyboard.rotateRight.isDown) {
+                this.setAngularVelocity(this.getChasisRotationSpeed());
+            } else {
+                this.setAngularVelocity(0);
+            }
+
+            // weapons
             if (this.keyboard.fireBullets.isDown) {
                 if (this.getEnergy() > 0) {
                     // fire main gun
@@ -218,22 +157,34 @@ export default class Player extends Ship {
                 }
             }
 
-            if (this.getHullEnergyRegenRate() > 0 && this.getEnergy() < this.getHullEnergy()) {
-                this.setEnergy(this.getEnergy() + this.getHullEnergyRegenRate());
+            // chasis energy regeneration
+            if (this.getChasisEnergyRegenRate() > 0 && this.getEnergy() < this.getChasisEnergy()) {
+                this.setEnergy(this.getEnergy() + this.getChasisEnergyRegenRate());
+            }
+
+            // sound
+            if (this.keyboard.thrustForward.isDown || this.keyboard.thrustReverse.isDown) {
+                if (!this.thrustSoundIsPlaying) {
+                    this.thrustSoundIsPlaying = true;
+                    this.audio.thrustSound.play({ loop: true });
+                }
+            } else if (this.keyboard.thrustForward.isUp && this.keyboard.thrustReverse.isUp) {
+                this.thrustSoundIsPlaying = false;
+                this.audio.thrustSound.stop();
             }
         }
     }
 
-    impactHandler (body, shape1, shape2, equation) {
+    impactHandler (event, otherBody) {
         var x = 0;
         var y = 0;
 
         if (body && body !== 'null' && body !== 'undefined') {
-            x = body.velocity.x;
-            y = body.velocity.y;
+            x = otherBody.velocity.x;
+            y = otherBody.velocity.y;
         }
 
-        var v1 = new Phaser.Point(this.body.velocity.x, this.body.velocity.y);
+        var v1 = new Phaser.Point(this.otherBody.velocity.x, this.otherBody.velocity.y);
         var v2 = new Phaser.Point(x, y);
 
         var xdiff = Math.abs(v1.x - v2.x);

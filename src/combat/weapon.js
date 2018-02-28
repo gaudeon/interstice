@@ -1,14 +1,11 @@
 // Note: Bullets need to be used by a weapon, arcade physics will be applied object instanciated with this clas
 import Projectile from './projectile';
 
-export default class Weapon {
-    constructor (game, collisionManager) {
-        this.game = game;
-
-        this.collisionManager = collisionManager;
-
-        // projectile Group
-        this.projectilePool = this.game.add.group();
+export default class Weapon extends Phaser.Physics.Arcade.Group {
+    constructor (scene) {
+        super(scene.physics.world, scene, [], {
+            runChildUpdate: true
+        });
 
         // the default amount of projectiles created
         this.projectileCount = 20;
@@ -25,16 +22,25 @@ export default class Weapon {
         // offset angle (in degrees) around the orgin Sprite (in case bullet comes out an an undesired angle from the origin sprite)
         this.projectileAngleOffset = 0;
 
-        // setup event signals
-        this.events = {};
-        this.events.onFire = new Phaser.Signal();
+        // list of colliders that tracks the objects that can collide with the projectiles from this weapon
+        this.colliders = [];
+
+        this.events = new Phaser.EventEmitter();
+    }
+
+    on (...args) {
+        return this.events.on.apply(this.events, args);
+    }
+
+    emit (...args) {
+        return this.events.emit.apply(this.events, args);
     }
 
     // the class type of the projectile fired
     projectileClass () { return Projectile; }
 
     createProjectiles (quantity) {
-        this.projectilePool.removeAll(true); // clear out old list of projectiles
+        this.clear(true); // clear out old list of projectiles
         this.lastProjectileShotAt = null; // reset last time projectile was shot
 
         quantity = quantity || this.projectCount; // default quantity if not supplied
@@ -45,8 +51,8 @@ export default class Weapon {
         for (var i = 0; i < this.projectileCount; i++) {
             // Create each bullet and add it to the group.
             let ProjectileClass = this.projectileClass();
-            let projectile = new ProjectileClass(this.game, 0, 0, this.collisionManager);
-            this.projectilePool.add(projectile);
+            let projectile = new ProjectileClass(this.scene, 0, 0);
+            this.add(projectile, true); // add projectile and add to scene
         }
     }
 
@@ -62,24 +68,25 @@ export default class Weapon {
         // the amount of time since the last shot is more than
         // the required delay.
         if (this.lastProjectileShotAt === undefined) this.lastProjectileShotAt = 0;
-        if (this.game.time.now - this.lastProjectileShotAt < this.shotDelay) {
+        if (this.scene.time.now - this.lastProjectileShotAt < this.shotDelay) {
             return;
         }
-        this.lastProjectileShotAt = this.game.time.now;
+        this.lastProjectileShotAt = this.scene.time.now;
 
         // Get a dead projectile from the pool
-        var projectile = this.projectilePool.getFirstDead();
+        var projectile = this.getFirstDead();
 
         // If there aren't any projectiles available then don't shoot
         if (projectile === null || projectile === undefined) {
+            projectile = this.getOldestAlive();
+
+            if (projectile === null || projectile === undefined) {
                 return;
+            }
         }
 
         // Revive the projectile
         projectile.revive();
-
-        // sprites are on top
-        this.game.world.bringToTop(projectile);
 
         // set projectile lifespan
         if (projectile.attributes.lifespan) {
@@ -92,7 +99,7 @@ export default class Weapon {
 
             projectile.rotation = this.originSprite.rotation;
 
-            var forwardRotation = this.originSprite.rotation - this.game.math.degToRad(this.projectileAngleOffset);
+            var forwardRotation = this.originSprite.rotation - Phaser.Math.DegToRad(this.projectileAngleOffset);
 
             // Shoot it in the right direction
             projectile.body.velocity.x = Math.cos(forwardRotation) * speed;
@@ -103,6 +110,39 @@ export default class Weapon {
             console.log('firing without a originSprite is not yet implemented.');
         }
 
-        this.events.onFire.dispatch(true);
+        this.emit('fire');
+    }
+
+    getOldestAlive () {
+        return _.reduce(this.getChildren(), (oldest, current) => { return oldest === undefined || (current.alive && current.age > oldest.age) ? current : oldest; });
+    }
+
+    addCollider (target) {
+        let colliderCallback = () => {};
+
+        if (target.getChildren) { // process all children in a group as separate colliders
+            target.getChildren().forEach(child => {
+                if (typeof child.takeDamage === 'function') { // this child of the group can take damage
+                    colliderCallback = (obj1, obj2) => {
+                        let projectile = obj1 == child ? obj2 : obj1;
+                        child.takeDamage(projectile.attributes.damage);
+                        projectile.kill();
+                    }
+                }
+
+                this.colliders.push(this.scene.physics.add.collider(this, child, colliderCallback));
+            });
+        }
+        else {
+            if (typeof target.takeDamage === 'function') { // this target can take damage
+                colliderCallback = (obj1, obj2) => {
+                    let projectile = obj1 == target ? obj2 : obj1;
+                    target.takeDamage(projectile.attributes.damage);
+                    projectile.kill();
+                }
+            }
+
+            this.colliders.push(this.scene.physics.add.collider(this, target, colliderCallback));
+        }
     }
 };
