@@ -164,8 +164,12 @@ export default class Player extends Ship {
 
             // sound
             if (this.keyboard.thrustForward.isDown || this.keyboard.thrustReverse.isDown) {
-                this.audio.thrustSound.play();
+                if (!this.thrustSoundIsPlaying) {
+                    this.thrustSoundIsPlaying = true;
+                    this.audio.thrustSound.play({ loop: true });
+                }
             } else if (this.keyboard.thrustForward.isUp && this.keyboard.thrustReverse.isUp) {
+                this.thrustSoundIsPlaying = false;
                 this.audio.thrustSound.stop();
             }
         }
