@@ -100,7 +100,7 @@ export default class Weapon extends Phaser.Physics.Arcade.Group {
                 projectile.body.velocity.x + this.originSprite.body.velocity.x, // ship velocity + calculted project velocity
                 projectile.body.velocity.y + this.originSprite.body.velocity.y
             );
-            projectile.reset(this.originSprite.x, this.originSprite.y);
+            projectile.reset(this.originSprite.getBounds().centerX, this.originSprite.getBounds().centerY);
         } else {
             projectile.reset(projectile.startX, projectile.startY);
 
