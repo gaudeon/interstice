@@ -11,8 +11,6 @@ export default class PlayMissionScene extends Phaser.Scene {
     }
 
     init (mission) {
-        console.log(this);
-
         this.hudScene = this.scene.get('PlayMissionHud'); // save player hud scene for later use
 
         // for now default mission to KillMinionsMission
