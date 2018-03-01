@@ -15,7 +15,6 @@
             "bullet_damage"       : 5,
             "bullet_energy_cost"  : 5,
             "bullet_lifespan"     : 5000,
-            "bullet_mass"         : 0.01,
             "bullet_bounce"       : 1
         },
         "sprite": {

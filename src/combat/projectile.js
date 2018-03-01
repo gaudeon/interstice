@@ -5,7 +5,6 @@ export default class Projectile extends Phaser.Physics.Arcade.Sprite {
 
         // project attributes
         this.attributes = this.attributes || {};
-        this.attributes.mass = this.attributes.mass || 1; // get projectile mass from children or default to 1
         this.attributes.bounce = this.attributes.bounce || 1; // get projectile bounce from children or default to 1
 
         // add to physics engine and scene
@@ -13,7 +12,6 @@ export default class Projectile extends Phaser.Physics.Arcade.Sprite {
         this.scene.add.existing(this);
 
         this.setBounce(this.attributes.bounce);
-        this.setMass(this.attributes.mass);
         this.setCollideWorldBounds(true); // project bodies die when they go out of bounds
 
         // Set its pivot point to the center of the bullet
@@ -30,11 +28,6 @@ export default class Projectile extends Phaser.Physics.Arcade.Sprite {
     setBounce (bounce) {
         this.attributes.bounce = bounce;
         super.setBounce(bounce);
-    }
-
-    setMass (mass) {
-        this.attributes.mass = mass;
-        super.setMass(mass);
     }
 
     get alive () { return this.active; }
@@ -57,6 +50,7 @@ export default class Projectile extends Phaser.Physics.Arcade.Sprite {
         this.setActive(true);
         this.setVisible(true);
         this.body.enable = true; // re-enable the physics body when a projectile is revived
+        this.setBounce(this.attributes.bounce); // reset bounce
 
         this.emit('alive');
     }

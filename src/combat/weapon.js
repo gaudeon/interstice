@@ -95,17 +95,16 @@ export default class Weapon extends Phaser.Physics.Arcade.Group {
 
         // Set the projectile position to the gun position.
         if (this.originSprite) {
+            this.scene.physics.velocityFromRotation(this.originSprite.rotation, speed, projectile.body.velocity);
+            projectile.setVelocity(
+                projectile.body.velocity.x + this.originSprite.body.velocity.x, // ship velocity + calculted project velocity
+                projectile.body.velocity.y + this.originSprite.body.velocity.y
+            );
             projectile.reset(this.originSprite.x, this.originSprite.y);
-
-            projectile.rotation = this.originSprite.rotation;
-
-            var forwardRotation = this.originSprite.rotation - Phaser.Math.DegToRad(this.projectileAngleOffset);
-
-            // Shoot it in the right direction
-            projectile.body.velocity.x = Math.cos(forwardRotation) * speed;
-            projectile.body.velocity.y = Math.sin(forwardRotation) * speed;
         } else {
             projectile.reset(projectile.startX, projectile.startY);
+
+            projectile.kill();
 
             console.log('firing without a originSprite is not yet implemented.');
         }
