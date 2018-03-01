@@ -27,7 +27,8 @@ export default class Ship extends Phaser.Physics.Arcade.Sprite {
         }
 
         // ship attributes
-        this.attributes = this.attributes || {};
+        this.attributes = {};
+        this.attributes.bounce = 0;
 
         // addition event signals this.events is a Phaser.Events object
         this.events = this.events || new Phaser.EventEmitter();
@@ -64,8 +65,8 @@ export default class Ship extends Phaser.Physics.Arcade.Sprite {
         return this.weapons[key];
     }
 
-    addWeapon (key, weapon) { 
-        this.scene.add.existing(weapon); 
+    addWeapon (key, weapon) {
+        this.scene.add.existing(weapon);
         this.weapons[key] = weapon;
 
         // add sector layers with collision to all weapons by default
@@ -90,6 +91,12 @@ export default class Ship extends Phaser.Physics.Arcade.Sprite {
     }
 
     addAttribute (key, value) { this.setAttribute(key, value); }
+
+    setBounce (bounce) {
+        super.setBounce(bounce);
+
+        this.setAttribute('bounce', bounce);
+    }
 
     getTaxonomy () { return this.taxonomy; }
 

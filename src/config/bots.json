@@ -7,6 +7,7 @@
         "health"                 : 50,
         "health_regen_rate"      : 0,
         "speed"                  : 60,
+        "bounce"                 : 0,
         "main_gun": {
             "bullet_type"         : "red",
             "bullet_pool_count"   : 30,

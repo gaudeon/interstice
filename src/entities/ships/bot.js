@@ -25,6 +25,7 @@ export default class Bot extends Ship {
         // setup bot attributes
         this.addAttribute('health', this.getMaxHealth());
         this.addAttribute('energy', this.getMaxEnergy());
+        this.setBounce();
 
         // audio
         const SHIP_EXPLOSION_SOUND_ASSET_KEY = 'sound_ship_explosion';
@@ -54,6 +55,7 @@ export default class Bot extends Ship {
     getEnergyIsShield () { return this.getBotConfig().energy_is_shield; }
     getMaxHealth () { return this.getBotConfig().health; }
     getHealthRegenRate () { return this.getBotConfig().health_regen_rate; }
+    getBounce () { return this.getBotConfig().bounce; }
 
     // main gun info
     getMainGunBulletType () { return this.getBotConfig().main_gun.bullet_type; }

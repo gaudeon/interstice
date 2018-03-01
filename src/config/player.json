@@ -17,6 +17,7 @@
         "health_regen_rate" : 0,
         "thrustSpeed"       : 300,
         "rotationSpeed"     : 100,
+        "bounce"            : 0,
         "sprite": {
             "scale": 1,
             "anchor": 0.5

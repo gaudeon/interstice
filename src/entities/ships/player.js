@@ -34,6 +34,7 @@ export default class Player extends Ship {
         // setup player attributes
         this.addAttribute('health', this.getChasisHealth());
         this.addAttribute('energy', this.getChasisEnergy());
+        this.setBounce(this.getChasisBounce());
 
         // main gun
         var mainGun = new WeaponPlayerMainGun(this.scene);
@@ -81,6 +82,7 @@ export default class Player extends Ship {
     getChasisThrustSpeed () { return this.getChasisConfig().thrustSpeed; }
     getChasisRotationSpeed () { return this.getChasisConfig().rotationSpeed; }
     getChasisSpriteConfig () { return this.getChasisConfig().sprite; }
+    getChasisBounce () { return this.getChasisConfig().bounce; }
 
     // main gun info
     getMainGunBulletType () { return this.config.player.main_gun.bullet_type; }
