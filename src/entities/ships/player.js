@@ -67,6 +67,10 @@ export default class Player extends Ship {
             this.audio.thrustSound.stop();
             this.audio.shipExplosionSound.play();
         });
+
+        this.scene.events.on('shutdown', () => {
+            this.audio.thrustSound.stop();
+        });
     }
 
     // player class id
