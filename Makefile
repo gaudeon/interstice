@@ -28,10 +28,11 @@ $(NPM):
 	make $*
 
 INSTALL_CENTOS:
-	@echo Installing epel ...
-	@[ -e /etc/yum.repos.d/epel.repo ] || sudo yum install epel-release
+	@echo Installing nodejs repo ...
+	@grep -v 'release 7' /etc/centos-release || [ -e /etc/yum.repos.d/epel.repo ] || sudo yum install epel-release
+	@grep -v 'release 6' /etc/centos-release || [ ! -e /etc/yum.repos.d/nodesource-el6.repo ] || curl -sL https://rpm.nodesource.com/setup_9.x | sudo -E bash -
 	@echo Installing nodejs ...
-	@[ ! -e /etc/yum.repos.d/epel.repo ] || sudo yum install nodejs
+	@sudo yum install nodejs
 
 INSTALL_OSX:
 	@echo Installing brew ...
