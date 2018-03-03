@@ -1,7 +1,7 @@
 {
-    "thrustForward" : "W",
-    "thrustReverse" : "S",
-    "rotateLeft"    : "A",
-    "rotateRight"   : "D",
-    "fireBullets"   : "J"
+    "thrustForward" : ["W", ",", "UP"],
+    "thrustReverse" : ["S", "O", "DOWN"],
+    "rotateLeft"    : ["A", "LEFT"],
+    "rotateRight"   : ["D", "E", "RIGHT"],
+    "fire"   : ["J", "SPACE"]
 }

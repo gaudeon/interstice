@@ -50,9 +50,13 @@ export default class Player extends Ship {
 
         // keyboard events
         this.keyboard = this.scene.input.keyboard.createCursorKeys();
-        _.each(['thrustForward', 'thrustReverse', 'rotateLeft', 'rotateRight', 'fireBullets'], (control) => {
-            var keycode = Phaser.Input.Keyboard.KeyCodes[this.config.controls[control]];
-            this.keyboard[control] = this.scene.input.keyboard.addKey(keycode);
+        console.log(this.config.controls);
+        _.each(Object.keys(this.config.controls), (control) => {
+            this.keyboard[control] = [];
+            _.each(this.config.controls[control], (each_key)  => {
+                var keycode = Phaser.Input.Keyboard.KeyCodes[each_key];
+                this.keyboard[control].push(this.scene.input.keyboard.addKey(keycode));
+            })
         });
 
         // weapon events
@@ -138,25 +142,30 @@ export default class Player extends Ship {
     update (time, delta) {
         if (this.alive) {
             // acceleration
-            if (this.keyboard.thrustForward.isDown) {
+            let forward = this.keyboard.thrustForward.some(keycode => keycode.isDown);
+            let reverse = this.keyboard.thrustReverse.some(keycode => keycode.isDown);
+            let left    = this.keyboard.rotateLeft.some(keycode => keycode.isDown);
+            let right   = this.keyboard.rotateRight.some(keycode => keycode.isDown);
+            let fire    = this.keyboard.fire.some(keycode => keycode.isDown);
+            if (forward) {
                 this.scene.physics.velocityFromRotation(this.rotation, this.getChasisThrustSpeed(), this.body.acceleration);
-            } else if (this.keyboard.thrustReverse.isDown) {
+            } else if (reverse) {
                 this.scene.physics.velocityFromRotation(this.rotation, -this.getChasisThrustSpeed(), this.body.acceleration);
             } else {
                 this.setAcceleration(0);
             }
 
             // rotation
-            if (this.keyboard.rotateLeft.isDown) {
+            if (left) {
                 this.setAngularVelocity(-this.getChasisRotationSpeed());
-            } else if (this.keyboard.rotateRight.isDown) {
+            } else if (right) {
                 this.setAngularVelocity(this.getChasisRotationSpeed());
             } else {
                 this.setAngularVelocity(0);
             }
 
             // weapons
-            if (this.keyboard.fireBullets.isDown) {
+            if (fire) {
                 if (this.getEnergy() > 0) {
                     // fire main gun
                     this.getWeapon('mainGun').fire();
@@ -169,12 +178,12 @@ export default class Player extends Ship {
             }
 
             // sound
-            if (this.keyboard.thrustForward.isDown || this.keyboard.thrustReverse.isDown) {
+            if (forward || reverse) {
                 if (!this.thrustSoundIsPlaying) {
                     this.thrustSoundIsPlaying = true;
                     this.audio.thrustSound.play({ loop: true });
                 }
-            } else if (this.keyboard.thrustForward.isUp && this.keyboard.thrustReverse.isUp) {
+            } else {
                 this.thrustSoundIsPlaying = false;
                 this.audio.thrustSound.stop();
             }
