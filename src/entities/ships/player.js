@@ -138,33 +138,34 @@ export default class Player extends Ship {
         }
     }
 
+    controlPressing (action) {
+        let event = this.keyboard[action];
+        if (!event) return false;
+        return event.some(key => key.isDown);
+    }
+
     update (time, delta) {
         if (this.alive) {
             // acceleration
-            let forward = this.keyboard.thrustForward.some(keycode => keycode.isDown);
-            let reverse = this.keyboard.thrustReverse.some(keycode => keycode.isDown);
-            let left    = this.keyboard.rotateLeft.some(keycode => keycode.isDown);
-            let right   = this.keyboard.rotateRight.some(keycode => keycode.isDown);
-            let fire    = this.keyboard.fire.some(keycode => keycode.isDown);
-            if (forward) {
+            if (this.controlPressing("thrustForward")) {
                 this.scene.physics.velocityFromRotation(this.rotation, this.getChasisThrustSpeed(), this.body.acceleration);
-            } else if (reverse) {
+            } else if (this.controlPressing("thrustReverse")) {
                 this.scene.physics.velocityFromRotation(this.rotation, -this.getChasisThrustSpeed(), this.body.acceleration);
             } else {
                 this.setAcceleration(0);
             }
 
             // rotation
-            if (left) {
+            if (this.controlPressing("rotateLeft")) {
                 this.setAngularVelocity(-this.getChasisRotationSpeed());
-            } else if (right) {
+            } else if (this.controlPressing("rotateRight")) {
                 this.setAngularVelocity(this.getChasisRotationSpeed());
             } else {
                 this.setAngularVelocity(0);
             }
 
             // weapons
-            if (fire) {
+            if (this.controlPressing("fire")) {
                 if (this.getEnergy() > 0) {
                     // fire main gun
                     this.getWeapon('mainGun').fire();
@@ -177,7 +178,7 @@ export default class Player extends Ship {
             }
 
             // sound
-            if (forward || reverse) {
+            if (this.controlPressing("thrustForward") || this.controlPressing("thrustReverse")) {
                 if (!this.thrustSoundIsPlaying) {
                     this.thrustSoundIsPlaying = true;
                     this.audio.thrustSound.play({ loop: true });
