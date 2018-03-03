@@ -120,7 +120,7 @@ export default class Sector {
         });
 
         if (!(this.player instanceof Player)) {
-            throw "No player start tile found in " + this.tilemapAssetConfig().key;
+            throw new Error('No player start tile found in ' + this.tilemapAssetConfig().key);
         }
         
         // setup collisions between player and bots
