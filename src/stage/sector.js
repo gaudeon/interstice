@@ -1,5 +1,6 @@
 import Player from '../entities/ships/player';
 import MinionBot from '../entities/ships/bots/minion';
+import Atlas from '../entities/bosses/atlas';
 
 export default class Sector {
     constructor (scene, key) {
@@ -13,6 +14,9 @@ export default class Sector {
 
         // area to hold bots
         this.bots = new Phaser.Physics.Arcade.Group(scene.physics.world, scene);
+
+        // area to hold bosses
+        this.bosses = new Phaser.GameObjects.Group(scene.physics.world, scene);
     }
 
     sectorConfig () { return this.config.sectors[this.key]; }
@@ -114,6 +118,10 @@ export default class Sector {
                     this.bots.add(bot, true); // add to group and scene
 
                     break;
+                case 'boss_atlas':
+                    let atlas = new Atlas(this, entity.x, entity.y);
+
+                    this.bosses.add(atlas); // bosses are containers, they will handle adding to a scene
                 default:
                     break;
             }

@@ -1,5 +1,5 @@
-export default class Boss {
-    constructor () {
-        
+export default class Boss extends Phaser.Physics.Arcade.Group  {
+    constructor (scene, x, y) {
+       super(scene); 
     }
 }
