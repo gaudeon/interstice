@@ -16,6 +16,7 @@ config.devtool = 'cheap-source-map';
 config.devServer = {
     hot: true,
     host: "0.0.0.0",
+    disableHostCheck: true,
     port: PORT,
     contentBase: path.resolve(__dirname, '../src'),
     watchContentBase: true
