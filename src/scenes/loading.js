@@ -37,10 +37,10 @@ export default class LoadingScene extends Phaser.Scene {
         this.cache.json.add('assetsConfig', assetsConfig);
         this.cache.json.add('controlsConfig', controlsConfig);
         this.cache.json.add('mainMenuConfig', mainMenuConfig);
+        this.cache.json.add('missionsConfig', missionsConfig);
         this.cache.json.add('playerConfig', playerConfig);
         this.cache.json.add('botsConfig', botsConfig);
         this.cache.json.add('sectorsConfig', sectorsConfig);
-        this.cache.json.add('missionsConfig', missionsConfig);
 
         // load web fonts
         WebFont.load({

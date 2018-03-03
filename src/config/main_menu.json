@@ -19,7 +19,7 @@
         },
         {
             "label": "Play",
-            "nextScene": "PlayMission"
+            "nextScene": "MissionsScene"
         }
     ]
 }

@@ -7,6 +7,7 @@ import MainMenuScene from './scenes/main_menu';
 import PlayMissionScene from './scenes/play_mission';
 import PlayMissionHudScene from './scenes/play_mission/hud';
 import MissionResultsScene from './scenes/mission_results';
+import MissionsScene from './scenes/missions';
 
 var gameConfig = {
     type: Phaser.AUTO,
@@ -19,7 +20,7 @@ var gameConfig = {
             //debug: true, // enable to see physics bodies outlined
         }
     }, 
-    scene: [LoadingScene, MainMenuScene, PlayMissionScene, PlayMissionHudScene, MissionResultsScene]
+    scene: [LoadingScene, MainMenuScene, PlayMissionScene, PlayMissionHudScene, MissionResultsScene, MissionsScene]
 };
 
 let game = new Phaser.Game(gameConfig);

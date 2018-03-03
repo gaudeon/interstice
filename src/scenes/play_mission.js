@@ -2,7 +2,8 @@
 import KillMinionsMission from '../stage/missions/kill_minions';
 
 const MissionDictionary = {
-    'KillMinions': KillMinionsMission
+    'KillMinions': KillMinionsMission,
+    'kill_minions' : KillMinionsMission
 };
 
 export default class PlayMissionScene extends Phaser.Scene {
