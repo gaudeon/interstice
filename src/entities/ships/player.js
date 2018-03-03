@@ -50,7 +50,6 @@ export default class Player extends Ship {
 
         // keyboard events
         this.keyboard = this.scene.input.keyboard.createCursorKeys();
-        console.log(this.config.controls);
         _.each(Object.keys(this.config.controls), (control) => {
             this.keyboard[control] = [];
             _.each(this.config.controls[control], (each_key)  => {
