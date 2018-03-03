@@ -29,6 +29,10 @@ export default class Ship extends Phaser.Physics.Arcade.Sprite {
         // ship attributes
         this.attributes = {};
         this.attributes.bounce = 0;
+	// 500 below is calculated to avoid problems with 32 pixel tiles
+	// within 1/30 of a second (target frame rate is 30+)
+	this.body.maxVelocity.x = 500;
+	this.body.maxVelocity.y = 500;
 
         // addition event signals this.events is a Phaser.Events object
         this.events = this.events || new Phaser.EventEmitter();
