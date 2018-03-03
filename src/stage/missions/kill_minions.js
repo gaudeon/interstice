@@ -12,6 +12,7 @@ export default class KillMinionsMission extends Mission {
 
         // now setup success and failure objectives for this mission
         var minions = [];
+        console.log(this.sector);
         this.sector.getBots().forEach(bot => {
             if (bot.isEnemy(this.sector.getPlayer()) && bot.alive) {
                 minions.push(bot);

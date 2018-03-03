@@ -109,7 +109,7 @@ export default class Sector {
 
                     break;
                 case 'bot_minion':
-                    var bot = new MinionBot(this, entity.x, entity.y);
+                    let bot = new MinionBot(this, entity.x, entity.y);
 
                     this.bots.add(bot, true); // add to group and scene
 
@@ -119,6 +119,10 @@ export default class Sector {
             }
         });
 
+        if (!(this.player instanceof Player)) {
+            throw "No player start tile found in " + this.tilemapAssetConfig().key;
+        }
+        
         // setup collisions between player and bots
         this.player.addCollider(this.bots); // since we add the bots group to the player as a collider we don't need to add a collider to each bot for the player
         this.player.addWeaponCollider(this.bots);
