@@ -14,7 +14,7 @@ export default class MissionsScene extends Phaser.Scene {
             var text = this.add.text(0, y, mission, this.config.style);
 
             if (!this.textSpacing) {
-                this.textSpacing = text.height;
+                this.textSpacing = text.height * 2;
             }
 
             if (!this.textPaddingTop) {
