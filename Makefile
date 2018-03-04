@@ -11,6 +11,7 @@ stop:
 	killall npm
 
 dist:
+	rm -rf dist
 	npm run dist </dev/null
 
 butler_push:
@@ -46,3 +47,5 @@ INSTALL_OSX:
 	@which brew || exit 1
 	@echo Installing npm ...
 	@which npm || brew install node
+
+.PHONY: all start stop dist butler_push butler_status 

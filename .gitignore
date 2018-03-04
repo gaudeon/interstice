@@ -28,6 +28,7 @@ build/
 
 # Distributions
 dist/
+*.zip
 
 # Dependency directories
 node_modules
