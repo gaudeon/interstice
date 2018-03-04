@@ -62,7 +62,6 @@ export default class Weapon extends Phaser.Physics.Arcade.Group {
 
     fire (speed) {
         if (!this.originSprite) {
-            console.log('firing without a originSprite is not yet implemented.');
             return;
         }
         speed = speed || this.projectileSpeed;
@@ -106,8 +105,6 @@ export default class Weapon extends Phaser.Physics.Arcade.Group {
         );
         let bounds = this.originSprite.getBounds();
         projectile.reset(bounds.centerX, bounds.centerY);
-        console.log('Firing from ' + bounds.centerX + ',' + bounds.centerY);
-        console.log(projectile);
 
         this.emit('fire');
     }
