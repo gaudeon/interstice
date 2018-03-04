@@ -9,8 +9,15 @@ export default class AtlasSegments extends BossSegments {
         super(boss);
 
         this.front = new AtlasFrontSegment(this);
+        this.displayList.add(this.front);
+
         this.left = new AtlasLeftSegment(this);
+        this.displayList.add(this.left);
+
         this.right = new AtlasRightSegment(this);
+        this.displayList.add(this.right);
+
         this.back = new AtlasBackSegment(this);
+        this.displayList.add(this.back);
     }
 }

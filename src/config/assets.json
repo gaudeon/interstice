@@ -1,4 +1,24 @@
 {
+    "atlas_segment_front": {
+        "in_atlas" : true,
+        "key"      : "game_atlas",
+        "frame"    : "atlasSegFront"
+    },
+    "atlas_segment_left": {
+        "in_atlas" : true,
+        "key"      : "game_atlas",
+        "frame"    : "atlasSegLeftRest"
+    },
+    "atlas_segment_right": {
+        "in_atlas" : true,
+        "key"      : "game_atlas",
+        "frame"    : "atlasSegRightRest"
+    },
+    "atlas_segment_back": {
+        "in_atlas" : true,
+        "key"      : "game_atlas",
+        "frame"    : "atlasSegRearRest"
+    },
     "bot_minion": {
         "in_atlas" : true,
         "key"      : "game_atlas",

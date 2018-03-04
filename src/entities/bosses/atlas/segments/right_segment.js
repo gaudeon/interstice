@@ -2,6 +2,8 @@ import BossSegment from '../../../boss/segment';
 
 export default class AtlasRightSegment extends BossSegment {
     constructor (segments) {
-        super(segments, 0, 0, "game_atlas", "enemyShipG");
+        super(segments, 0, -48, "game_atlas", "atlasSegRightThrust");
+
+        this.setOrigin(0,0);
     }
 }
