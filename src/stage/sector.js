@@ -137,6 +137,9 @@ export default class Sector {
         this.bots.getChildren().forEach(bot => {
             bot.addWeaponCollider(this.player);
         });
+        this.bosses.getChildren().forEach(boss => {
+            boss.addCollider(this.player);
+        });
     }
 
     get widthInPixels () { return this.map.widthInPixels; }

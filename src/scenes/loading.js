@@ -6,6 +6,7 @@ import playerConfig from '../config/player.json';
 import botsConfig from '../config/bots.json';
 import sectorsConfig from '../config/sectors.json';
 import missionsConfig from '../config/missions.json';
+import bossesConfig from '../config/bosses.json';
 
 // web fonts
 import WebFont from 'webfontloader';
@@ -41,6 +42,7 @@ export default class LoadingScene extends Phaser.Scene {
         this.cache.json.add('playerConfig', playerConfig);
         this.cache.json.add('botsConfig', botsConfig);
         this.cache.json.add('sectorsConfig', sectorsConfig);
+        this.cache.json.add('bossesConfig', bossesConfig);
 
         // load web fonts
         WebFont.load({
