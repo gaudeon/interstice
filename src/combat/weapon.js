@@ -61,6 +61,10 @@ export default class Weapon extends Phaser.Physics.Arcade.Group {
     }
 
     fire (speed) {
+        if (!this.originSprite) {
+            console.log('firing without a originSprite is not yet implemented.');
+            return;
+        }
         speed = speed || this.projectileSpeed;
 
         // Enforce a short delay between shots by recording
@@ -94,20 +98,16 @@ export default class Weapon extends Phaser.Physics.Arcade.Group {
         }
 
         // Set the projectile position to the gun position.
-        if (this.originSprite) {
-            this.scene.physics.velocityFromRotation(this.originSprite.rotation, speed, projectile.body.velocity);
-            projectile.setVelocity(
-                projectile.body.velocity.x + this.originSprite.body.velocity.x, // ship velocity + calculted project velocity
-                projectile.body.velocity.y + this.originSprite.body.velocity.y
-            );
-            projectile.reset(this.originSprite.getBounds().centerX, this.originSprite.getBounds().centerY);
-        } else {
-            projectile.reset(projectile.startX, projectile.startY);
-
-            projectile.kill();
-
-            console.log('firing without a originSprite is not yet implemented.');
-        }
+        this.scene.physics.velocityFromRotation(this.originSprite.rotation, speed, projectile.body.velocity);
+        projectile.setVelocity(
+            // ship velocity + calculated project velocity
+            projectile.body.velocity.x + this.originSprite.body.velocity.x,
+            projectile.body.velocity.y + this.originSprite.body.velocity.y
+        );
+        let bounds = this.originSprite.getBounds();
+        projectile.reset(bounds.centerX, bounds.centerY);
+        console.log('Firing from ' + bounds.centerX + ',' + bounds.centerY);
+        console.log(projectile);
 
         this.emit('fire');
     }
@@ -119,29 +119,23 @@ export default class Weapon extends Phaser.Physics.Arcade.Group {
     addCollider (target) {
         let colliderCallback = () => {};
 
-        if (target.getChildren) { // process all children in a group as separate colliders
-            target.getChildren().forEach(child => {
-                if (typeof child.takeDamage === 'function') { // this child of the group can take damage
-                    colliderCallback = (obj1, obj2) => {
-                        let projectile = obj1 == child ? obj2 : obj1;
-                        child.takeDamage(projectile.attributes.damage);
-                        projectile.kill();
-                    }
-                }
-
-                this.colliders.push(this.scene.physics.add.collider(this, child, colliderCallback));
-            });
+        let children = [target];
+        // process all children in a group as separate colliders
+        if (target.getChildren) {
+            children = target.getChildren();
         }
-        else {
-            if (typeof target.takeDamage === 'function') { // this target can take damage
+
+        children.forEach(child => {
+            // this child of the group can take damage
+            if (typeof child.takeDamage === 'function') {
                 colliderCallback = (obj1, obj2) => {
-                    let projectile = obj1 == target ? obj2 : obj1;
-                    target.takeDamage(projectile.attributes.damage);
+                    let projectile = obj1 == child ? obj2 : obj1;
+                    child.takeDamage(projectile.attributes.damage);
                     projectile.kill();
                 }
             }
 
-            this.colliders.push(this.scene.physics.add.collider(this, target, colliderCallback));
-        }
+            this.colliders.push(this.scene.physics.add.collider(this, child, colliderCallback));
+        });
     }
 };
