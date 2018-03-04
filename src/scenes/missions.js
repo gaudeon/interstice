@@ -9,9 +9,12 @@ export default class MissionsScene extends Phaser.Scene {
         this.textPaddingTop = 0; 
         this.textItemCount = this.config.missions.length;
 
-        var y = 0;
+        let title = this.add.text(0, 0, 'Choose Mission', this.config.style);
+        title.setPadding((this.sys.game.config.width - title.width) / 2);
+
+        var y = 40;
         this.config.missions.forEach(mission => {
-            var text = this.add.text(0, y, mission, this.config.style);
+            var text = this.add.text(0, y, this.config[mission].label, this.config.style);
 
             if (!this.textSpacing) {
                 this.textSpacing = text.height * 2;
@@ -31,7 +34,7 @@ export default class MissionsScene extends Phaser.Scene {
             this.input.on('gameobjectdown', (ev, obj) => {
                 if (obj === text) {
                     this.input.stopPropagation();
-                    this.scene.start('PlayMission', this.config[mission].label);
+                    this.scene.start('PlayMission', mission);
                 }
             });
 

@@ -13,25 +13,10 @@
         "color": "#4f4fbf"
     },
     "missions": [
-        "kill_minions",
-        "kill_minions1",
-        "kill_minions2",
-        "kill_minions3"
+        "l1_kill_atlas"
     ],
-    "kill_minions": {
-        "label": "kill_minions",
-        "start_sector": "sector_1"
-    },
-    "kill_minions1": {
-        "label": "kill_minions2",
-        "start_sector": "sector_1"
-    },
-    "kill_minions2": {
-        "label": "kill_minions3",
-        "start_sector": "sector_1"
-    },
-    "kill_minions3": {
-        "label": "kill_minions4",
+    "l1_kill_atlas": {
+        "label": "John Galt's Messenger",
         "start_sector": "sector_1"
     }
 }

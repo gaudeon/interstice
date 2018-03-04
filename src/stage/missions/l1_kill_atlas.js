@@ -1,9 +1,9 @@
 import Mission from '../mission';
 import KillShipsObjective from '../objectives/kill_ships';
 
-export default class KillMinionsMission extends Mission {
+export default class KillAtlasMission extends Mission {
     constructor (scene) {
-        super(scene, "kill_minions");
+        super(scene, "l1_kill_atlas");
     }
 
     setupMission () {

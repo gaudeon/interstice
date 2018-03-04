@@ -1,9 +1,8 @@
 // missions
-import KillMinionsMission from '../stage/missions/kill_minions';
+import L1KillAtlasMission from '../stage/missions/l1_kill_atlas';
 
 const MissionDictionary = {
-    'KillMinions': KillMinionsMission,
-    'kill_minions' : KillMinionsMission
+    'l1_kill_atlas' : L1KillAtlasMission
 };
 
 export default class PlayMissionScene extends Phaser.Scene {
@@ -14,15 +13,10 @@ export default class PlayMissionScene extends Phaser.Scene {
     init (mission) {
         this.hudScene = this.scene.get('PlayMissionHud'); // save player hud scene for later use
 
-        // for now default mission to KillMinionsMission
-        if (typeof mission === 'undefined') {
-            mission = 'KillMinions';
-        }
-
         // load mission
         let MissionClass = MissionDictionary[mission];
         if (typeof MissionClass === 'undefined') {
-            MissionClass = MissionDictionary['KillMinions'];
+            throw Error('Failed to find mission with key ' + mission);
         }
 
         this.mission = new MissionClass(this);
