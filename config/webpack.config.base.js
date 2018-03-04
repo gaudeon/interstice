@@ -1,6 +1,9 @@
 const webpack = require('webpack');
 const path = require('path');
 
+// Try the environment variable, otherwise use root
+const ASSET_PATH = process.env.ASSET_PATH || '/';
+
 const config = {
     context: path.resolve(__dirname, '../src'),
 
@@ -9,10 +12,10 @@ const config = {
     },
 
     output: {
-        filename: '[name].bundle.js',
+        filename: '[name].js',
         pathinfo: true,
-        path: path.resolve(__dirname, '../dist/assets/'),
-        publicPath: 'assets/'
+        path: path.resolve(__dirname, '../dist/'),
+        publicPath: ASSET_PATH
     },
 
     module: {
@@ -40,8 +43,6 @@ const config = {
                     loader: "file-loader",
                     options: {
                         name: '[name].[ext]',
-                        outputPath: '../',
-                        publicPath: '/'
                     }
                 }]
             },

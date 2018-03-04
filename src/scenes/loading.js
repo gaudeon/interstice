@@ -51,7 +51,7 @@ export default class LoadingScene extends Phaser.Scene {
             },
             custom: {
                 families: ['Exo2 SemiBold'],
-                urls: ['/assets/fonts.css']
+                urls: ['fonts.css']
             }
         });
     }

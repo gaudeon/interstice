@@ -45,32 +45,32 @@
         "frame"    : "spaceBGDarkPurple"
     },
     "sound_thrust": {
-        "file" : "/assets/thrust.wav",
+        "file" : "thrust.wav",
         "key"  : "thrust_sound"
     },
     "sound_bullet": {
-        "file" : "/assets/bullet.wav",
+        "file" : "bullet.wav",
         "key"  : "bullet_sound"
     },
     "sound_ship_explosion": {
-        "file" : "/assets/ship_explosion.wav",
+        "file" : "ship_explosion.wav",
         "key"  : "ship_explosion_sound"
     },
     "tilemap_sector_1": {
-        "jsonFile" : "/assets/sector_1.json",
+        "jsonFile" : "sector_1.json",
         "key"  : "sector_1"
     },
     "scenery_tileset": {
-        "file" : "/assets/scenery_tileset.png",
+        "file" : "scenery_tileset.png",
         "key"  : "scenery_tileset"
     },
     "sector_tileset": {
-        "file" : "/assets/sector_tileset.png",
+        "file" : "sector_tileset.png",
         "key"  : "sector_tileset"
     },
     "atlas_game": {
-        "imageFile" : "/assets/game_atlas.png",
-        "jsonFile" : "/assets/game_atlas.json",
+        "imageFile" : "game_atlas.png",
+        "jsonFile" : "game_atlas.json",
         "key"  : "game_atlas"
     },
     "ui_bar_bg_left": {

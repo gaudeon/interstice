@@ -13,6 +13,12 @@ stop:
 dist:
 	npm run dist </dev/null
 
+butler_push:
+	butler push dist/interstice-latest.zip dashbangsplat/interstice:latest
+
+butler_status:
+	butler status  dashbangsplat/interstice:latest
+
 node_modules: package.json $(NPM)
 	npm install
 

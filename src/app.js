@@ -2,6 +2,8 @@ import 'phaser';
 import 'lodash';
 import 'webfontloader';
 
+require('./index.html'); // so we get it in the dist
+
 import LoadingScene from './scenes/loading';
 import MainMenuScene from './scenes/main_menu';
 import PlayMissionScene from './scenes/play_mission';
