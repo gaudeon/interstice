@@ -11,8 +11,10 @@ stop:
 	killall npm
 
 dist:
-	rm -rf dist
 	npm run dist </dev/null
+
+audiosprite:
+	npm run audiosprite </dev/null
 
 butler_push:
 	butler push dist/interstice-latest.zip dashbangsplat/interstice:latest
@@ -48,4 +50,4 @@ INSTALL_OSX:
 	@echo Installing npm ...
 	@which npm || brew install node
 
-.PHONY: all start stop dist butler_push butler_status 
+.PHONY: all start stop dist audiosprite butler_push butler_status 
