@@ -29,7 +29,7 @@ export default class Boss extends Phaser.Physics.Arcade.Image {
 	    this.body.maxVelocity.y = 500;
 
         // events
-        this.events = this.events || new Phaser.EventEmitter();
+        this.events = this.events || new Phaser.Events.EventEmitter();
 
         // default taxonomy
         this.taxonomy = 'boss';

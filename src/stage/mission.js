@@ -26,7 +26,7 @@ export default class Mission extends Phaser.GameObjects.Group {
         this.failure_objectives = {};
 
         // setup events
-        this.events = new Phaser.EventEmitter();
+        this.events = new Phaser.Events.EventEmitter();
 
         this.scene.add.existing(this); // add ourself to the scene updateList
     }

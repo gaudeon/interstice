@@ -36,7 +36,7 @@ export default class Ship extends Phaser.Physics.Arcade.Sprite {
 	    this.body.maxVelocity.y = 500;
 
         // addition event signals this.events is a Phaser.Events object
-        this.events = this.events || new Phaser.EventEmitter();
+        this.events = this.events || new Phaser.Events.EventEmitter();
 
         // track ship weapons
         this.weapons = this.weapons || {};

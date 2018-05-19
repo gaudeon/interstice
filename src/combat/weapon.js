@@ -25,7 +25,7 @@ export default class Weapon extends Phaser.Physics.Arcade.Group {
         // list of colliders that tracks the objects that can collide with the projectiles from this weapon
         this.colliders = [];
 
-        this.events = new Phaser.EventEmitter();
+        this.events = new Phaser.Events.EventEmitter();
     }
 
     on (...args) {
