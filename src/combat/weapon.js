@@ -97,13 +97,15 @@ export default class Weapon extends Phaser.Physics.Arcade.Group {
         }
 
         // Set the projectile position to the gun position.
+        projectile.reset(this.originSprite.x, this.originSprite.y);
+
+        // Set velocity to ship velocity by projecticle speed
         this.scene.physics.velocityFromRotation(this.originSprite.rotation, speed, projectile.body.velocity);
         projectile.setVelocity(
             // ship velocity + calculated project velocity
             projectile.body.velocity.x + this.originSprite.body.velocity.x,
             projectile.body.velocity.y + this.originSprite.body.velocity.y
         );
-        projectile.reset(this.originSprite.x, this.originSprite.y);
 
         this.emit('fire');
     }
