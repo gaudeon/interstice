@@ -22,8 +22,11 @@ export default class Mission extends Phaser.GameObjects.Group {
         // setup the sector object
         this.sector = new Sector(scene, this.config.mission.start_sector);
 
-        this.success_objectives = {};
-        this.failure_objectives = {};
+        this.successObjectives = {};
+        this.failureObjectives = {};
+
+        // whether to check mission objectives for success or failure
+        this.missionCheckActive = true;
 
         // setup events
         this.events = new Phaser.Events.EventEmitter();
@@ -93,12 +96,15 @@ export default class Mission extends Phaser.GameObjects.Group {
             super.preUpdate(time, delta);
         }
 
-        if (this.isMissionSuccess()) {
-            this.events.emit('MissionSuccess');
-        }
-
-        if (this.isMissionFailure()) {
-            this.events.emit('MissionFailure');
+        if (this.missionCheckActive) {
+            if (this.isMissionSuccess()) {
+                this.events.emit('MissionSuccess');
+                this.missionCheckActive = false; 
+            }
+            else if (this.isMissionFailure()) {
+                this.events.emit('MissionFailure');
+                this.missionCheckActive = false; 
+            }
         }
     }
 
@@ -111,7 +117,7 @@ export default class Mission extends Phaser.GameObjects.Group {
             throw new Error('invalid objective');
         }
 
-        this.success_objectives[key] = objective;
+        this.successObjectives[key] = objective;
     }
 
     addFailureObjective (key, objective) {
@@ -119,27 +125,27 @@ export default class Mission extends Phaser.GameObjects.Group {
             throw new Error('invalid objective');
         }
 
-        this.failure_objectives[key] = objective;
+        this.failureObjectives[key] = objective;
     }
 
     getSuccessObjective (key) {
-        return this.success_objectives[key];
+        return this.successObjectives[key];
     }
 
     getFailureObjective (key) {
-        return this.failure_objectives[key];
+        return this.failureObjectives[key];
     }
 
     isMissionSuccess () {
         // it's not successful if there are not objectives
-        if (Object.keys(this.success_objectives).length < 1) {
+        if (Object.keys(this.successObjectives).length < 1) {
             return false;
         }
 
         var allObjectivesSuccessful = true;
 
-        for (var key in this.success_objectives) {
-            if (!this.success_objectives[key].isComplete()) {
+        for (var key in this.successObjectives) {
+            if (!this.successObjectives[key].isComplete()) {
                 allObjectivesSuccessful = false;
                 break;
             }
@@ -150,14 +156,14 @@ export default class Mission extends Phaser.GameObjects.Group {
 
     isMissionFailure () {
         // it's not successful if there are not objectives
-        if (Object.keys(this.failure_objectives).length < 1) {
+        if (Object.keys(this.failureObjectives).length < 1) {
             return false;
         }
 
         var allObjectivesFailure = true;
 
-        for (var key in this.failure_objectives) {
-            if (!this.failure_objectives[key].isComplete()) {
+        for (var key in this.failureObjectives) {
+            if (!this.failureObjectives[key].isComplete()) {
                 allObjectivesFailure = false;
                 break;
             }

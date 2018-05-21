@@ -56,8 +56,8 @@ export default class Projectile extends Phaser.Physics.Arcade.Sprite {
     }
 
     reset (x, y) {
-        this.setPosition(x, y);
         this.revive();
+        this.setPosition(x, y);
     }
 
     update (time, delta) {

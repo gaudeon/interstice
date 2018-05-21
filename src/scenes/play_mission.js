@@ -34,23 +34,17 @@ export default class PlayMissionScene extends Phaser.Scene {
         // define what happens when player successfully completes mission
         this.mission.events.on('MissionSuccess', () => {
             this.input.stopPropagation();
+            this.scene.stop('PlayMissionHud');
             this.scene.start('MainMenu');
         });
 
         // define what happens when a player fails to complete a mission
         this.mission.events.on('MissionFailure', () => {
             this.input.stopPropagation();
+            this.scene.stop('PlayMissionHud');
             this.scene.start('MainMenu');
         });
 
-        // TODO uncomment this when scene launch bug for non-running scenes is fixed
-        //this.scene.launch('PlayMissionHud', this); // Load the HUD which is a scene layered on top of this scene
-    }
-
-    update () {
-        // TODO remove the below if block when scene launch bug for non-running scenes is fixed
-        if (this.sys.settings.active && !this.hudScene.scene.isActive()) {
-            this.scene.launch('PlayMissionHud', this);
-        }
+        this.scene.launch('PlayMissionHud', this); // Load the HUD which is a scene layered on top of this scene
     }
 };
